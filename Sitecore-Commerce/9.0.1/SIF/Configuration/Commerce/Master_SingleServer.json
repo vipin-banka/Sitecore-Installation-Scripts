@@ -211,7 +211,31 @@
     "SitecoreUserPassword": {
       "Type": "string",
       "Description": "Sitecore Admin Password"
-    }
+    },
+    "SitecoreIdentityServicePort": {
+      "Type": "string",
+      "Description": "Sitecore Identity Service port",
+	  "DefaultValue": "5050"
+    },
+    "SitecoreIdentityServiceCertificateName": {
+      "Type": "string",
+      "Description": "Sitecore Identity Service CertificateName",
+	  "DefaultValue": "identity.server"
+    },
+	"SitecoreBizFxServerName": {
+		"Type": "string",
+		"Description": "Sitecore Biz Fx name",
+		"DefaultValue": "SitecoreBizFx"
+	},
+	"SitecoreBizFxServicePort": {
+		"Type": "string",
+		"Description": "Sitecore Biz Fx port",
+		"DefaultValue": "4200"
+	},
+	"CommerceServicesPrefix": {
+		"Type": "string",
+		"Description": "Commerce Service Prefix"
+	}
   },
   "Variables": {
     // Variables are values calculated in a configuration.
@@ -282,7 +306,10 @@
         "CommerceMinionsServicesPort": "[parameter('CommerceMinionsServicesPort')]",
         "SitecoreCommerceEngineZipPath": "[parameter('SitecoreCommerceEngineZipPath')]",
         "UserAccount": "[parameter('UserAccount')]",
-		    "BraintreeAccount": "[parameter('BraintreeAccount')]"
+		"BraintreeAccount": "[parameter('BraintreeAccount')]",
+		"CommerceServicesPrefix": "[parameter('CommerceServicesPrefix')]",
+		"SitecoreIdentityServicePort": "[parameter('SitecoreIdentityServicePort')]",
+		"SitecoreBizFxServicePort": "[parameter('SitecoreBizFxServicePort')]"
       }
     },
     "DeploySitecoreBizFx": {
@@ -291,7 +318,10 @@
         "Path": ".\\Configuration\\Commerce\\SitecoreBizFx\\SitecoreBizFx.json",
         "SitecoreBizFxServicesContentPath": "[parameter('SitecoreBizFxServicesContentPath')]",
         "CommerceAuthoringServicesPort": "[parameter('CommerceAuthoringServicesPort')]",
-        "UserAccount": "[parameter('UserAccount')]"
+        "UserAccount": "[parameter('UserAccount')]",
+		"SitecoreBizFxServerName": "[parameter('SitecoreBizFxServerName')]",
+		"SitecoreBizFxServicePort": "[parameter('SitecoreBizFxServicePort')]",
+		"SitecoreIdentityServicePort": "[parameter('SitecoreIdentityServicePort')]"
       }
     },
     "DeploySitecoreIdentityServer": {
@@ -302,7 +332,10 @@
         "SitecoreDbServer": "[parameter('SitecoreDbServer')]",
         "SitecoreCoreDbName": "[parameter('SitecoreCoreDbName')]",
         "UserAccount": "[parameter('UserAccount')]",
-        "SitecoreIdentityServerName": "[parameter('SitecoreIdentityServerName')]"
+        "SitecoreIdentityServerName": "[parameter('SitecoreIdentityServerName')]",
+		"SitecoreIdentityServicePort": "[parameter('SitecoreIdentityServicePort')]",
+		"SitecoreIdentityServiceCertificateName": "[parameter('SitecoreIdentityServiceCertificateName')]",
+		"SitecoreBizFxServicePort": "[parameter('SitecoreBizFxServicePort')]"
       }
     },
     "CopySiteUtilityFolder": {
@@ -420,6 +453,15 @@
         "WebConfig": "[variable('WebConfig')]"
       }
     },
+    "UpdateSitecoreItems": {
+      "Type": "InstallSitecoreConfiguration",
+      "Params": {
+		"Path": ".\\Configuration\\SitecoreUtilities\\UpdateSitecoreItems.json",
+        "Hostname": "[parameter('SiteHostHeaderName')]",
+		"SitecoreBizAppPort": "[parameter('SitecoreBizFxServicePort')]",
+        "BaseUrl": "[variable('UtilitiesBaseUrl')]"
+      }
+    },
     "ImportRootCertificate": {
       "Type": "ImportCertificate",
       "Params": {
@@ -434,7 +476,8 @@
         "EngineConnectIncludeDir": "[variable('EngineConnectIncludeDir')]",
         "CertificatePath": "[parameter('CommerceEngineCertificatePath')]",
         "CommerceServicesPostfix": "[parameter('CommerceServicesPostfix')]",
-        "CommerceAuthoringServicesPort": "[parameter('CommerceAuthoringServicesPort')]"
+        "CommerceAuthoringServicesPort": "[parameter('CommerceAuthoringServicesPort')]",
+		"CommerceServicesPrefix": "[parameter('CommerceServicesPrefix')]"
       }
     },
     "InitializeCommerceEngine": {
@@ -446,7 +489,9 @@
         "SitecoreAdminAccount": {
           "UserName": "[parameter('SitecoreUsername')]",
           "Password": "[parameter('SitecoreUserPassword')]"
-        }
+        },
+		"CommerceServicesPrefix": "[parameter('CommerceServicesPrefix')]",
+		"SitecoreIdentityServicePort": "[parameter('SitecoreIdentityServicePort')]"
       }
       },
     "EnableCEConnectDataProvider": {

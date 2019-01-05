@@ -22,13 +22,17 @@
     "CommerceAuthoringServicesPort": {
       "Type": "string",
       "Description": "Commerce Authoring Services port"
-    }
+    },
+	"CommerceServicesPrefix": { 
+		"Type": "string", 
+		"DefaultValue": "" 
+	}
   },
   "Variables": {
-    "CommerceOps": "[concat('CommerceOps_', parameter('CommerceServicesPostfix'))]",
-    "CommerceShops": "[concat('CommerceShops_', parameter('CommerceServicesPostfix'))]",
-    "CommerceAuthoring": "[concat('CommerceAuthoring_', parameter('CommerceServicesPostfix'))]",
-    "CommerceMinions": "[concat('CommerceMinions_', parameter('CommerceServicesPostfix'))]",
+    "CommerceOps": "[concat(parameter('CommerceServicesPrefix'), concat('CommerceOps_', parameter('CommerceServicesPostfix')))]",
+    "CommerceShops": "[concat(parameter('CommerceServicesPrefix'), concat('CommerceShops_', parameter('CommerceServicesPostfix')))]",
+    "CommerceAuthoring": "[concat(parameter('CommerceServicesPrefix'), concat('CommerceAuthoring_', parameter('CommerceServicesPostfix')))]",
+    "CommerceMinions": "[concat(parameter('CommerceServicesPrefix'), concat('CommerceMinions_', parameter('CommerceServicesPostfix')))]",
     "CommerceOpsPhysicalPath": "[concat(environment('SystemDrive'), concat('\\inetpub\\wwwroot\\', variable('CommerceOps')))]",
     "CommerceShopsPhysicalPath": "[concat(environment('SystemDrive'), concat('\\inetpub\\wwwroot\\', variable('CommerceShops')))]",
     "CommerceAuthoringPhysicalPath": "[concat(environment('SystemDrive'), concat('\\inetpub\\wwwroot\\', variable('CommerceAuthoring')))]",

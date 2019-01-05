@@ -176,6 +176,34 @@ function Add-SQLPSSnapin
 
         $sqlpsreg = "HKLM:\SOFTWARE\Microsoft\PowerShell\1\ShellIds\Microsoft.SqlServer.Management.PowerShell.sqlps130";
     }
+	elseif(Test-Path -Path "HKLM:\SOFTWARE\Microsoft\PowerShell\1\ShellIds\Microsoft.SqlServer.Management.PowerShell.sqlps140") { 
+        try{
+   if((Get-PSSnapin -Registered |? { $_.Name -ieq "SqlServerCmdletSnapin140"}).Count -eq 0) {
+Write-Host "Registering the SQL Server 2017 Powershell Snapin";
+if(Test-Path -Path $env:windir\Microsoft.NET\Framework\v4.0.30319\InstallUtil.exe) {
+     Set-Alias installutil $env:windir\Microsoft.NET\Framework\v4.0.30319\InstallUtil.exe;
+    } 
+    elseif (Test-Path -Path $env:windir\Microsoft.NET\Framework\v2.0.50727\InstallUtil.exe) {
+     Set-Alias installutil $env:windir\Microsoft.NET\Framework\v2.0.50727\InstallUtil.exe;
+    }
+    else {
+     throw "InstallUtil wasn't found!";
+    }
+if(Test-Path -Path "$env:ProgramFiles\Microsoft SQL Server\140\Tools\PowerShell\Modules\SQLPS\") {
+     installutil "$env:ProgramFiles\Microsoft SQL Server\140\Tools\PowerShell\Modules\SQLPS\Microsoft.SqlServer.Management.PSProvider.dll";
+     installutil "$env:ProgramFiles\Microsoft SQL Server\140\Tools\PowerShell\Modules\SQLPS\Microsoft.SqlServer.Management.PSSnapins.dll";
+    }
+    elseif(Test-Path -Path "${env:ProgramFiles(x86)}\Microsoft SQL Server\140\Tools\PowerShell\Modules\SQLPS\") {
+     installutil "${env:ProgramFiles(x86)}\Microsoft SQL Server\140\Tools\PowerShell\Modules\SQLPS\Microsoft.SqlServer.Management.PSProvider.dll";
+     installutil "${env:ProgramFiles(x86)}\Microsoft SQL Server\140\Tools\PowerShell\Modules\SQLPS\Microsoft.SqlServer.Management.PSSnapins.dll"; 
+    }
+                    
+    Add-PSSnapin SQLServer*140;
+    Write-Host "Sql Server 2017 Powershell Snapin registered successfully.";
+   } 
+  }catch{}
+$sqlpsreg = "HKLM:\SOFTWARE\Microsoft\PowerShell\1\ShellIds\Microsoft.SqlServer.Management.PowerShell.sqlps140";
+    }
     else {
         throw "SQL Server Provider for Windows PowerShell is not installed."
     }
