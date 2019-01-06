@@ -57,7 +57,7 @@
     "Root.Cert.DnsName": "[concat('DO_NOT_TRUST_', parameter('RootCertFileName'))]",
     // The certificate store for the root certificate.
     "Root.Cert.Store": "cert:\\LocalMachine\\Root",
-    "Security.CertificateName": "identity.server",
+    "Security.CertificateName": "[parameter('SitecoreIdentityServiceCertificateName')]",
     "Security.CertificateStore": "cert:\\Localmachine\\My",
     "Security.CertificateThumbprint": "[GetCertificateThumbprint(variable('Security.CertificateName'), variable('Security.CertificateStore'))]",
     "Security.CertificatePath": "[joinpath(variable('Security.CertificateStore'), variable('Security.CertificateThumbprint'))]"
