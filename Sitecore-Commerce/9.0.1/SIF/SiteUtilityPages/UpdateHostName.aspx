@@ -24,7 +24,7 @@
 		Sitecore.Data.Database master = Sitecore.Configuration.Factory.GetDatabase("master");
 		if (!string.IsNullOrEmpty(hostname) && master != null)
 		{
-			var siteDefinitionItem = master.GetItem(new Sitecore.Data.ID("{EBD47A7E-683F-4F0F-850F-053AA623B021}"));
+			var siteDefinitionItem = master.GetItem("/sitecore/content/Sitecore/Storefront/Settings/Site Grouping/Storefront");
 			if (siteDefinitionItem != null)
 			{
 				using (new SecurityDisabler())

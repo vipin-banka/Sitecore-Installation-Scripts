@@ -1,0 +1,1 @@
+New-SelfSignedCertificate -certstorelocation cert:\localmachine\my -dnsname "MySXC901-1-ce-cert"

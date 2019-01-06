@@ -453,15 +453,6 @@
         "WebConfig": "[variable('WebConfig')]"
       }
     },
-    "UpdateSitecoreItems": {
-      "Type": "InstallSitecoreConfiguration",
-      "Params": {
-		"Path": ".\\Configuration\\SitecoreUtilities\\UpdateSitecoreItems.json",
-        "Hostname": "[parameter('SiteHostHeaderName')]",
-		"SitecoreBizAppPort": "[parameter('SitecoreBizFxServicePort')]",
-        "BaseUrl": "[variable('UtilitiesBaseUrl')]"
-      }
-    },
     "ImportRootCertificate": {
       "Type": "ImportCertificate",
       "Params": {
@@ -518,6 +509,15 @@
         "SitecoreUsername": "[parameter('SitecoreUsername')]",
         "SitecoreUserPassword": "[parameter('SitecoreUserPassword')]",
         "ProjectConfigIncludeDir": "[variable('ProjectConfigIncludeDir')]"
+      }
+    },
+    "UpdateSitecoreItems": {
+      "Type": "InstallSitecoreConfiguration",
+      "Params": {
+		"Path": ".\\Configuration\\SitecoreUtilities\\UpdateSitecoreItems.json",
+        "Hostname": "[parameter('SiteHostHeaderName')]",
+		"SitecoreBizAppPort": "[parameter('SitecoreBizFxServicePort')]",
+        "BaseUrl": "[variable('UtilitiesBaseUrl')]"
       }
     },
     "PublishCommerce": {
