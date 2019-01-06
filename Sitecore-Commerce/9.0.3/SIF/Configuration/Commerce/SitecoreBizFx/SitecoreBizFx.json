@@ -27,10 +27,25 @@
 		"CommerceAuthoringServicesPort": {
 			"Type": "string",
 			"Description": "Commerce Authoring Services port"
+		},
+		"SitecoreBizFxServerName": {
+			"Type": "string",
+			"Description": "Sitecore Biz Fx name",
+			"DefaultValue": "SitecoreBizFx"
+		},
+		"SitecoreBizFxServicePort": {
+			"Type": "string",
+			"Description": "Sitecore Biz Fx port",
+			"DefaultValue": "4200"
+		},
+		"SitecoreIdentityServicePort": {
+		  "Type": "string",
+		  "Description": "Sitecore Identity Service port",
+		  "DefaultValue": "5050"
 		}
 	},
 	"Variables": {
-		"SitecoreBizFxPhysicalPath": "[concat(environment('SystemDrive'), '\\inetpub\\wwwroot\\SitecoreBizFx')]",
+		"SitecoreBizFxPhysicalPath": "[concat(environment('SystemDrive'), concat('\\inetpub\\wwwroot\\', parameter('SitecoreBizFxServerName')))]",
 		// The name dns name of the root certificate.
 		"Root.Cert.DnsName": "[concat('DO_NOT_TRUST_', parameter('RootCertFileName'))]",
 		// The certificate store for the root certificate.
@@ -45,7 +60,7 @@
 		"StopSite": {
 			"Type": "ManageWebsite",
 			"Params": {
-				"Name": "SitecoreBizFx",
+				"Name": "[parameter('SitecoreBizFxServerName')]",
 				"Action": "Stop",
 				"ErrorAction": "SilentlyContinue"
 			}
@@ -53,14 +68,14 @@
 		"RemoveSite": {
 			"Type": "ManageCommerceService",
 			"Params": {
-				"Name": "SitecoreBizFx",
+				"Name": "[parameter('SitecoreBizFxServerName')]",
 				"Action": "Remove-Website"
 			}
 		},
 		"StopAppPool": {
 			"Type": "ManageAppPool",
 			"Params": {
-				"Name": "SitecoreBizFx",
+				"Name": "[parameter('SitecoreBizFxServerName')]",
 				"Action": "Stop",
 				"ErrorAction": "SilentlyContinue"
 			}
@@ -68,7 +83,7 @@
 		"RemoveAppPool": {
 			"Type": "ManageCommerceService",
 			"Params": {
-				"Name": "SitecoreBizFx",
+				"Name": "[parameter('SitecoreBizFxServerName')]",
 				"Action": "Remove-WebAppPool"
 			}
 		},
@@ -87,7 +102,9 @@
         "ServicesContentPath": "[parameter('SitecoreBizFxServicesContentPath')]",
         "CommerceAuthoringServicesPort": "[parameter('CommerceAuthoringServicesPort')]",
         "PhysicalPath": "[variable('SitecoreBizFxPhysicalPath')]",
-        "UserAccount": "[parameter('UserAccount')]"
+        "UserAccount": "[parameter('UserAccount')]",
+		"SitecoreIdentityServicePort": "[parameter('SitecoreIdentityServicePort')]",
+		"SitecoreBizFxServicePort": "[parameter('SitecoreBizFxServicePort')]"
       }
 		},
 		"CreatePaths": {
@@ -101,7 +118,7 @@
 		"CreateWebAppPool": {
 			"Type": "ManageCommerceService",
 			"Params": {
-				"Name": "SitecoreBizFx",
+				"Name": "[parameter('SitecoreBizFxServerName')]",
 				"Action": "Create-WebAppPool",
 				"UserAccount": "[parameter('UserAccount')]"
 			}
@@ -109,11 +126,11 @@
 		"CreateWebsite": {
 			"Type": "ManageCommerceService",
 			"Params": {
-				"Name": "SitecoreBizFx",
+				"Name": "[parameter('SitecoreBizFxServerName')]",
 				"Action": "Create-Website",
-				"AppPoolName": "SitecoreBizFx",
+				"AppPoolName": "[parameter('SitecoreBizFxServerName')]",
 				"PhysicalPath": "[variable('SitecoreBizFxPhysicalPath')]",
-				"Port": "4200",
+				"Port": "[parameter('SitecoreBizFxServicePort')]",
 				"Signer": "[GetCertificate(variable('Root.Cert.DnsName'), variable('Root.Cert.Store'))]"
 			}
 		}
