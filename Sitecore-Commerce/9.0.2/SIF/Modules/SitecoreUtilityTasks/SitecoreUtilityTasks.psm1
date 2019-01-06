@@ -113,17 +113,17 @@ Function Invoke-RebuildIndexesTask {
 	
 	Write-Host "Rebuilding index 'sitecore_core_index' ..." -ForegroundColor Green ; 
 	$urlRebuildIndex = $BaseUrl + "/RebuildIndex.aspx?index=sitecore_core_index"
-	Invoke-RestMethod $urlRebuildIndex -TimeoutSec 86400
+	Invoke-RestMethod $urlRebuildIndex -TimeoutSec 600
 	Write-Host "Rebuilding index 'sitecore_core_index' completed." -ForegroundColor Green ;    
 
 	Write-Host "Rebuilding index 'sitecore_master_index' ..." -ForegroundColor Green ; 
 	$urlRebuildIndex = $BaseUrl + "/RebuildIndex.aspx?index=sitecore_master_index"
-	Invoke-RestMethod $urlRebuildIndex -TimeoutSec 86400
+	Invoke-RestMethod $urlRebuildIndex -TimeoutSec 720
 	Write-Host "Rebuilding index 'sitecore_master_index' completed." -ForegroundColor Green ; 	
 
 	Write-Host "Rebuilding index 'sitecore_web_index' ..." -ForegroundColor Green ; 
 	$urlRebuildIndex = $BaseUrl + "/RebuildIndex.aspx?index=sitecore_web_index"
-	Invoke-RestMethod $urlRebuildIndex -TimeoutSec 86400
+	Invoke-RestMethod $urlRebuildIndex -TimeoutSec 720
 	Write-Host "Rebuilding index 'sitecore_web_index' completed." -ForegroundColor Green ; 
 }
 

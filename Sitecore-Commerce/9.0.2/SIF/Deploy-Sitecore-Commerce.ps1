@@ -1,6 +1,6 @@
 #Requires -Version 3
 param(
-    [string]$SiteName = "sxc903",	
+    [string]$SiteName = "ConnectSite",	
 	[string]$SiteHostHeaderName = "sxa.storefront.com",	
 	[string]$SqlDbPrefix = $SiteName,
 	[string]$CommerceSearchProvider = "SOLR"
@@ -17,24 +17,24 @@ if ($env:PSModulePath -notlike "*$modulesPath*")
 
 $params = @{
         Path = Resolve-Path '.\Configuration\Commerce\Master_SingleServer.json'	
-		SiteName = "$($SiteName).local"
+		SiteName = $SiteName
 		SiteHostHeaderName = $SiteHostHeaderName 
-		InstallDir = "$($Env:SYSTEMDRIVE)\inetpub\wwwroot\$($SiteName).local"
-		XConnectInstallDir = "$($Env:SYSTEMDRIVE)\inetpub\wwwroot\$($SiteName).xconnect"
-		CertificateName = "$($SiteName).local"
-		CommerceServicesDbServer = "VIPINB-LAPTOP\SQLDEV2016"    #OR "SQLServerName\SQLInstanceName"
+		InstallDir = "$($Env:SYSTEMDRIVE)\inetpub\wwwroot\$SiteName"
+		XConnectInstallDir = "$($Env:SYSTEMDRIVE)\inetpub\wwwroot\$($SiteName)_xconnect"
+		CertificateName = $SiteName
+		CommerceServicesDbServer = $($Env:COMPUTERNAME)    #OR "SQLServerName\SQLInstanceName"
 		CommerceServicesDbName = "SitecoreCommerce9_SharedEnvironments"
 		CommerceServicesGlobalDbName = "SitecoreCommerce9_Global"		
-        SitecoreDbServer = "VIPINB-LAPTOP\SQLDEV2016"            #OR "SQLServerName\SQLInstanceName"
+        SitecoreDbServer = $($Env:COMPUTERNAME)            #OR "SQLServerName\SQLInstanceName"
 		SitecoreCoreDbName = "$($SqlDbPrefix)_Core"
 		SitecoreUsername = "sitecore\admin"
 		SitecoreUserPassword = "b"
 		CommerceSearchProvider = $CommerceSearchProvider
-		SolrUrl = "https://solr:9393/solr"
-		SolrRoot = "C:\\solr\\SC902\\solr-6.6.2"
-		SolrService = "solrSC902"
+		SolrUrl = "https://localhost:8983/solr"
+		SolrRoot = "c:\\solr-6.6.2"
+		SolrService = "Solr-6.6.2"
 		SolrSchemas = ( Join-Path -Path $DEPLOYMENT_DIRECTORY -ChildPath "SolrSchemas" )
-		SearchIndexPrefix = "scxc902"
+		SearchIndexPrefix = ""
 		AzureSearchServiceName = ""
 		AzureSearchAdminKey = ""
 		AzureSearchQueryKey = ""
@@ -43,10 +43,10 @@ $params = @{
 		CommerceShopsServicesPort = "5005"
 		CommerceAuthoringServicesPort = "5000"
 		CommerceMinionsServicesPort = "5010"		
-		SitecoreCommerceEngineZipPath = Resolve-Path -Path "..\Sitecore.Commerce.Engine.2.*.zip"		
-		SitecoreBizFxServicesContentPath = Resolve-Path -Path "..\Sitecore.BizFX.1.2.19"		
+		SitecoreCommerceEngineZipPath = Resolve-Path -Path "..\Sitecore.Commerce.Engine.*.zip"		
+		SitecoreBizFxServicesContentPath = Resolve-Path -Path "..\Sitecore.BizFX.*"		
 		SitecoreIdentityServerZipPath = Resolve-Path -Path "..\Sitecore.IdentityServer.1.*.zip"
-		CommerceEngineCertificatePath = Resolve-Path -Path "..\scxc902-cert.cer"		
+		CommerceEngineCertificatePath = Resolve-Path -Path "..\storefront.engine.cer"		
         SiteUtilitiesSrc = ( Join-Path -Path $DEPLOYMENT_DIRECTORY -ChildPath "SiteUtilityPages" )	
         HabitatImagesModuleFullPath = Resolve-Path -Path "..\Sitecore.Commerce.Habitat.Images-*.zip"	
         AdvImagesModuleFullPath = Resolve-Path -Path "..\Adventure Works Images.zip"	
@@ -56,22 +56,22 @@ $params = @{
 		CommerceMAModuleFullPath = Resolve-Path -Path "..\Sitecore Commerce Marketing Automation Core *.zip"	
 		CommerceMAForAutomationEngineModuleFullPath = Resolve-Path -Path "..\Sitecore Commerce Marketing Automation for AutomationEngine *.zip"	
         CEConnectPackageFullPath = Resolve-Path -Path "..\Sitecore.Commerce.Engine.Connect*.update"
-        PowerShellExtensionsModuleFullPath = Resolve-Path -Path "..\assets\Sitecore PowerShell Extensions*.zip"
-        SXAModuleFullPath = Resolve-Path -Path "..\assets\Sitecore Experience Accelerator*.zip"
+        PowerShellExtensionsModuleFullPath = Resolve-Path -Path "..\Sitecore.PowerShell.Extensions.*\content\Sitecore PowerShell Extensions*.zip"
+        SXAModuleFullPath = Resolve-Path -Path "..\Sitecore.Experience.Accelerator.*\content\Sitecore Experience Accelerator*.zip"
         SXACommerceModuleFullPath = Resolve-Path -Path "..\Sitecore Commerce Experience Accelerator 1.*.zip"
 		SXAStorefrontModuleFullPath = Resolve-Path -Path "..\Sitecore Commerce Experience Accelerator Storefront 1.*.zip"
         SXAStorefrontThemeModuleFullPath = Resolve-Path -Path "..\Sitecore Commerce Experience Accelerator Storefront Themes*.zip"
 		SXAStorefrontCatalogModuleFullPath = Resolve-Path -Path "..\Sitecore Commerce Experience Accelerator Habitat Catalog*.zip"
-		MergeToolFullPath = Resolve-Path -Path "..\assets\Microsoft.Web.XmlTransform.dll"
+		MergeToolFullPath = Resolve-Path -Path "..\MSBuild.Microsoft.VisualStudio.Web.targets.14.0.0.3\tools\VSToolsPath\Web\Microsoft.Web.XmlTransform.dll"
 		UserAccount = @{
 			Domain = $Env:COMPUTERNAME
 			UserName = 'CSFndRuntimeUser'
-			Password = '12345'
+			Password = 'Pu8azaCr'
 		}
 		BraintreeAccount = @{
-			MerchantId = '4mw63ndb7bzbzhdb'
-			PublicKey = 'qb8z5xpk3g46wqxd'
-			PrivateKey = '30bd922798172888c706398465a1eec8'
+			MerchantId = ''
+			PublicKey = ''
+			PrivateKey = ''
 		}
 		SitecoreIdentityServerName = "SitecoreIdentityServer"		
     }
