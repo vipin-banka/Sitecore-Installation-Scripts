@@ -1,0 +1,24 @@
+{
+  "Parameters": {
+    "Hostname": { "Type": "string" },
+    "SitecoreBizAppPort": { "Type": "string" },
+    "BaseUrl": { "Type": "string" }
+  },
+  "Modules": [ "SitecoreUtilityTasks" ],
+  "Tasks": {
+    "UpdateHostname": {
+      "Type": "UpdateHostname",
+      "Params": {
+        "Hostname": "[parameter('Hostname')]",
+        "BaseUrl": "[parameter('BaseUrl')]"
+      }
+    },
+    "UpdateBusinessToolsAppUrl": {
+      "Type": "UpdateBusinessToolsAppUrl",
+      "Params": {
+        "SitecoreBizAppPort": "[parameter('SitecoreBizAppPort')]",
+        "BaseUrl": "[parameter('BaseUrl')]"
+      }
+    }
+  }
+}

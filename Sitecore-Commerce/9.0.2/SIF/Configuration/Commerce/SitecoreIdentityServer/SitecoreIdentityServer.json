@@ -35,6 +35,20 @@
     "SitecoreIdentityServerName": {
       "Type": "string",
       "Description": "Sitecore Identity Server name"
+    },
+    "SitecoreIdentityServicePort": {
+      "Type": "string",
+      "Description": "Sitecore Identity Service port",
+	  "DefaultValue": "5050"
+    },
+    "SitecoreIdentityServiceCertificateName": {
+      "Type": "string",
+      "Description": "Sitecore Identity Service CertificateName",
+	  "DefaultValue": "identity.server"
+    },
+    "SitecoreBizFxServicePort": {
+      "Type": "string",
+      "Description": "Sitecore BizFX Service Port"
     }
   },
   "Variables": {
@@ -43,7 +57,7 @@
     "Root.Cert.DnsName": "[concat('DO_NOT_TRUST_', parameter('RootCertFileName'))]",
     // The certificate store for the root certificate.
     "Root.Cert.Store": "cert:\\LocalMachine\\Root",
-    "Security.CertificateName": "identity.server",
+    "Security.CertificateName": "[parameter('SitecoreIdentityServiceCertificateName')]",
     "Security.CertificateStore": "cert:\\Localmachine\\My",
     "Security.CertificateThumbprint": "[GetCertificateThumbprint(variable('Security.CertificateName'), variable('Security.CertificateStore'))]",
     "Security.CertificatePath": "[joinpath(variable('Security.CertificateStore'), variable('Security.CertificateThumbprint'))]"
@@ -100,7 +114,8 @@
         "PhysicalPath": "[variable('SitecoreIdentityServerPhysicalPath')]",
         "SitecoreDbServer": "[parameter('SitecoreDbServer')]",
         "SitecoreCoreDbName": "[parameter('SitecoreCoreDbName')]",
-        "UserAccount": "[parameter('UserAccount')]"
+        "UserAccount": "[parameter('UserAccount')]",
+		"SitecoreBizFxServicePort": "[parameter('SitecoreBizFxServicePort')]"
       }
     },
     "CreatePaths": {
@@ -126,7 +141,7 @@
         "Action": "Create-Website",
         "AppPoolName": "[parameter('SitecoreIdentityServerName')]",
         "PhysicalPath": "[variable('SitecoreIdentityServerPhysicalPath')]",
-        "Port": "5050",
+        "Port": "[parameter('SitecoreIdentityServicePort')]",
         "Signer": "[GetCertificate(variable('Root.Cert.DnsName'), variable('Root.Cert.Store'))]"
       }
     },

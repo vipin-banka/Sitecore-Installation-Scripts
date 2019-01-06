@@ -29,13 +29,22 @@
     "CommerceMinionsServicesPort": { "Type": "string", "Description": "CommerceMinions Services Port" },
     "SitecoreCommerceEngineZipPath": { "Type": "string", "Description": "Sitecore Commerce Engine zip Path" },
     "UserAccount": { "Type": "psobject", "DefaultValue": {"UserName": "", "Domain": "$env:COMPUTERNAME", "Password": ""} },
-	  "BraintreeAccount": { "Type": "psobject", "DefaultValue": {"MerchantId": "", "PublicKey": "", "PrivateKey": ""}, "Description": "Braintree account for Payment plugin." }
+	"BraintreeAccount": { "Type": "psobject", "DefaultValue": {"MerchantId": "", "PublicKey": "", "PrivateKey": ""}, "Description": "Braintree account for Payment plugin." },
+	"CommerceServicesPrefix": { "Type": "string", "DefaultValue": "" },
+    "SitecoreIdentityServicePort": {
+      "Type": "string",
+      "Description": "Sitecore Identity Service port"
+    },
+	"SitecoreBizFxServicePort": {
+		"Type": "string",
+		"Description": "Sitecore Biz Fx port"
+	}
   },
   "Variables": {
-    "CommerceOps": "[concat('CommerceOps_', parameter('CommerceServicesPostfix'))]",
-    "CommerceShops": "[concat('CommerceShops_', parameter('CommerceServicesPostfix'))]",
-    "CommerceAuthoring": "[concat('CommerceAuthoring_', parameter('CommerceServicesPostfix'))]",
-    "CommerceMinions": "[concat('CommerceMinions_', parameter('CommerceServicesPostfix'))]",
+    "CommerceOps": "[concat(parameter('CommerceServicesPrefix'), concat('CommerceOps_', parameter('CommerceServicesPostfix')))]",
+    "CommerceShops": "[concat(parameter('CommerceServicesPrefix'), concat('CommerceShops_', parameter('CommerceServicesPostfix')))]",
+    "CommerceAuthoring": "[concat(parameter('CommerceServicesPrefix'), concat('CommerceAuthoring_', parameter('CommerceServicesPostfix')))]",
+    "CommerceMinions": "[concat(parameter('CommerceServicesPrefix'), concat('CommerceMinions_', parameter('CommerceServicesPostfix')))]",
     "CommerceOpsPhysicalPath": "[concat(environment('SystemDrive'), concat('\\inetpub\\wwwroot\\', variable('CommerceOps')))]",
     "CommerceShopsPhysicalPath": "[concat(environment('SystemDrive'), concat('\\inetpub\\wwwroot\\', variable('CommerceShops')))]",
     "CommerceAuthoringPhysicalPath": "[concat(environment('SystemDrive'), concat('\\inetpub\\wwwroot\\', variable('CommerceAuthoring')))]",
@@ -246,7 +255,9 @@
         "BraintreeAccount": "[parameter('BraintreeAccount')]",
         "AzureSearchServiceName": "[parameter('AzureSearchServiceName')]",
         "AzureSearchAdminKey": "[parameter('AzureSearchAdminKey')]",
-        "AzureSearchQueryKey": "[parameter('AzureSearchQueryKey')]"
+        "AzureSearchQueryKey": "[parameter('AzureSearchQueryKey')]",
+		"SitecoreIdentityServicePort": "[parameter('SitecoreIdentityServicePort')]",
+		"SitecoreBizFxServicePort": "[parameter('SitecoreBizFxServicePort')]"
       }
     },
     "CreatePathsOps": {
@@ -282,8 +293,21 @@
         "Name": "[variable('CommerceShops')]",
         "ServicesContentPath": "[parameter('SitecoreCommerceEngineZipPath')]",
         "PhysicalPath": "[variable('CommerceShopsPhysicalPath')]",
+		"CommerceServicesDbServer": "[parameter('CommerceServicesDbServer')]",
+        "CommerceServicesDbName": "[parameter('CommerceServicesDbName')]",
+        "CommerceServicesGlobalDbName": "[parameter('CommerceServicesGlobalDbName')]",
+        "SiteHostHeaderName": "[parameter('SiteHostHeaderName')]",
+        "CommerceAuthoringServicesPort": "[parameter('CommerceAuthoringServicesPort')]",
+        "CommerceSearchProvider": "[parameter('CommerceSearchProvider')]",
+        "SolrUrl": "[parameter('SolrUrl')]",
+        "SearchIndexPrefix": "[parameter('SearchIndexPrefix')]",
         "UserAccount": "[parameter('UserAccount')]",
-        "CommerceSearchProvider": "[parameter('CommerceSearchProvider')]"
+        "BraintreeAccount": "[parameter('BraintreeAccount')]",
+        "AzureSearchServiceName": "[parameter('AzureSearchServiceName')]",
+        "AzureSearchAdminKey": "[parameter('AzureSearchAdminKey')]",
+        "AzureSearchQueryKey": "[parameter('AzureSearchQueryKey')]",
+		"SitecoreIdentityServicePort": "[parameter('SitecoreIdentityServicePort')]",
+		"SitecoreBizFxServicePort": "[parameter('SitecoreBizFxServicePort')]"
       }
     },
     "CreatePathsShops": {
@@ -312,15 +336,28 @@
         "Port": "[parameter('CommerceShopsServicesPort')]",
         "Signer": "[GetCertificate(variable('Root.Cert.DnsName'), variable('Root.Cert.Store'))]"
       }
-    },    
+    },
     "DeployCommerceContentAuthoring": {
       "Type": "DeployCommerceContent",
       "Params": {
         "Name": "[variable('CommerceAuthoring')]",
         "ServicesContentPath": "[parameter('SitecoreCommerceEngineZipPath')]",
         "PhysicalPath": "[variable('CommerceAuthoringPhysicalPath')]",
+		"CommerceServicesDbServer": "[parameter('CommerceServicesDbServer')]",
+        "CommerceServicesDbName": "[parameter('CommerceServicesDbName')]",
+        "CommerceServicesGlobalDbName": "[parameter('CommerceServicesGlobalDbName')]",
+        "SiteHostHeaderName": "[parameter('SiteHostHeaderName')]",
+        "CommerceAuthoringServicesPort": "[parameter('CommerceAuthoringServicesPort')]",
+        "CommerceSearchProvider": "[parameter('CommerceSearchProvider')]",
+        "SolrUrl": "[parameter('SolrUrl')]",
+        "SearchIndexPrefix": "[parameter('SearchIndexPrefix')]",
         "UserAccount": "[parameter('UserAccount')]",
-        "CommerceSearchProvider": "[parameter('CommerceSearchProvider')]"
+        "BraintreeAccount": "[parameter('BraintreeAccount')]",
+        "AzureSearchServiceName": "[parameter('AzureSearchServiceName')]",
+        "AzureSearchAdminKey": "[parameter('AzureSearchAdminKey')]",
+        "AzureSearchQueryKey": "[parameter('AzureSearchQueryKey')]",
+		"SitecoreIdentityServicePort": "[parameter('SitecoreIdentityServicePort')]",
+		"SitecoreBizFxServicePort": "[parameter('SitecoreBizFxServicePort')]"
       }
     },
     "CreatePathsAuthoring": {
@@ -349,15 +386,28 @@
         "Port": "[parameter('CommerceAuthoringServicesPort')]",
         "Signer": "[GetCertificate(variable('Root.Cert.DnsName'), variable('Root.Cert.Store'))]"
       }
-    },    
+    },
     "DeployCommerceContentMinions": {
       "Type": "DeployCommerceContent",
       "Params": {
         "Name": "[variable('CommerceMinions')]",
         "ServicesContentPath": "[parameter('SitecoreCommerceEngineZipPath')]",
         "PhysicalPath": "[variable('CommerceMinionsPhysicalPath')]",
+		"CommerceServicesDbServer": "[parameter('CommerceServicesDbServer')]",
+        "CommerceServicesDbName": "[parameter('CommerceServicesDbName')]",
+        "CommerceServicesGlobalDbName": "[parameter('CommerceServicesGlobalDbName')]",
+        "SiteHostHeaderName": "[parameter('SiteHostHeaderName')]",
+        "CommerceAuthoringServicesPort": "[parameter('CommerceAuthoringServicesPort')]",
+        "CommerceSearchProvider": "[parameter('CommerceSearchProvider')]",
+        "SolrUrl": "[parameter('SolrUrl')]",
+        "SearchIndexPrefix": "[parameter('SearchIndexPrefix')]",
         "UserAccount": "[parameter('UserAccount')]",
-        "CommerceSearchProvider": "[parameter('CommerceSearchProvider')]"
+        "BraintreeAccount": "[parameter('BraintreeAccount')]",
+        "AzureSearchServiceName": "[parameter('AzureSearchServiceName')]",
+        "AzureSearchAdminKey": "[parameter('AzureSearchAdminKey')]",
+        "AzureSearchQueryKey": "[parameter('AzureSearchQueryKey')]",
+		"SitecoreIdentityServicePort": "[parameter('SitecoreIdentityServicePort')]",
+		"SitecoreBizFxServicePort": "[parameter('SitecoreBizFxServicePort')]"
       }
     },
     "CreatePathsMinions": {

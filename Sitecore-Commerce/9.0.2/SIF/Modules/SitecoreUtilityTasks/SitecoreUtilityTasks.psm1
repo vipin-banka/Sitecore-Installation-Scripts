@@ -113,17 +113,17 @@ Function Invoke-RebuildIndexesTask {
 	
 	Write-Host "Rebuilding index 'sitecore_core_index' ..." -ForegroundColor Green ; 
 	$urlRebuildIndex = $BaseUrl + "/RebuildIndex.aspx?index=sitecore_core_index"
-	Invoke-RestMethod $urlRebuildIndex -TimeoutSec 600
+	Invoke-RestMethod $urlRebuildIndex -TimeoutSec 86400
 	Write-Host "Rebuilding index 'sitecore_core_index' completed." -ForegroundColor Green ;    
 
 	Write-Host "Rebuilding index 'sitecore_master_index' ..." -ForegroundColor Green ; 
 	$urlRebuildIndex = $BaseUrl + "/RebuildIndex.aspx?index=sitecore_master_index"
-	Invoke-RestMethod $urlRebuildIndex -TimeoutSec 720
+	Invoke-RestMethod $urlRebuildIndex -TimeoutSec 86400
 	Write-Host "Rebuilding index 'sitecore_master_index' completed." -ForegroundColor Green ; 	
 
 	Write-Host "Rebuilding index 'sitecore_web_index' ..." -ForegroundColor Green ; 
 	$urlRebuildIndex = $BaseUrl + "/RebuildIndex.aspx?index=sitecore_web_index"
-	Invoke-RestMethod $urlRebuildIndex -TimeoutSec 720
+	Invoke-RestMethod $urlRebuildIndex -TimeoutSec 86400
 	Write-Host "Rebuilding index 'sitecore_web_index' completed." -ForegroundColor Green ; 
 }
 
@@ -203,6 +203,36 @@ Function Invoke-ExpandArchive {
     Expand-Archive $SourceZip -DestinationPath $DestinationPath -Force
 }
 
+Function Invoke-UpdateHostnameTask {
+    [CmdletBinding()]
+    param(
+        [Parameter(Mandatory=$true)]
+        [string]$Hostname,
+        [Parameter(Mandatory=$true)]
+        [string]$BaseUrl
+    )
+
+    Write-Host "Updating hostname: " $Hostname -ForegroundColor Green ; 
+    $urlUpdateHostname = $BaseUrl + "/UpdateHostName.aspx?hostname=" + $Hostname
+    Write-Host $urlUpdateHostname
+    Invoke-RestMethod $urlUpdateHostname -TimeoutSec 720
+}
+
+Function Invoke-UpdateBusinessToolsAppUrlTask {
+    [CmdletBinding()]
+    param(
+        [Parameter(Mandatory=$true)]
+        [string]$SitecoreBizAppPort,
+        [Parameter(Mandatory=$true)]
+        [string]$BaseUrl
+    )
+
+    Write-Host "Updating business app port in Sitecore core database to: " $SitecoreBizAppPort -ForegroundColor Green ; 
+    $urlUpdateBusinessToolsAppUrl = $BaseUrl + "/UpdateBusinessToolsAppUrl.aspx?port=" + $SitecoreBizAppPort
+    Write-Host $urlUpdateBusinessToolsAppUrl
+    Invoke-RestMethod $urlUpdateBusinessToolsAppUrl -TimeoutSec 720
+}
+
 Register-SitecoreInstallExtension -Command Invoke-InstallModuleTask -As InstallModule -Type Task -Force
 
 Register-SitecoreInstallExtension -Command Invoke-InstallPackageTask -As InstallPackage -Type Task -Force
@@ -220,6 +250,10 @@ Register-SitecoreInstallExtension -Command Invoke-DisableConfigFilesTask -As Dis
 Register-SitecoreInstallExtension -Command Invoke-CreateDefaultStorefrontTask -As CreateDefaultStorefront -Type Task -Force
 
 Register-SitecoreInstallExtension -Command Invoke-ExpandArchive -As ExpandArchive -Type Task -Force
+
+Register-SitecoreInstallExtension -Command Invoke-UpdateHostnameTask -As UpdateHostname -Type Task -Force
+
+Register-SitecoreInstallExtension -Command Invoke-UpdateBusinessToolsAppUrlTask -As UpdateBusinessToolsAppUrl -Type Task -Force
 # SIG # Begin signature block
 # MIIXwQYJKoZIhvcNAQcCoIIXsjCCF64CAQExCzAJBgUrDgMCGgUAMGkGCisGAQQB
 # gjcCAQSgWzBZMDQGCisGAQQBgjcCAR4wJgIDAQAABBAfzDtgWUsITrck0sYpfvNR

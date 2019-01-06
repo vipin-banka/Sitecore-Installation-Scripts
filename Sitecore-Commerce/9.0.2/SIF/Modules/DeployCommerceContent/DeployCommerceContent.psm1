@@ -37,12 +37,16 @@ Function Invoke-DeployCommerceContentTask {
 		[Parameter(Mandatory=$false)]
         [string]$AzureSearchAdminKey,		
 		[Parameter(Mandatory=$false)]
-        [string]$AzureSearchQueryKey		
+        [string]$AzureSearchQueryKey,
+		[Parameter(Mandatory=$false)]
+        [string]$SitecoreIdentityServicePort,
+		[Parameter(Mandatory=$false)]
+        [string]$SitecoreBizFxServicePort
     )
 
     try {       
         switch ($Name) {
-            {($_ -match "CommerceOps")} {                    
+            {($_ -match "CommerceOps") -or ($_ -match "CommerceShops") -or ($_ -match "CommerceAuthoring") -or ($_ -match "CommerceMinions")} {                    
 				Write-Host
 				$global:opsServicePath = $PhysicalPath	
 				$commerceServicesZip =  Get-Item $ServicesContentPath | select-object -first 1
@@ -63,11 +67,28 @@ Function Invoke-DeployCommerceContentTask {
 				# Set the proper environment name                
 				$pathToJson  = $(Join-Path -Path $PhysicalPath -ChildPath "wwwroot\config.json")
 				$originalJson = Get-Content $pathToJson -Raw  | ConvertFrom-Json
-				$originalJson.AppSettings.EnvironmentName = "AdventureWorksOpsApi"
+				
+				$environment = "AdventureWorksOpsApi"
+				if ($Name -match "CommerceAuthoring"){
+					$environment = "HabitatAuthoring"
+				}elseif ($Name -match "CommerceMinions"){
+					$environment = "HabitatMinions"
+				}elseif ($Name -match "CommerceShops"){
+					$environment = "HabitatShops"
+				}
+				
+				$originalJson.AppSettings.EnvironmentName = $environment
+				$allowedOrigins = @("https://localhost:4200", "https://$SiteHostHeaderName")
+				$allowedOrigins[0] = "https://localhost:$SitecoreBizFxServicePort"
                 if ($SiteHostHeaderName -ne "sxa.storefront.com") {
-                    $allowedOrigins = @("https://localhost:4200", "https://$SiteHostHeaderName")
+                    $allowedOrigins[1] = "https://$SiteHostHeaderName"
                     $originalJson.AppSettings.AllowedOrigins = $allowedOrigins 
                 }
+				
+				$sitecoreIdentityServerUrl = $originalJson.AppSettings.SitecoreIdentityServerUrl
+				$sitecoreIdentityServerUrl = $sitecoreIdentityServerUrl -replace "5050", $SitecoreIdentityServicePort
+				$originalJson.AppSettings.SitecoreIdentityServerUrl = $sitecoreIdentityServerUrl
+				
 				$originalJson | ConvertTo-Json -Depth 100 -Compress | set-content $pathToJson
 
                 #Replace database name in Global.json
@@ -142,6 +163,14 @@ Function Invoke-DeployCommerceContentTask {
 							$p.PrivateKey = $BraintreeAccount.PrivateKey;
 							$Writejson = $true;
 							Write-Host "Inserting Braintree account"
+						} elseif ($p.'$type' -eq 'Sitecore.Commerce.Plugin.BusinessUsers.EnvironmentBusinessToolsPolicy,Sitecore.Commerce.Plugin.BusinessUsers') {
+							if ($CommerceAuthoringServicesPort -ne "5000") {
+								$serviceurl = $p.ServiceUrl
+								$serviceurl = $serviceurl -replace "5000", $CommerceAuthoringServicesPort
+								$p.ServiceUrl = $serviceurl;							
+								$Writejson = $true;
+								Write-Host "Updating Service Url"
+							}
 						} elseif ($p.'$type' -eq 'Sitecore.Commerce.Core.PolicySetPolicy, Sitecore.Commerce.Core' -And $p.'PolicySetId' -eq 'Entity-PolicySet-SolrSearchPolicySet') {
 							if ($CommerceSearchProvider -eq 'AZURE') {
 								$p.'PolicySetId' = 'Entity-PolicySet-AzureSearchPolicySet';
@@ -203,34 +232,6 @@ Function Invoke-DeployCommerceContentTask {
 					}
 				}
             }
-            {($_ -match "CommerceShops") -or ($_ -match "CommerceAuthoring") -or ($_ -match "CommerceMinions")}  {
-                # Copy the the CommerceServices files to the $Name Services
-				Write-Host "Copying Commerce Services from $global:opsServicePath to $PhysicalPath" -ForegroundColor Yellow ;
-				Copy-Item -Path $global:opsServicePath -Destination $PhysicalPath -Force -Recurse
-				Write-Host "Commerce Shops Services extraction completed" -ForegroundColor Green ;
-
-				$commerceServicesLogDir = $(Join-Path -Path $PhysicalPath -ChildPath "wwwroot\logs")
-				if(-not (Test-Path -Path $commerceServicesLogDir)) {                      
-				    Write-Host "Creating Commerce Services logs directory at: $commerceServicesLogDir"
-				    New-Item -Path $PhysicalPath -Name "wwwroot\logs" -ItemType "directory"
-                }
-				
-				Write-Host "Granting full access to '$($UserAccount.Domain)\$($UserAccount.UserName)' to logs directory: $commerceServicesLogDir"
-				GrantFullReadWriteAccessToFile -Path $commerceServicesLogDir  -UserName "$($UserAccount.Domain)\$($UserAccount.UserName)"
-
-				# Set the proper environment name
-				$pathToJson  = $(Join-Path -Path $PhysicalPath -ChildPath "wwwroot\config.json")
-				$originalJson = Get-Content $pathToJson -Raw | ConvertFrom-Json
-				
-				$environment = "HabitatShops"
-				if ($Name -match "CommerceAuthoring"){
-					$environment = "HabitatAuthoring"
-				}elseif ($Name -match "CommerceMinions"){
-					$environment = "HabitatMinions"
-				}		
-				$originalJson.AppSettings.EnvironmentName = $environment
-				$originalJson | ConvertTo-Json -Depth 100 -Compress | set-content $pathToJson
-			}               
             'SitecoreIdentityServer' {
 				Write-Host
 				# Extracting Sitecore.IdentityServer zip file
@@ -255,7 +256,9 @@ Function Invoke-DeployCommerceContentTask {
 				$connectionString = $connectionString -replace "localhost", $SitecoreDbServer
 				$originalJson.AppSettings.SitecoreMembershipOptions.ConnectionString = $connectionString
 
-				$originalJson | ConvertTo-Json -Depth 100 -Compress | set-content $appSettingsPath						
+				$originalJson | ConvertTo-Json -Depth 100 -Compress | set-content $appSettingsPath
+			
+				(Get-Content $appSettingsPath).replace('4200', $SitecoreBizFxServicePort) | Set-Content $appSettingsPath			
 			}
 			'SitecoreBizFx' {
 				Write-Host
@@ -266,7 +269,9 @@ Function Invoke-DeployCommerceContentTask {
                 if ($CommerceAuthoringServicesPort -ne "5000") {
                     $pathToJson  = $(Join-Path -Path $PhysicalPath -ChildPath "assets\config.json")
 				    $originalJson = Get-Content $pathToJson -Raw  | ConvertFrom-Json
-				    $originalJson.EngineUri = $originalJson.EngineUri.replace("5000", $CommerceAuthoringServicesPort)                    
+				    $originalJson.EngineUri = $originalJson.EngineUri.replace("5000", $CommerceAuthoringServicesPort)
+					$originalJson.IdentityServerUri = $originalJson.IdentityServerUri.replace("5050", $SitecoreIdentityServicePort)
+					$originalJson.BizFxUri = $originalJson.BizFxUri.replace("4200", $SitecoreBizFxServicePort)                    
 				    $originalJson | ConvertTo-Json -Depth 100 -Compress | set-content $pathToJson
                 }			
 			}

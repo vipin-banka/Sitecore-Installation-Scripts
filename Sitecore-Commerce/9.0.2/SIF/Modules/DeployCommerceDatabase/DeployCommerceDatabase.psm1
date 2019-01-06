@@ -176,6 +176,34 @@ function Add-SQLPSSnapin
 
         $sqlpsreg = "HKLM:\SOFTWARE\Microsoft\PowerShell\1\ShellIds\Microsoft.SqlServer.Management.PowerShell.sqlps130";
     }
+	elseif(Test-Path -Path "HKLM:\SOFTWARE\Microsoft\PowerShell\1\ShellIds\Microsoft.SqlServer.Management.PowerShell.sqlps140") { 
+        try{
+   if((Get-PSSnapin -Registered |? { $_.Name -ieq "SqlServerCmdletSnapin140"}).Count -eq 0) {
+Write-Host "Registering the SQL Server 2017 Powershell Snapin";
+if(Test-Path -Path $env:windir\Microsoft.NET\Framework\v4.0.30319\InstallUtil.exe) {
+     Set-Alias installutil $env:windir\Microsoft.NET\Framework\v4.0.30319\InstallUtil.exe;
+    } 
+    elseif (Test-Path -Path $env:windir\Microsoft.NET\Framework\v2.0.50727\InstallUtil.exe) {
+     Set-Alias installutil $env:windir\Microsoft.NET\Framework\v2.0.50727\InstallUtil.exe;
+    }
+    else {
+     throw "InstallUtil wasn't found!";
+    }
+if(Test-Path -Path "$env:ProgramFiles\Microsoft SQL Server\140\Tools\PowerShell\Modules\SQLPS\") {
+     installutil "$env:ProgramFiles\Microsoft SQL Server\140\Tools\PowerShell\Modules\SQLPS\Microsoft.SqlServer.Management.PSProvider.dll";
+     installutil "$env:ProgramFiles\Microsoft SQL Server\140\Tools\PowerShell\Modules\SQLPS\Microsoft.SqlServer.Management.PSSnapins.dll";
+    }
+    elseif(Test-Path -Path "${env:ProgramFiles(x86)}\Microsoft SQL Server\140\Tools\PowerShell\Modules\SQLPS\") {
+     installutil "${env:ProgramFiles(x86)}\Microsoft SQL Server\140\Tools\PowerShell\Modules\SQLPS\Microsoft.SqlServer.Management.PSProvider.dll";
+     installutil "${env:ProgramFiles(x86)}\Microsoft SQL Server\140\Tools\PowerShell\Modules\SQLPS\Microsoft.SqlServer.Management.PSSnapins.dll"; 
+    }
+                    
+    Add-PSSnapin SQLServer*140;
+    Write-Host "Sql Server 2017 Powershell Snapin registered successfully.";
+   } 
+  }catch{}
+$sqlpsreg = "HKLM:\SOFTWARE\Microsoft\PowerShell\1\ShellIds\Microsoft.SqlServer.Management.PowerShell.sqlps140";
+    }
     else {
         throw "SQL Server Provider for Windows PowerShell is not installed."
     }
@@ -491,11 +519,11 @@ Register-SitecoreInstallExtension -Command Invoke-AddCommerceUserToCoreDatabaseT
 # U3ltYW50ZWMgQ29ycG9yYXRpb24xMDAuBgNVBAMTJ1N5bWFudGVjIFRpbWUgU3Rh
 # bXBpbmcgU2VydmljZXMgQ0EgLSBHMgIQDs/0OMj+vzVuBNhqmBsaUDAJBgUrDgMC
 # GgUAoF0wGAYJKoZIhvcNAQkDMQsGCSqGSIb3DQEHATAcBgkqhkiG9w0BCQUxDxcN
-# MTgwNjE0MTc1MTE2WjAjBgkqhkiG9w0BCQQxFgQUr1S/VQHxg1dt4YK8KCKR6b0w
-# 844wDQYJKoZIhvcNAQEBBQAEggEAiBEkNl6Kb8OjR52qWcSS++v9Mfl3SJ1ynh1Q
-# 1ztGEgOmYA0ozrYLTegQBnsDsBE7HzT9gjze0xbfSaSgL/gmsgeKF6LNY6a3thG5
-# spXGv2/F7uDSHqnGx339cxqzF3fyfWFrGNA+P+CbsGJzTQaxXyekmsghUVm26kpG
-# axH3nanT2Pg9J9hgua4UfIsgKqh/lo2XMawFpIe703rBr8tFTF4qf0DycnnEzgaZ
-# xqG3HAkIxprwEdSHYNhBfp4XS8KNkbA6YTgh2MpnAj6CHDDICM2DEF5P27Vxbwbb
-# bhVq50MZtW8iTTuk58GsOabMwiO1gBU9NhRkRqHdZaQwv1UF0w==
+# MTgwMzEyMDc0MjA1WjAjBgkqhkiG9w0BCQQxFgQUr1S/VQHxg1dt4YK8KCKR6b0w
+# 844wDQYJKoZIhvcNAQEBBQAEggEAfzXe7sl5Y2pYRSaWkDMwOvRJeeb2nnquqnxj
+# dclPubhqlNHvCysZeMrvDz3p7ZPJ2knpVy5zFrj8qutxhWpFQuqepFJptNFWWpk+
+# 7XRo0oI5vEJJWswVCDV2u8SiXqDIKeY7wV0c7kG7pjJJGbgStsbRZjqjY9Ce6ZV1
+# lA7S2H4D3pLBhZlY1BjdbeSCKAgDCSQ8UpfDtC5nYjfCvY2c38i/konxxAe47UFn
+# cblafvZQyJm9f/gEg5kmE6ePYX/y7CyQs8M7lT75U8jOgRbUpjbbhTW+BZeQknpE
+# pTxCTS9K07tvICZogsk7rMfJjIgztV6aGFP2XttXwV5Sqeth1w==
 # SIG # End signature block
