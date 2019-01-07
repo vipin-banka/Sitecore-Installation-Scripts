@@ -1,7 +1,22 @@
 #Requires -Version 3
 param(
-    [string]$SiteName = "ConnectSite",	
+    [string]$SiteName = "ConnectSite",
+	[string]$SiteSuffix = ".local",
+	[string]$XConnectServiceSuffix = ".xconnect",
 	[string]$SiteHostHeaderName = "sxa.storefront.com",	
+	[string]$CommerceServicesDbServer = $($Env:COMPUTERNAME),
+	[string]$SitecoreDbServer = $($Env:COMPUTERNAME),
+	[string]$SitecoreUsername = "sitecore\admin",
+	[string]$SitecoreUserPassword = "b",
+	[string]$SolrUrl = "https://localhost:8983/solr",
+	[string]$SolrRoot = "c:\\solr-6.6.2",
+	[string]$SolrService = "Solr-6.6.2",
+	[string]$CommerceAuthoringServicesPort = "5000",
+	[string]$CommerceShopsServicesPort = "5005",
+	[string]$CommerceMinionsServicesPort = "5010",
+	[string]$CommerceOpsServicesPort = "5015",
+	[string]$SitecoreIdentityServicePort = "5050",
+	[string]$SitecoreBizFxServicePort = "4200",
 	[string]$SqlDbPrefix = $SiteName,
 	[string]$CommerceSearchProvider = "SOLR"
 )
@@ -17,34 +32,34 @@ if ($env:PSModulePath -notlike "*$modulesPath*")
 
 $params = @{
         Path = Resolve-Path '.\Configuration\Commerce\Master_SingleServer.json'	
-		SiteName = $SiteName
+		SiteName = "$($SiteName)$($SiteSuffix)"
 		SiteHostHeaderName = $SiteHostHeaderName 
-		InstallDir = "$($Env:SYSTEMDRIVE)\inetpub\wwwroot\$SiteName"
-		XConnectInstallDir = "$($Env:SYSTEMDRIVE)\inetpub\wwwroot\$($SiteName)_xconnect"
-		CertificateName = $SiteName
-		CommerceServicesDbServer = $($Env:COMPUTERNAME)    #OR "SQLServerName\SQLInstanceName"
-		CommerceServicesDbName = "SitecoreCommerce9_SharedEnvironments"
-		CommerceServicesGlobalDbName = "SitecoreCommerce9_Global"		
-        SitecoreDbServer = $($Env:COMPUTERNAME)            #OR "SQLServerName\SQLInstanceName"
+		InstallDir = "$($Env:SYSTEMDRIVE)\inetpub\wwwroot\$($SiteName)$($SiteSuffix)"
+		XConnectInstallDir = "$($Env:SYSTEMDRIVE)\inetpub\wwwroot\$($SiteName)$($XConnectServiceSuffix)"
+		CertificateName = $SiteHostHeaderName
+		CommerceServicesDbServer = $CommerceServicesDbServer    #OR "SQLServerName\SQLInstanceName"
+		CommerceServicesDbName = "$($SiteName)_SitecoreCommerce9_SharedEnvironments"
+		CommerceServicesGlobalDbName = "$($SiteName)_SitecoreCommerce9_Global"
+        SitecoreDbServer = $SitecoreDbServer            #OR "SQLServerName\SQLInstanceName"
 		SitecoreCoreDbName = "$($SqlDbPrefix)_Core"
-		SitecoreUsername = "sitecore\admin"
-		SitecoreUserPassword = "b"
+		SitecoreUsername = $SitecoreUsername
+		SitecoreUserPassword = $SitecoreUserPassword
 		CommerceSearchProvider = $CommerceSearchProvider
-		SolrUrl = "https://localhost:8983/solr"
-		SolrRoot = "c:\\solr-6.6.2"
-		SolrService = "Solr-6.6.2"
+		SolrUrl = $SolrUrl
+		SolrRoot = $SolrRoot
+		SolrService = $SolrService
 		SolrSchemas = ( Join-Path -Path $DEPLOYMENT_DIRECTORY -ChildPath "SolrSchemas" )
-		SearchIndexPrefix = ""
+		SearchIndexPrefix = $SiteName
 		AzureSearchServiceName = ""
 		AzureSearchAdminKey = ""
 		AzureSearchQueryKey = ""
 		CommerceEngineDacPac = Resolve-Path -Path "..\Sitecore.Commerce.Engine.SDK.*\Sitecore.Commerce.Engine.DB.dacpac"	   
-		CommerceOpsServicesPort = "5015"
-		CommerceShopsServicesPort = "5005"
-		CommerceAuthoringServicesPort = "5000"
-		CommerceMinionsServicesPort = "5010"		
-		SitecoreCommerceEngineZipPath = Resolve-Path -Path "..\Sitecore.Commerce.Engine.*.zip"		
-		SitecoreBizFxServicesContentPath = Resolve-Path -Path "..\Sitecore.BizFX.*"		
+		CommerceOpsServicesPort = $CommerceOpsServicesPort
+		CommerceShopsServicesPort = $CommerceShopsServicesPort
+		CommerceAuthoringServicesPort = $CommerceAuthoringServicesPort
+		CommerceMinionsServicesPort = $CommerceMinionsServicesPort
+		SitecoreCommerceEngineZipPath = Resolve-Path -Path "..\Sitecore.Commerce.Engine.2.4.*.zip"		
+		SitecoreBizFxServicesContentPath = Resolve-Path -Path "..\Sitecore.BizFX.1.4.1"		
 		SitecoreIdentityServerZipPath = Resolve-Path -Path "..\Sitecore.IdentityServer.1.*.zip"
 		CommerceEngineCertificatePath = Resolve-Path -Path "..\storefront.engine.cer"		
         SiteUtilitiesSrc = ( Join-Path -Path $DEPLOYMENT_DIRECTORY -ChildPath "SiteUtilityPages" )	
@@ -73,7 +88,12 @@ $params = @{
 			PublicKey = ''
 			PrivateKey = ''
 		}
-		SitecoreIdentityServerName = "SitecoreIdentityServer"		
+		SitecoreIdentityServerName = "$($SiteName).SitecoreIdentityServer"
+		SitecoreIdentityServicePort = $SitecoreIdentityServicePort
+		SitecoreIdentityServiceCertificateName = "$($SiteName).identity.server"
+		SitecoreBizFxServerName = "$($SiteName).SitecoreBizFx"
+		SitecoreBizFxServicePort = $SitecoreBizFxServicePort
+		CommerceServicesPrefix = "$($SiteName)."		
     }
 
 if ($CommerceSearchProvider -eq "SOLR") {
