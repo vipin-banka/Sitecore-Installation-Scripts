@@ -1,0 +1,65 @@
+﻿// -------------------------------------------------------------------------- //
+//         Sitecore Install Framework - XConnect XP0 Configuration            //
+//                                                                            //
+//  Run this configuration to install a single instance of XConnect.          //
+//                                                                            //
+//  NOTE: Only single line comments are accepted in configurations.           //
+// -------------------------------------------------------------------------- //
+{
+    "Parameters": {
+        // Parameters are values that may be passed when Install-SitecoreConfiguration is called.
+        // Parameters must declare a Type and may declare a DefaultValue and Description.
+        // Parameters with no DefaultValue are required when Install-SitecoreConfiguration is called.        
+        "SqlDbPrefix": {
+            "Type": "string",
+            "Description": "The prefix used for all Sql databases."
+        },		
+        "SqlServer": {
+            "Type": "string",
+            "DefaultValue": ".\\SQLSERVER",
+            "Description": "The Sql Server where databases will be installed."
+        },
+        "SqlAdminUser": {
+            "Type": "string",
+            "DefaultValue": "sa",
+            "Description": "The Sql admin user account to use when installing databases."
+        },
+        "SqlAdminPassword": {
+            "Type": "string",
+            "DefaultValue": "12345",
+            "Description": "The Sql admin SqlAdminPassword to use when installing databases."
+        }
+    },
+    "Variables": {
+        // Variables are values calculated in a configuration.
+        // They can reference Parameters, other Variables, and config functions.
+        // The prefix for shards created by the tool
+		"Sql.Database.Commerce.SharedEnvironments":           		"[concat(parameter('SqlDbPrefix'), '_SitecoreCommerce9_SharedEnvironments')]",
+		"Sql.Database.Commerce.Global":           		"[concat(parameter('SqlDbPrefix'), '_SitecoreCommerce9_Global')]"
+    },
+	"Modules": [ "RemoveDatabases" ],
+    "Tasks": {
+        // Tasks are separate units of work in a configuration.
+        // Each task is an action that will be completed when Install-SitecoreConfiguration is called.
+        // By default, tasks are applied in the order they are declared.
+        // Tasks may reference Parameters, Variables, and config functions.
+        "RemoveDatabases": {
+            // Remove databases.
+            "Type": "DropSQLServerDatabase",
+            "Params": [
+				{
+					"SqlServer": "[parameter('SqlServer')]",
+					"SqlAdminUser": "[parameter('SqlAdminUser')]",
+					"SqlAdminPassword": "[parameter('SqlAdminPassword')]",
+					"DBName": "[variable('Sql.Database.Commerce.SharedEnvironments')]"
+				},
+				{
+					"SqlServer": "[parameter('SqlServer')]",
+					"SqlAdminUser": "[parameter('SqlAdminUser')]",
+					"SqlAdminPassword": "[parameter('SqlAdminPassword')]",
+					"DBName": "[variable('Sql.Database.Commerce.Global')]"
+				}
+			]
+        }
+    }
+}

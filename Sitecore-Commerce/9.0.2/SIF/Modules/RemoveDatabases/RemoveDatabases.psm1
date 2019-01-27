@@ -1,112 +1,44 @@
-#Requires -Version 3
-param(
-    [string]$SiteName = "ConnectSite",
-	[string]$SiteSuffix = ".local",
-	[string]$XConnectServiceSuffix = ".xconnect",
-	[string]$SiteHostHeaderName = "sxa.storefront.com",	
-	[string]$CommerceServicesDbServer = $($Env:COMPUTERNAME),
-	[string]$SitecoreDbServer = $($Env:COMPUTERNAME),
-	[string]$SitecoreUsername = "sitecore\admin",
-	[string]$SitecoreUserPassword = "b",
-	[string]$SolrUrl = "https://localhost:8983/solr",
-	[string]$SolrRoot = "c:\\solr-6.6.2",
-	[string]$SolrService = "Solr-6.6.2",
-	[string]$CommerceAuthoringServicesPort = "5000",
-	[string]$CommerceShopsServicesPort = "5005",
-	[string]$CommerceMinionsServicesPort = "5010",
-	[string]$CommerceOpsServicesPort = "5015",
-	[string]$SitecoreIdentityServicePort = "5050",
-	[string]$SitecoreBizFxServicePort = "4200",
-	[string]$SqlDbPrefix = $SiteName,
-	[string]$CommerceSearchProvider = "SOLR"
-)
 
-$global:DEPLOYMENT_DIRECTORY=Split-Path $MyInvocation.MyCommand.Path
-$modulesPath=( Join-Path -Path $DEPLOYMENT_DIRECTORY -ChildPath "Modules" )
-if ($env:PSModulePath -notlike "*$modulesPath*")
-{
-    $p = $env:PSModulePath + ";" + $modulesPath
-    [Environment]::SetEnvironmentVariable("PSModulePath",$p)
+function Invoke-DropSQLServerDatabaseTask {
+	[CmdletBinding()]
+	param(
+		[Parameter(Mandatory=$true)]
+		[String]$SqlServer,
+		[Parameter(Mandatory=$true)]
+		[String]$SqlAdminUser,
+		[Parameter(Mandatory=$true)]
+		[String]$SqlAdminPassword,
+		[Parameter(Mandatory=$true)]
+		[String]$DBName
+	)
+	
+	try
+	{
+		#$server = new-object ("Microsoft.SqlServer.Management.Smo.Server")
+        #if($server.Databases.Contains($DBName))
+        #{
+            Write-Host "Attemping to delete database $DBName" -ForegroundColor Green -NoNewline
+		    Invoke-Sqlcmd -ServerInstance $SqlServer -U $SqlAdminUser -P $SqlAdminPassword -Query "DROP DATABASE [$($DBName)]"
+		    Write-Host "    DELETED" -ForegroundColor DarkGreen
+        #}
+        #else
+        #{
+        #    Write-Warning "$DBName does not exist, cannot delete"
+        #}
+	}
+	catch
+	{
+		Write-Host "    Unable to delete database $DBName" -ForegroundColor Red
+	}
 }
 
+Register-SitecoreInstallExtension -Command Invoke-DropSQLServerDatabaseTask -As DropSQLServerDatabase -Type Task -Force
 
-$params = @{
-        Path = Resolve-Path '.\Configuration\Commerce\Master_SingleServer.json'	
-		SiteName = "$($SiteName)$($SiteSuffix)"
-		SiteHostHeaderName = $SiteHostHeaderName 
-		InstallDir = "$($Env:SYSTEMDRIVE)\inetpub\wwwroot\$($SiteName)$($SiteSuffix)"
-		XConnectInstallDir = "$($Env:SYSTEMDRIVE)\inetpub\wwwroot\$($SiteName)$($XConnectServiceSuffix)"
-		CertificateName = $SiteHostHeaderName
-		CommerceServicesDbServer = $CommerceServicesDbServer    #OR "SQLServerName\SQLInstanceName"
-		CommerceServicesDbName = "$($SiteName)_SitecoreCommerce9_SharedEnvironments"
-		CommerceServicesGlobalDbName = "$($SiteName)_SitecoreCommerce9_Global"
-        SitecoreDbServer = $SitecoreDbServer            #OR "SQLServerName\SQLInstanceName"
-		SitecoreCoreDbName = "$($SqlDbPrefix)_Core"
-		SitecoreUsername = $SitecoreUsername
-		SitecoreUserPassword = $SitecoreUserPassword
-		CommerceSearchProvider = $CommerceSearchProvider
-		SolrUrl = $SolrUrl
-		SolrRoot = $SolrRoot
-		SolrService = $SolrService
-		SolrSchemas = ( Join-Path -Path $DEPLOYMENT_DIRECTORY -ChildPath "SolrSchemas" )
-		SearchIndexPrefix = $SiteName
-		AzureSearchServiceName = ""
-		AzureSearchAdminKey = ""
-		AzureSearchQueryKey = ""
-		CommerceEngineDacPac = Resolve-Path -Path "..\Sitecore.Commerce.Engine.SDK.*\Sitecore.Commerce.Engine.DB.dacpac"	   
-		CommerceOpsServicesPort = $CommerceOpsServicesPort
-		CommerceShopsServicesPort = $CommerceShopsServicesPort
-		CommerceAuthoringServicesPort = $CommerceAuthoringServicesPort
-		CommerceMinionsServicesPort = $CommerceMinionsServicesPort		
-		SitecoreCommerceEngineZipPath = Resolve-Path -Path "..\Sitecore.Commerce.Engine.2.*.zip"		
-		SitecoreBizFxServicesContentPath = Resolve-Path -Path "..\Sitecore.BizFX.1.2.19"		
-		SitecoreIdentityServerZipPath = Resolve-Path -Path "..\Sitecore.IdentityServer.1.*.zip"
-		CommerceEngineCertificatePath = Resolve-Path -Path "..\storefront.engine.cer"		
-        SiteUtilitiesSrc = ( Join-Path -Path $DEPLOYMENT_DIRECTORY -ChildPath "SiteUtilityPages" )	
-        HabitatImagesModuleFullPath = Resolve-Path -Path "..\Sitecore.Commerce.Habitat.Images-*.zip"	
-        AdvImagesModuleFullPath = Resolve-Path -Path "..\Adventure Works Images.zip"	
-		CommerceConnectModuleFullPath = Resolve-Path -Path "..\Sitecore Commerce Connect*.zip"	
-		CommercexProfilesModuleFullPath = Resolve-Path -Path "..\Sitecore Commerce ExperienceProfile Core *.zip"	
-		CommercexAnalyticsModuleFullPath = Resolve-Path -Path "..\Sitecore Commerce ExperienceAnalytics Core *.zip"	
-		CommerceMAModuleFullPath = Resolve-Path -Path "..\Sitecore Commerce Marketing Automation Core *.zip"	
-		CommerceMAForAutomationEngineModuleFullPath = Resolve-Path -Path "..\Sitecore Commerce Marketing Automation for AutomationEngine *.zip"	
-        CEConnectPackageFullPath = Resolve-Path -Path "..\Sitecore.Commerce.Engine.Connect*.update"
-        PowerShellExtensionsModuleFullPath = Resolve-Path -Path "..\Sitecore.PowerShell.Extensions.*\content\Sitecore PowerShell Extensions*.zip"
-        SXAModuleFullPath = Resolve-Path -Path "..\Sitecore.Experience.Accelerator.*\content\Sitecore Experience Accelerator*.zip"
-        SXACommerceModuleFullPath = Resolve-Path -Path "..\Sitecore Commerce Experience Accelerator 1.*.zip"
-		SXAStorefrontModuleFullPath = Resolve-Path -Path "..\Sitecore Commerce Experience Accelerator Storefront 1.*.zip"
-        SXAStorefrontThemeModuleFullPath = Resolve-Path -Path "..\Sitecore Commerce Experience Accelerator Storefront Themes*.zip"
-		SXAStorefrontCatalogModuleFullPath = Resolve-Path -Path "..\Sitecore Commerce Experience Accelerator Habitat Catalog*.zip"
-		MergeToolFullPath = Resolve-Path -Path "..\MSBuild.Microsoft.VisualStudio.Web.targets.14.0.0.3\tools\VSToolsPath\Web\Microsoft.Web.XmlTransform.dll"
-		UserAccount = @{
-			Domain = $Env:COMPUTERNAME
-			UserName = 'CSFndRuntimeUser'
-			Password = 'Pu8azaCr'
-		}
-		BraintreeAccount = @{
-			MerchantId = ''
-			PublicKey = ''
-			PrivateKey = ''
-		}
-		SitecoreIdentityServerName = "$($SiteName).SitecoreIdentityServer"
-		SitecoreIdentityServicePort = $SitecoreIdentityServicePort
-		SitecoreIdentityServiceCertificateName = "$($SiteName).identity.server"
-		SitecoreBizFxServerName = "$($SiteName).SitecoreBizFx"
-		SitecoreBizFxServicePort = $SitecoreBizFxServicePort
-		CommerceServicesPrefix = "$($SiteName)."		
-    }
-
-if ($CommerceSearchProvider -eq "SOLR") {
-	Install-SitecoreConfiguration @params
-}
-elseif ($CommerceSearchProvider -eq "AZURE"){
-	Install-SitecoreConfiguration @params -Skip InstallSolrCores
-}
 # SIG # Begin signature block
 # MIIXwQYJKoZIhvcNAQcCoIIXsjCCF64CAQExCzAJBgUrDgMCGgUAMGkGCisGAQQB
 # gjcCAQSgWzBZMDQGCisGAQQBgjcCAR4wJgIDAQAABBAfzDtgWUsITrck0sYpfvNR
-# AgEAAgEAAgEAAgEAAgEAMCEwCQYFKw4DAhoFAAQU2A4zbikI1U2u89We6OodK+3R
-# VQ+gghL8MIID7jCCA1egAwIBAgIQfpPr+3zGTlnqS5p31Ab8OzANBgkqhkiG9w0B
+# AgEAAgEAAgEAAgEAAgEAMCEwCQYFKw4DAhoFAAQUeHmEohk2MlDTVfyRWZNEoMSb
+# 2yCgghL8MIID7jCCA1egAwIBAgIQfpPr+3zGTlnqS5p31Ab8OzANBgkqhkiG9w0B
 # AQUFADCBizELMAkGA1UEBhMCWkExFTATBgNVBAgTDFdlc3Rlcm4gQ2FwZTEUMBIG
 # A1UEBxMLRHVyYmFudmlsbGUxDzANBgNVBAoTBlRoYXd0ZTEdMBsGA1UECxMUVGhh
 # d3RlIENlcnRpZmljYXRpb24xHzAdBgNVBAMTFlRoYXd0ZSBUaW1lc3RhbXBpbmcg
@@ -212,22 +144,22 @@ elseif ($CommerceSearchProvider -eq "AZURE"){
 # bTExMC8GA1UEAxMoRGlnaUNlcnQgU0hBMiBBc3N1cmVkIElEIENvZGUgU2lnbmlu
 # ZyBDQQIQB6Zc7QsNL9EyTYMCYZHvVTAJBgUrDgMCGgUAoHAwEAYKKwYBBAGCNwIB
 # DDECMAAwGQYJKoZIhvcNAQkDMQwGCisGAQQBgjcCAQQwHAYKKwYBBAGCNwIBCzEO
-# MAwGCisGAQQBgjcCARUwIwYJKoZIhvcNAQkEMRYEFFhL5ZmCLq9hUiVOrIhi7tNi
-# NKdiMA0GCSqGSIb3DQEBAQUABIIBAH/rxB1j9CVdi/h3Z5ID/mjQbwHTOfchRIjf
-# Zbar9Os6ApXTt1BucBvWvjnuhBitrglg3Ye34VKfcrCwpwDMB9yYefVqhcQt6nmN
-# j6jZ/jAbpQ1NUfacVp4j0vSJzdYJx6hBSvkCDOsYI8dE41dY9KG1qGO6ENeph7hN
-# FlenP5jAvSgI7cP9SwSLhXqAYkafISStBoEDVDoImcebsqzdCLrI2vEfrJykekZJ
-# bzLYTIdSBA239FLPLgfSi8JMxmR91buc9FxX5KuSBsBQ5WVAn7Zv35MIJ5YJ9/hC
-# nfH7iYcDvbuK7UKW+qJ8/WeuXRtTQeYn7Rkr3pgED1vC0DcbBxOhggILMIICBwYJ
+# MAwGCisGAQQBgjcCARUwIwYJKoZIhvcNAQkEMRYEFIWJB3/7XnF8uXRnLRSLUk5L
+# 6BxGMA0GCSqGSIb3DQEBAQUABIIBAFkfh/VE+syFh0NHGfw2eBwFQ+4pDmW3HbFi
+# cilK1dQ8dmwy6TX1YkSn/BBCVMs1bzxmSIXFnpiKvnu/Uz4jxJgwDu+IWQFIM3aC
+# E0qng08ZiQBFM6YYfHB53tvmts87THhN6aJcI+8kvncdLRCDOBzvzqUhEUmY4Vyv
+# i3wIj0UescR7xklqqJ6/aP21NH2gDG9+ofuWmCJ9Am6ZEs2KthMkz0LpWkE4dYNE
+# Mgb+FxkkwTQkQzZeiKaslORy3vIF4FroPW97VlPJ+XxsU6NWEVz71tOUqpR8DF1O
+# ua03XRcfZKJ19P+cFPhQxiRMMxVJ9sOU8SxccHUWuqZrycQf1UKhggILMIICBwYJ
 # KoZIhvcNAQkGMYIB+DCCAfQCAQEwcjBeMQswCQYDVQQGEwJVUzEdMBsGA1UEChMU
 # U3ltYW50ZWMgQ29ycG9yYXRpb24xMDAuBgNVBAMTJ1N5bWFudGVjIFRpbWUgU3Rh
 # bXBpbmcgU2VydmljZXMgQ0EgLSBHMgIQDs/0OMj+vzVuBNhqmBsaUDAJBgUrDgMC
 # GgUAoF0wGAYJKoZIhvcNAQkDMQsGCSqGSIb3DQEHATAcBgkqhkiG9w0BCQUxDxcN
-# MTgwNjE0MTc1MTQwWjAjBgkqhkiG9w0BCQQxFgQU4dRV4mrmlmo23fz23U6f5lkM
-# xjAwDQYJKoZIhvcNAQEBBQAEggEAe2TShd9FJInWxz/vZmn/mBW8zhOXCHPGgSz8
-# pJr3BG0aBJ1wOoglnqwS9fEdHjs/RLHdXEKVBo5KSaPWeC2fYGLR43sTCcqwNTsX
-# LEAfg9DrbiJLcB49od00oge74MXvfCb6eqBPVbCPTcgjlt+UyJ3ldRo/gUVH5Mly
-# GRVlrdRXxGIvTrCxJdQ4u8zMhHSie4R2aWzv6L0TF63uIIFoVxpnzQNGKNftn3jt
-# 2UU34gYl4I8e1vPpAoFfPLHWMi/qr7mqjg4LVQnNMpRyJuzGmoBXMFmBnLgkPecu
-# tjnbFxotTOEywlOHvIg9F4JRRQ7TSya7+I56fWz7M2b7vWx8hg==
+# MTgwMzEyMDc0MjA1WjAjBgkqhkiG9w0BCQQxFgQUr1S/VQHxg1dt4YK8KCKR6b0w
+# 844wDQYJKoZIhvcNAQEBBQAEggEAfzXe7sl5Y2pYRSaWkDMwOvRJeeb2nnquqnxj
+# dclPubhqlNHvCysZeMrvDz3p7ZPJ2knpVy5zFrj8qutxhWpFQuqepFJptNFWWpk+
+# 7XRo0oI5vEJJWswVCDV2u8SiXqDIKeY7wV0c7kG7pjJJGbgStsbRZjqjY9Ce6ZV1
+# lA7S2H4D3pLBhZlY1BjdbeSCKAgDCSQ8UpfDtC5nYjfCvY2c38i/konxxAe47UFn
+# cblafvZQyJm9f/gEg5kmE6ePYX/y7CyQs8M7lT75U8jOgRbUpjbbhTW+BZeQknpE
+# pTxCTS9K07tvICZogsk7rMfJjIgztV6aGFP2XttXwV5Sqeth1w==
 # SIG # End signature block

@@ -1,0 +1,106 @@
+﻿// -------------------------------------------------------------------------- //
+//         Sitecore Install Framework - XConnect XP0 Configuration            //
+//                                                                            //
+//  Run this configuration to install a single instance of XConnect.          //
+//                                                                            //
+//  NOTE: Only single line comments are accepted in configurations.           //
+// -------------------------------------------------------------------------- //
+{
+    "Parameters": {
+        // Parameters are values that may be passed when Install-SitecoreConfiguration is called.
+        // Parameters must declare a Type and may declare a DefaultValue and Description.
+        // Parameters with no DefaultValue are required when Install-SitecoreConfiguration is called.        
+        "SiteName": {
+            "Type": "string",
+            "Description": "The name of the site to be deployed."
+        }
+    },
+    "Variables": {
+        // Variables are values calculated in a configuration.
+        // They can reference Parameters, other Variables, and config functions.
+        // The prefix for shards created by the tool
+		"Services.Website.Name":        "[concat(parameter('SiteName'), '.local')]",
+		"Services.xconnect.Name":        "[concat(parameter('SiteName'), '.xconnect')]",
+		
+		"Services.Website.PhysicalPath":         "[concat(environment('SystemDrive'), concat('\\inetpub\\wwwroot\\', variable('Services.Website.Name')))]",
+		"Services.xconnect.PhysicalPath":         "[concat(environment('SystemDrive'), concat('\\inetpub\\wwwroot\\', variable('Services.xconnect.Name')))]"
+    },
+	"Modules": [ "ManageCommerceService" ],
+    "Tasks": {
+        // Tasks are separate units of work in a configuration.
+        // Each task is an action that will be completed when Install-SitecoreConfiguration is called.
+        // By default, tasks are applied in the order they are declared.
+        // Tasks may reference Parameters, Variables, and config functions.
+        "StopWebsite": {
+            // Stops the website if it is running.
+            "Type": "ManageWebsite",
+            "Params": [
+				{
+					"Name": "[variable('Services.Website.Name')]",
+					"Action": "Stop"
+				},
+				{
+					"Name": "[variable('Services.xconnect.Name')]",
+					"Action": "Stop"
+				}
+			]
+        },
+        "StopAppPool": {
+            // Stops the app pool if it is running.
+            "Type": "ManageAppPool",
+            "Params": [
+				{
+					"Name": "[variable('Services.Website.Name')]",
+					"Action": "Stop"
+				},
+				{
+					"Name": "[variable('Services.xconnect.Name')]",
+					"Action": "Stop"
+				}
+			]
+        },
+		"RemoveSites": {
+			"Type": "ManageCommerceService",
+			"Params": [
+				{
+					"Name": "[variable('Services.Website.Name')]",
+					"Action": "Remove-Website"
+				},
+				{
+					"Name": "[variable('Services.xconnect.Name')]",
+					"Action": "Remove-Website"
+				}
+			]
+		},
+		"RemoveAppPools": {
+			"Type": "ManageCommerceService",
+			"Params": [
+				{
+					"Name": "[variable('Services.Website.Name')]",
+					"Action": "Remove-WebAppPool"
+				},
+				{
+					"Name": "[variable('Services.xconnect.Name')]",
+					"Action": "Remove-WebAppPool"
+				}
+			]
+		},
+		"RemoveSiteFolders": {
+			"Type": "ManageCommerceService",
+			"Params": [
+				{
+					"Name": "Name",
+					"PhysicalPath": "[variable('Services.Website.PhysicalPath')]",
+					"Action": "Remove-Item",
+					"RestartIIS": false
+				},
+				{
+					"Name": "Name",
+					"PhysicalPath": "[variable('Services.xconnect.PhysicalPath')]",
+					"Action": "Remove-Item",
+					"RestartIIS": false
+				}
+			]
+		}
+    }
+}
