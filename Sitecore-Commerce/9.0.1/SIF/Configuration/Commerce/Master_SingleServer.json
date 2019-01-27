@@ -312,6 +312,14 @@
 		"SitecoreBizFxServicePort": "[parameter('SitecoreBizFxServicePort')]"
       }
     },
+    "AddCommerceEngineBindings": {
+      "Type": "InstallSitecoreConfiguration",
+      "Params": {
+        "Path": ".\\Configuration\\Commerce\\CommerceEngine\\CommerceEngine.AddBindings.json",
+        "CommerceServicesPostfix": "[parameter('CommerceServicesPostfix')]",
+		"CommerceServicesPrefix": "[parameter('CommerceServicesPrefix')]"
+      }
+    },
     "DeploySitecoreBizFx": {
       "Type": "InstallSitecoreConfiguration",
       "Params": {

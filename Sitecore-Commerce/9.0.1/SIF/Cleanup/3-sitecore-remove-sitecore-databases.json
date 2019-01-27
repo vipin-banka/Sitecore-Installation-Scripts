@@ -1,0 +1,152 @@
+﻿// -------------------------------------------------------------------------- //
+//         Sitecore Install Framework - XConnect XP0 Configuration            //
+//                                                                            //
+//  Run this configuration to install a single instance of XConnect.          //
+//                                                                            //
+//  NOTE: Only single line comments are accepted in configurations.           //
+// -------------------------------------------------------------------------- //
+{
+    "Parameters": {
+        // Parameters are values that may be passed when Install-SitecoreConfiguration is called.
+        // Parameters must declare a Type and may declare a DefaultValue and Description.
+        // Parameters with no DefaultValue are required when Install-SitecoreConfiguration is called.        
+        "SqlDbPrefix": {
+            "Type": "string",
+            "Description": "The prefix used for all Sql databases."
+        },		
+        "SqlServer": {
+            "Type": "string",
+            "DefaultValue": ".\\SQLSERVER",
+            "Description": "The Sql Server where databases will be installed."
+        },
+        "SqlAdminUser": {
+            "Type": "string",
+            "DefaultValue": "sa",
+            "Description": "The Sql admin user account to use when installing databases."
+        },
+        "SqlAdminPassword": {
+            "Type": "string",
+            "DefaultValue": "12345",
+            "Description": "The Sql admin SqlAdminPassword to use when installing databases."
+        }
+    },
+    "Variables": {
+        // Variables are values calculated in a configuration.
+        // They can reference Parameters, other Variables, and config functions.
+        // The prefix for shards created by the tool
+        "Sharding.Database.Prefix": "[concat(parameter('SqlDbPrefix'), '_Xdb.Collection.Shard')]",
+
+        // The database names.
+        "Sql.Database.ShardMapManager":     "[concat(variable('Sharding.Database.Prefix'), 'MapManager')]",
+        "Sql.Database.Shard0":              "[concat(variable('Sharding.Database.Prefix'), '0')]",
+        "Sql.Database.Shard1":              "[concat(variable('Sharding.Database.Prefix'), '1')]",
+        "Sql.Database.Pools":               "[concat(parameter('SqlDbPrefix'), '_Processing.Pools')]",
+        "Sql.Database.MarketingAutomation": "[concat(parameter('SqlDbPrefix'), '_MarketingAutomation')]",
+        "Sql.Database.Messaging":           "[concat(parameter('SqlDbPrefix'), '_Messaging')]",
+        "Sql.Database.Reference":           "[concat(parameter('SqlDbPrefix'), '_ReferenceData')]",
+		"Sql.Database.Web":           		"[concat(parameter('SqlDbPrefix'), '_Web')]",
+		"Sql.Database.Commerce.Reporting":           		"[concat(parameter('SqlDbPrefix'), '_Reporting')]",
+		"Sql.Database.Commerce.Processing.Tasks":           		"[concat(parameter('SqlDbPrefix'), '_Processing.Tasks')]",
+		"Sql.Database.Master":           		"[concat(parameter('SqlDbPrefix'), '_Master')]",
+		"Sql.Database.ExperienceForms":           		"[concat(parameter('SqlDbPrefix'), '_ExperienceForms')]",
+		"Sql.Database.EXM.Master":           		"[concat(parameter('SqlDbPrefix'), '_EXM.Master')]",
+		"Sql.Database.Core":           		"[concat(parameter('SqlDbPrefix'), '_Core')]"
+    },
+	"Modules": [ "RemoveDatabases" ],
+    "Tasks": {
+        // Tasks are separate units of work in a configuration.
+        // Each task is an action that will be completed when Install-SitecoreConfiguration is called.
+        // By default, tasks are applied in the order they are declared.
+        // Tasks may reference Parameters, Variables, and config functions.
+        "RemoveDatabases": {
+            // Remove databases.
+            "Type": "DropSQLServerDatabase",
+            "Params": [
+				{
+					"SqlServer": "[parameter('SqlServer')]",
+					"SqlAdminUser": "[parameter('SqlAdminUser')]",
+					"SqlAdminPassword": "[parameter('SqlAdminPassword')]",
+					"DBName": "[variable('Sql.Database.ShardMapManager')]"
+				},
+				{
+					"SqlServer": "[parameter('SqlServer')]",
+					"SqlAdminUser": "[parameter('SqlAdminUser')]",
+					"SqlAdminPassword": "[parameter('SqlAdminPassword')]",
+					"DBName": "[variable('Sql.Database.Shard0')]"
+				},
+				{
+					"SqlServer": "[parameter('SqlServer')]",
+					"SqlAdminUser": "[parameter('SqlAdminUser')]",
+					"SqlAdminPassword": "[parameter('SqlAdminPassword')]",
+					"DBName": "[variable('Sql.Database.Shard1')]"
+				},
+				{
+					"SqlServer": "[parameter('SqlServer')]",
+					"SqlAdminUser": "[parameter('SqlAdminUser')]",
+					"SqlAdminPassword": "[parameter('SqlAdminPassword')]",
+					"DBName": "[variable('Sql.Database.Pools')]"
+				},
+				{
+					"SqlServer": "[parameter('SqlServer')]",
+					"SqlAdminUser": "[parameter('SqlAdminUser')]",
+					"SqlAdminPassword": "[parameter('SqlAdminPassword')]",
+					"DBName": "[variable('Sql.Database.MarketingAutomation')]"
+				},
+				{
+					"SqlServer": "[parameter('SqlServer')]",
+					"SqlAdminUser": "[parameter('SqlAdminUser')]",
+					"SqlAdminPassword": "[parameter('SqlAdminPassword')]",
+					"DBName": "[variable('Sql.Database.Messaging')]"
+				},
+				{
+					"SqlServer": "[parameter('SqlServer')]",
+					"SqlAdminUser": "[parameter('SqlAdminUser')]",
+					"SqlAdminPassword": "[parameter('SqlAdminPassword')]",
+					"DBName": "[variable('Sql.Database.Reference')]"
+				},
+				{
+					"SqlServer": "[parameter('SqlServer')]",
+					"SqlAdminUser": "[parameter('SqlAdminUser')]",
+					"SqlAdminPassword": "[parameter('SqlAdminPassword')]",
+					"DBName": "[variable('Sql.Database.Web')]"
+				},
+				{
+					"SqlServer": "[parameter('SqlServer')]",
+					"SqlAdminUser": "[parameter('SqlAdminUser')]",
+					"SqlAdminPassword": "[parameter('SqlAdminPassword')]",
+					"DBName": "[variable('Sql.Database.Commerce.Reporting')]"
+				},
+				{
+					"SqlServer": "[parameter('SqlServer')]",
+					"SqlAdminUser": "[parameter('SqlAdminUser')]",
+					"SqlAdminPassword": "[parameter('SqlAdminPassword')]",
+					"DBName": "[variable('Sql.Database.Commerce.Processing.Tasks')]"
+				},
+				{
+					"SqlServer": "[parameter('SqlServer')]",
+					"SqlAdminUser": "[parameter('SqlAdminUser')]",
+					"SqlAdminPassword": "[parameter('SqlAdminPassword')]",
+					"DBName": "[variable('Sql.Database.Master')]"
+				},
+				{
+					"SqlServer": "[parameter('SqlServer')]",
+					"SqlAdminUser": "[parameter('SqlAdminUser')]",
+					"SqlAdminPassword": "[parameter('SqlAdminPassword')]",
+					"DBName": "[variable('Sql.Database.ExperienceForms')]"
+				},
+				{
+					"SqlServer": "[parameter('SqlServer')]",
+					"SqlAdminUser": "[parameter('SqlAdminUser')]",
+					"SqlAdminPassword": "[parameter('SqlAdminPassword')]",
+					"DBName": "[variable('Sql.Database.EXM.Master')]"
+				},
+				{
+					"SqlServer": "[parameter('SqlServer')]",
+					"SqlAdminUser": "[parameter('SqlAdminUser')]",
+					"SqlAdminPassword": "[parameter('SqlAdminPassword')]",
+					"DBName": "[variable('Sql.Database.Core')]"
+				}
+			]
+        }
+    }
+}

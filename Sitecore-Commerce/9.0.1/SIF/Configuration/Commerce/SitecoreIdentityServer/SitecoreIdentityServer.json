@@ -151,7 +151,7 @@
         "CertificateDnsName": "[variable('Security.CertificateName')]",
         "CertificatePassword": "sitecore",
         "CertificateStore": "[variable('Security.CertificateStore')]",
-        "CertificateFriendlyName": "Sitecore Identity Server",
+        "CertificateFriendlyName": "[variable('Security.CertificateName')]",
         "IDServerPath": "[variable('SitecoreIdentityServerPhysicalPath')]"
       }
     },

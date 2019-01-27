@@ -1,0 +1,93 @@
+// ------------------------------------------------------------------------------------------------------ //
+//         Sitecore Install Framework - Commerce Single Server Configuration                              //
+//                                                                                                        //
+//  Run this configuration to install a single instance of Commerce Engine and Sitecore Storefront Site.  //
+//																										  //
+//                                                                                                        //
+//  NOTE: Only single line comments are accepted in configurations.                                       //
+// ------------------------------------------------------------------------------------------------------ //
+
+
+{
+  "Parameters": {
+    // Parameters are values that may be passed when Install-SitecoreConfiguration is called.
+    // Parameters must declare a Type and may declare a DefaultValue and Description.
+    // Parameters with no DefaultValue are required when Install-SitecoreConfiguration is called.
+    "SiteName": {
+      "Type": "string",
+      "Description": "The name of the site to be deployed."
+    },
+    "SolrUrl": {
+      "Type": "string",
+      "DefaultValue": "https://localhost:8983/solr",
+      "Description": "The Solr instance url."
+    },	
+	"SqlServer": {
+		"Type": "string",
+		"DefaultValue": ".\\SQLSERVER",
+		"Description": "The Sql Server where databases will be installed."
+	},
+	"SqlAdminUser": {
+		"Type": "string",
+		"DefaultValue": "sa",
+		"Description": "The Sql admin user account to use when installing databases."
+	},
+	"SqlAdminPassword": {
+		"Type": "string",
+		"DefaultValue": "12345",
+		"Description": "The Sql admin SqlAdminPassword to use when installing databases."
+	}
+  },
+  "Variables": {
+    // Variables are values calculated in a configuration.
+    // They can reference Parameters, other Variables, and config functions.
+	"XConnectSiteName":"[concat(parameter('SiteName'), '.xconnect')]",
+	"SqlDbPrefix": "[parameter('SiteName')]"
+  },
+  "Modules": [ "InstallSitecoreConfiguration", "ManageCommerceService", "SitecoreUtilityTasks" ],
+  "Tasks": {
+    // Tasks are separate units of work in a configuration.
+    // Each task is an action that will be completed when Install-SitecoreConfiguration is called.
+    // By default, tasks are applied in the order they are declared.
+    // Tasks may reference Parameters, Variables, and config functions.
+	"RemoveServices": {
+		"Type": "InstallSitecoreConfiguration",
+		"Params": {
+			"Path": ".\\Cleanup\\1-sitecore-remove-services.json",
+			"SiteName": "[variable('XConnectSiteName')]"
+		}
+	},
+	"RemoveWebsites": {
+		"Type": "InstallSitecoreConfiguration",
+		"Params": {
+			"Path": ".\\Cleanup\\2-sitecore-remove-sitecore-websites.json",
+			"SiteName": "[parameter('SiteName')]"
+		}
+	},
+	"RemoveDatabases": {
+		"Type": "InstallSitecoreConfiguration",
+		"Params": {
+			"Path": ".\\Cleanup\\3-sitecore-remove-sitecore-databases.json",
+			"SqlDbPrefix": "[variable('SqlDbPrefix')]",
+			"SqlServer": "[parameter('SqlServer')]",
+			"SqlAdminUser": "[parameter('SqlAdminUser')]",
+			"SqlAdminPassword": "[parameter('SqlAdminPassword')]"
+		}
+	},
+	"RemoveSolrCores": {
+		"Type": "InstallSitecoreConfiguration",
+		"Params": {
+			"Path": ".\\Cleanup\\4-sitecore-remove-sitecore-solr-cores.json",
+			"SiteName": "[parameter('SiteName')]",
+			"SolrUrl":"[parameter('SolrUrl')]"
+		}
+	},
+	"RemoveClientCertificates": {
+		"Type": "InstallSitecoreConfiguration",
+		"Params": {
+			"Path": ".\\Cleanup\\8-sitecore-remove-certificates.json",
+			"SiteNamePrefix": "[parameter('SiteName')]"
+		}
+	}
+  }
+}

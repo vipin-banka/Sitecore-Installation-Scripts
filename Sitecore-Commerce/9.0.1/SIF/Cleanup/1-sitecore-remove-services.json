@@ -1,0 +1,48 @@
+﻿{
+    "Parameters": {
+        // Parameters are values that may be passed when Install-SitecoreConfiguration is called.
+        // Parameters must declare a Type and may declare a DefaultValue and Description.
+        // Parameters with no DefaultValue are required when Install-SitecoreConfiguration is called.        
+        "SiteName": {
+            "Type": "string",
+            "Description": "The name of the site to be deployed."
+        }
+    },
+    "Variables": {
+        // Variables are values calculated in a configuration.
+        // They can reference Parameters, other Variables, and config functions.
+        // The prefix for shards created by the tool        
+        "Services.IndexWorker.Name": "[concat(parameter('SiteName'), '-IndexWorker')]",
+        "Services.MarketingAutomationEngine.Name": "[concat(parameter('SiteName'), '-MarketingAutomationService')]"
+    },
+    "Tasks": {
+        // Tasks are separate units of work in a configuration.
+        // Each task is an action that will be completed when Install-SitecoreConfiguration is called.
+        // By default, tasks are applied in the order they are declared.
+        // Tasks may reference Parameters, Variables, and config functions.        
+        "StopServices": {
+            // Stops the services if they running.
+            "Type": "ManageService",
+            "Params": [
+                {
+                    "Name": "[variable('Services.IndexWorker.Name')]",
+                    "Status": "Stopped",
+                    "PostDelay": 3000
+                },
+                {
+                    "Name": "[variable('Services.MarketingAutomationEngine.Name')]",
+                    "Status": "Stopped",
+                    "PostDelay": 3000
+                }
+            ]
+        },
+        "RemoveServices": {
+            // Removes the current service.
+            "Type": "RemoveService",
+            "Params": [
+                { "Name": "[variable('Services.IndexWorker.Name')]" },
+                { "Name": "[variable('Services.MarketingAutomationEngine.Name')]" }
+            ]
+        }
+    }
+}

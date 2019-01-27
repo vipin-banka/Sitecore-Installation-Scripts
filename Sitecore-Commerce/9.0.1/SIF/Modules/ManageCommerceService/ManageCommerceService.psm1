@@ -19,7 +19,9 @@ Function Invoke-ManageCommerceServiceTask {
         [Parameter(Mandatory = $false)]
         [string]$Port,
         [Parameter(Mandatory = $false)]
-        [System.Security.Cryptography.X509Certificates.X509Certificate2] $Signer
+        [System.Security.Cryptography.X509Certificates.X509Certificate2] $Signer,
+		[Parameter(Mandatory = $false)]
+        [bool]$RestartIIS = $true
     )   
 
     Write-TaskInfo -Message $Name -Tag $Action   
@@ -48,7 +50,10 @@ Function Invoke-ManageCommerceServiceTask {
                         Write-Host "Attempting to delete site directory '$PhysicalPath'"
                         Remove-Item $PhysicalPath -Recurse -Force
                         Write-Host "'$PhysicalPath' deleted" -ForegroundColor Green
-                        dev_reset_iis_sql
+						if ($RestartIIS -eq $true)
+						{
+							dev_reset_iis_sql
+						}
                     }
                     else {
                         Write-Warning "'$PhysicalPath' does not exist, no need to delete"
