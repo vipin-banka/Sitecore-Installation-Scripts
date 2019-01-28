@@ -1,0 +1,39 @@
+﻿// -------------------------------------------------------------------------- //
+//         Sitecore Install Framework - XConnect XP0 Configuration            //
+//                                                                            //
+//  Run this configuration to install a single instance of XConnect.          //
+//                                                                            //
+//  NOTE: Only single line comments are accepted in configurations.           //
+// -------------------------------------------------------------------------- //
+{
+    "Parameters": {
+        // Parameters are values that may be passed when Install-SitecoreConfiguration is called.
+        // Parameters must declare a Type and may declare a DefaultValue and Description.
+        // Parameters with no DefaultValue are required when Install-SitecoreConfiguration is called.
+        "SiteNamePrefix": {
+            "Type": "string",
+            "Description": "The name of the site to be deployed."
+        }
+    },
+    "Variables": {
+        // Variables are values calculated in a configuration.
+        // They can reference Parameters, other Variables, and config functions.
+        // The prefix for shards created by the tool
+		"Client.Cert.Store": "cert:\\LocalMachine\\My"
+    },
+	"Modules": [ "RemoveCertificates" ],
+    "Tasks": {
+        // Tasks are separate units of work in a configuration.
+        // Each task is an action that will be completed when Install-SitecoreConfiguration is called.
+        // By default, tasks are applied in the order they are declared.
+        // Tasks may reference Parameters, Variables, and config functions.
+        "RemoveCertificates": {
+            // Remove certificates
+            "Type": "RemoveCertificates",
+            "Params": {
+                "Path": "[variable('Client.Cert.Store')]",
+                "SiteNamePrefix": "[parameter('SiteNamePrefix')]"
+            }
+        }
+    }
+}

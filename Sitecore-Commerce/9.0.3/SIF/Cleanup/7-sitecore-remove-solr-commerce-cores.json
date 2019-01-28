@@ -1,0 +1,65 @@
+﻿// -------------------------------------------------------------------------- //
+//         Sitecore Install Framework - XConnect XP0 Configuration            //
+//                                                                            //
+//  Run this configuration to install a single instance of XConnect.          //
+//                                                                            //
+//  NOTE: Only single line comments are accepted in configurations.           //
+// -------------------------------------------------------------------------- //
+{
+    "Parameters": {
+        // Parameters are values that may be passed when Install-SitecoreConfiguration is called.
+        // Parameters must declare a Type and may declare a DefaultValue and Description.
+        // Parameters with no DefaultValue are required when Install-SitecoreConfiguration is called.        
+        "SiteName": {
+            "Type": "string",
+            "Description": "The name of the site to be deployed."
+        },
+        "SolrUrl": {
+            "Type": "string",
+            "DefaultValue": "https://localhost:8983/solr",
+            "Description": "The Solr instance to use."
+        }
+    },
+    "Variables": {
+        // Variables are values calculated in a configuration.
+        // They can reference Parameters, other Variables, and config functions.
+        // The prefix for shards created by the tool	
+        
+		"Solr.Core.CatalogItemsScope": "[concat(parameter('SiteName'), 'CatalogItemsScope')]",
+		"Solr.Core.CustomersScope": "[concat(parameter('SiteName'), 'CustomersScope')]",
+		"Solr.Core.OrdersScope": "[concat(parameter('SiteName'), 'OrdersScope')]"
+    },	
+    "Tasks": {
+        // Tasks are separate units of work in a configuration.
+        // Each task is an action that will be completed when Install-SitecoreConfiguration is called.
+        // By default, tasks are applied in the order they are declared.
+        // Tasks may reference Parameters, Variables, and config functions.
+        "RemoveSolrCores": {
+            // Stops the website if it is running.
+            "Type": "ManageSolrCore",
+            "Params": [
+				{
+					"Address": "[parameter('SolrUrl')]",
+					"Action": "unload",
+					"Arguments": {
+						"Core": "[variable('Solr.Core.CatalogItemsScope')]"
+					}
+				},
+				{
+					"Address": "[parameter('SolrUrl')]",
+					"Action": "unload",
+					"Arguments": {
+						"Core": "[variable('Solr.Core.CustomersScope')]"
+					}
+				},
+				{
+					"Address": "[parameter('SolrUrl')]",
+					"Action": "unload",
+					"Arguments": {
+						"Core": "[variable('Solr.Core.OrdersScope')]"
+					}
+				}
+			]
+        }
+    }
+}

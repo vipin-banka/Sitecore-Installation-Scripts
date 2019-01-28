@@ -1,0 +1,119 @@
+﻿// -------------------------------------------------------------------------- //
+//         Sitecore Install Framework - Initialize Commerce Services          //
+//                                                                            //
+//  Run this configuration to initialize Commerce Services.                   //
+//                                                                            //
+//  NOTE: Only single line comments are accepted in configurations.           //
+// -------------------------------------------------------------------------- //
+
+{
+  "Parameters": {
+    "CommerceServicesPostfix": {
+      "Type": "string",
+      "DefaultValue": "Sc9",
+      "Description": "The Commerce Engine postfix for services names"
+    },
+	"CommerceServicesPrefix": { 
+		"Type": "string", 
+		"DefaultValue": "" 
+	}
+  },
+  "Variables": {
+    "CommerceOps": "[concat(parameter('CommerceServicesPrefix'), concat('CommerceOps_', parameter('CommerceServicesPostfix')))]",
+    "CommerceShops": "[concat(parameter('CommerceServicesPrefix'), concat('CommerceShops_', parameter('CommerceServicesPostfix')))]",
+    "CommerceAuthoring": "[concat(parameter('CommerceServicesPrefix'), concat('CommerceAuthoring_', parameter('CommerceServicesPostfix')))]",
+    "CommerceMinions": "[concat(parameter('CommerceServicesPrefix'), concat('CommerceMinions_', parameter('CommerceServicesPostfix')))]",    
+    
+	"CommerceOpsBinding": "[concat(parameter('CommerceServicesPrefix'), 'ce.ops')]",
+	"CommerceShopsBinding": "[concat(parameter('CommerceServicesPrefix'), 'ce.shops')]",
+	"CommerceAuthoringBinding": "[concat(parameter('CommerceServicesPrefix'), 'ce.authoring')]",
+	"CommerceMinionsBinding": "[concat(parameter('CommerceServicesPrefix'), 'ce.minion')]"
+  },
+  "Modules": ["InitializeCommerce"],
+  "Tasks": {	
+    "CreateCommerceOpsBindings": {
+      // Configures the site bindings for the website.
+      "Type": "WebBinding",
+      "Params": {
+        "SiteName": "[variable('CommerceOps')]",
+        "Add": [
+          {
+            "HostHeader": "[variable('CommerceOpsBinding')]",
+            "Protocol": "http",
+            "Port": "80" 
+          } 
+        ]
+      }
+    },
+    "CreateCommerceOpsHostHeader": {
+      // Sets a hostheader for the website.
+      "Type": "HostHeader",
+      "Params": {
+        "HostName": "[variable('CommerceOpsBinding')]"
+      }
+    },
+	"CreateCommerceShopsBindings": {
+      // Configures the site bindings for the website.
+      "Type": "WebBinding",
+      "Params": {
+        "SiteName": "[variable('CommerceShops')]",
+        "Add": [
+          {
+            "HostHeader": "[variable('CommerceShopsBinding')]",
+            "Protocol": "http",
+            "Port": "80" 
+          } 
+        ]
+      }
+    },
+    "CreateCommerceShopsHostHeader": {
+      // Sets a hostheader for the website.
+      "Type": "HostHeader",
+      "Params": {
+        "HostName": "[variable('CommerceShopsBinding')]"
+      }
+    },
+	"CreateCommerceAuthoringBindings": {
+      // Configures the site bindings for the website.
+      "Type": "WebBinding",
+      "Params": {
+        "SiteName": "[variable('CommerceAuthoring')]",
+        "Add": [
+          {
+            "HostHeader": "[variable('CommerceAuthoringBinding')]",
+            "Protocol": "http",
+            "Port": "80" 
+          } 
+        ]
+      }
+    },
+    "CreateCommerceAuthoringHostHeader": {
+      // Sets a hostheader for the website.
+      "Type": "HostHeader",
+      "Params": {
+        "HostName": "[variable('CommerceAuthoringBinding')]"
+      }
+    },
+	"CreateCommerceMinionsBindings": {
+      // Configures the site bindings for the website.
+      "Type": "WebBinding",
+      "Params": {
+        "SiteName": "[variable('CommerceMinions')]",
+        "Add": [
+          {
+            "HostHeader": "[variable('CommerceMinionsBinding')]",
+            "Protocol": "http",
+            "Port": "80" 
+          } 
+        ]
+      }
+    },
+    "CreateCommerceMinionsHostHeader": {
+      // Sets a hostheader for the website.
+      "Type": "HostHeader",
+      "Params": {
+        "HostName": "[variable('CommerceMinionsBinding')]"
+      }
+    }
+  }
+}

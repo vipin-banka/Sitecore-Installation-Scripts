@@ -1,0 +1,207 @@
+﻿// -------------------------------------------------------------------------- //
+//         Sitecore Install Framework - XConnect XP0 Configuration            //
+//                                                                            //
+//  Run this configuration to install a single instance of XConnect.          //
+//                                                                            //
+//  NOTE: Only single line comments are accepted in configurations.           //
+// -------------------------------------------------------------------------- //
+{
+    "Parameters": {
+        // Parameters are values that may be passed when Install-SitecoreConfiguration is called.
+        // Parameters must declare a Type and may declare a DefaultValue and Description.
+        // Parameters with no DefaultValue are required when Install-SitecoreConfiguration is called.        
+        "SiteName": {
+            "Type": "string",
+            "Description": "The name of the site to be deployed."
+        },
+		"CommerceServicesPostfix": {
+			"Type": "string",
+			"DefaultValue": "Sc9",
+			"Description": "The Commerce Engine postfix for services names"
+		}
+    },
+    "Variables": {
+        // Variables are values calculated in a configuration.
+        // They can reference Parameters, other Variables, and config functions.
+        // The prefix for shards created by the tool
+        "Services.CommerceAuthoring.Name":        "[concat(parameter('SiteName'), concat('.CommerceAuthoring_', parameter('CommerceServicesPostfix')))]",
+		"Services.CommerceMinions.Name":        "[concat(parameter('SiteName'), concat('.CommerceMinions_', parameter('CommerceServicesPostfix')))]",
+		"Services.CommerceOps.Name":        "[concat(parameter('SiteName'), concat('.CommerceOps_', parameter('CommerceServicesPostfix')))]",
+		"Services.CommerceShops.Name":        "[concat(parameter('SiteName'), concat('.CommerceShops_', parameter('CommerceServicesPostfix')))]",
+		"Services.BizFx.Name":        "[concat(parameter('SiteName'), '.SitecoreBizFx')]",
+		"Services.IdentityServer.Name":        "[concat(parameter('SiteName'), '.SitecoreIdentityServer')]",
+		
+		"Services.CommerceAuthoring.PhysicalPath":        "[concat(environment('SystemDrive'), concat('\\inetpub\\wwwroot\\', variable('Services.CommerceAuthoring.Name')))]",
+		"Services.CommerceMinions.PhysicalPath":         "[concat(environment('SystemDrive'), concat('\\inetpub\\wwwroot\\', variable('Services.CommerceMinions.Name')))]",
+		"Services.CommerceOps.PhysicalPath":         "[concat(environment('SystemDrive'), concat('\\inetpub\\wwwroot\\', variable('Services.CommerceOps.Name')))]",
+		"Services.CommerceShops.PhysicalPath":         "[concat(environment('SystemDrive'), concat('\\inetpub\\wwwroot\\', variable('Services.CommerceShops.Name')))]",
+		"Services.BizFx.PhysicalPath":         "[concat(environment('SystemDrive'), concat('\\inetpub\\wwwroot\\', variable('Services.BizFx.Name')))]",
+		"Services.IdentityServer.PhysicalPath":         "[concat(environment('SystemDrive'), concat('\\inetpub\\wwwroot\\', variable('Services.IdentityServer.Name')))]"
+    },
+	"Modules": [ "ManageCommerceService" ],
+    "Tasks": {
+        // Tasks are separate units of work in a configuration.
+        // Each task is an action that will be completed when Install-SitecoreConfiguration is called.
+        // By default, tasks are applied in the order they are declared.
+        // Tasks may reference Parameters, Variables, and config functions.
+        "StopWebsite": {
+            // Stops the website if it is running.
+            "Type": "ManageWebsite",
+            "Params": [
+				{
+					"Name": "[variable('Services.CommerceAuthoring.Name')]",
+					"Action": "Stop"
+				},
+				{
+					"Name": "[variable('Services.CommerceMinions.Name')]",
+					"Action": "Stop"
+				},
+				{
+					"Name": "[variable('Services.CommerceOps.Name')]",
+					"Action": "Stop"
+				},
+				{
+					"Name": "[variable('Services.CommerceShops.Name')]",
+					"Action": "Stop"
+				},
+				{
+					"Name": "[variable('Services.BizFx.Name')]",
+					"Action": "Stop"
+				},
+				{
+					"Name": "[variable('Services.IdentityServer.Name')]",
+					"Action": "Stop"
+				}
+			]
+        },
+        "StopAppPool": {
+            // Stops the app pool if it is running.
+            "Type": "ManageAppPool",
+            "Params": [
+				{
+					"Name": "[variable('Services.CommerceAuthoring.Name')]",
+					"Action": "Stop"
+				},
+				{
+					"Name": "[variable('Services.CommerceMinions.Name')]",
+					"Action": "Stop"
+				},
+				{
+					"Name": "[variable('Services.CommerceOps.Name')]",
+					"Action": "Stop"
+				},
+				{
+					"Name": "[variable('Services.CommerceShops.Name')]",
+					"Action": "Stop"
+				},
+				{
+					"Name": "[variable('Services.BizFx.Name')]",
+					"Action": "Stop"
+				},
+				{
+					"Name": "[variable('Services.IdentityServer.Name')]",
+					"Action": "Stop"
+				}
+			]
+        },
+		"RemoveSites": {
+			"Type": "ManageCommerceService",
+			"Params": [
+				{
+					"Name": "[variable('Services.CommerceAuthoring.Name')]",
+					"Action": "Remove-Website"
+				},
+				{
+					"Name": "[variable('Services.CommerceMinions.Name')]",
+					"Action": "Remove-Website"
+				},
+				{
+					"Name": "[variable('Services.CommerceOps.Name')]",
+					"Action": "Remove-Website"
+				},
+				{
+					"Name": "[variable('Services.CommerceShops.Name')]",
+					"Action": "Remove-Website"
+				},
+				{
+					"Name": "[variable('Services.BizFx.Name')]",
+					"Action": "Remove-Website"
+				},
+				{
+					"Name": "[variable('Services.IdentityServer.Name')]",
+					"Action": "Remove-Website"
+				}
+			]
+		},
+		"RemoveAppPools": {
+			"Type": "ManageCommerceService",
+			"Params": [
+				{
+					"Name": "[variable('Services.CommerceAuthoring.Name')]",
+					"Action": "Remove-WebAppPool"
+				},
+				{
+					"Name": "[variable('Services.CommerceMinions.Name')]",
+					"Action": "Remove-WebAppPool"
+				},
+				{
+					"Name": "[variable('Services.CommerceOps.Name')]",
+					"Action": "Remove-WebAppPool"
+				},
+				{
+					"Name": "[variable('Services.CommerceShops.Name')]",
+					"Action": "Remove-WebAppPool"
+				},
+				{
+					"Name": "[variable('Services.BizFx.Name')]",
+					"Action": "Remove-WebAppPool"
+				},
+				{
+					"Name": "[variable('Services.IdentityServer.Name')]",
+					"Action": "Remove-WebAppPool"
+				}
+			]
+		},
+		"RemoveSiteFolders": {
+			"Type": "ManageCommerceService",
+			"Params": [
+				{
+					"Name": "Name",
+					"PhysicalPath": "[variable('Services.CommerceAuthoring.PhysicalPath')]",
+					"Action": "Remove-Item",
+					"RestartIIS": false
+				},
+				{
+					"Name": "Name",
+					"PhysicalPath": "[variable('Services.CommerceMinions.PhysicalPath')]",
+					"Action": "Remove-Item",
+					"RestartIIS": false
+				},
+				{
+					"Name": "Name",
+					"PhysicalPath": "[variable('Services.CommerceOps.PhysicalPath')]",
+					"Action": "Remove-Item",
+					"RestartIIS": false
+				},
+				{
+					"Name": "Name",
+					"PhysicalPath": "[variable('Services.CommerceShops.PhysicalPath')]",
+					"Action": "Remove-Item",
+					"RestartIIS": false
+				},
+				{
+					"Name": "Name",
+					"PhysicalPath": "[variable('Services.BizFx.PhysicalPath')]",
+					"Action": "Remove-Item",
+					"RestartIIS": false
+				},
+				{
+					"Name": "Name",
+					"PhysicalPath": "[variable('Services.IdentityServer.PhysicalPath')]",
+					"Action": "Remove-Item",
+					"RestartIIS": false
+				}
+			]
+		}
+    }
+}
