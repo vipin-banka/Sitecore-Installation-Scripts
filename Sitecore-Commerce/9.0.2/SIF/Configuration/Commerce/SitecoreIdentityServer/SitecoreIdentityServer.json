@@ -7,6 +7,10 @@
 // -------------------------------------------------------------------------- //
 {
   "Parameters": {
+	"CommerceServicesPrefix": { 
+		"Type": "string", 
+		"DefaultValue": "" 
+	},
     "SitecoreIdentityServerZipPath": {
       "Type": "string",
       "Description": "Sitecore IdentityServer Zip Path"
@@ -49,16 +53,42 @@
     "SitecoreBizFxServicePort": {
       "Type": "string",
       "Description": "Sitecore BizFX Service Port"
+    },	
+	"SystemDrive": {
+		"Type": "string",
+		"Description": "System Drive",
+		"DefaultValue": "C:"
+	},
+	"WebsiteRootFolder": {
+		"Type": "string",
+		"Description": "Website root folder",
+		"DefaultValue": "\\inetpub\\wwwroot\\"
+	},
+    "RootCertPrefix": {
+      "Type": "string",
+      "Description": "The file name of the root certificate to be created.",
+      "DefaultValue": "DO_NOT_TRUST_"
+    },
+    "RootCertStore": {
+      "Type": "string",
+      "Description": "The file name of the root certificate to be created.",
+      "DefaultValue": "cert:\\LocalMachine\\Root"
+    },
+    "ClientCertStore": {
+      "Type": "string",
+      "Description": "The file name of the root certificate to be created.",
+      "DefaultValue": "cert:\\LocalMachine\\My"
     }
   },
   "Variables": {
-    "SitecoreIdentityServerPhysicalPath": "[concat(environment('SystemDrive'), concat('\\inetpub\\wwwroot\\', parameter('SitecoreIdentityServerName')))]",
+	"SitecoreIdentityServiceName": "[concat(parameter('CommerceServicesPrefix'), parameter('SitecoreIdentityServerName'))]",
+    "SitecoreIdentityServerPhysicalPath": "[concat(parameter('SystemDrive'), concat(parameter('WebsiteRootFolder'), variable('SitecoreIdentityServiceName')))]",
     // The name dns name of the root certificate.
-    "Root.Cert.DnsName": "[concat('DO_NOT_TRUST_', parameter('RootCertFileName'))]",
+    "Root.Cert.DnsName": "[concat(parameter('RootCertPrefix'), parameter('RootCertFileName'))]",
     // The certificate store for the root certificate.
-    "Root.Cert.Store": "cert:\\LocalMachine\\Root",
+    "Root.Cert.Store": "[parameter('RootCertStore')]",
     "Security.CertificateName": "[parameter('SitecoreIdentityServiceCertificateName')]",
-    "Security.CertificateStore": "cert:\\Localmachine\\My",
+    "Security.CertificateStore": "[parameter('ClientCertStore')]",
     "Security.CertificateThumbprint": "[GetCertificateThumbprint(variable('Security.CertificateName'), variable('Security.CertificateStore'))]",
     "Security.CertificatePath": "[joinpath(variable('Security.CertificateStore'), variable('Security.CertificateThumbprint'))]"
   },
@@ -71,7 +101,7 @@
     "StopSite": {
       "Type": "ManageWebsite",
       "Params": {
-        "Name": "[parameter('SitecoreIdentityServerName')]",
+        "Name": "[variable('SitecoreIdentityServiceName')]",
         "Action": "Stop",
         "ErrorAction": "SilentlyContinue"
       }
@@ -79,14 +109,14 @@
     "RemoveSite": {
       "Type": "ManageCommerceService",
       "Params": {
-        "Name": "[parameter('SitecoreIdentityServerName')]",
+        "Name": "[variable('SitecoreIdentityServiceName')]",
         "Action": "Remove-Website"
       }
     },
     "StopAppPool": {
       "Type": "ManageAppPool",
       "Params": {
-        "Name": "[parameter('SitecoreIdentityServerName')]",
+        "Name": "[variable('SitecoreIdentityServiceName')]",
         "Action": "Stop",
         "ErrorAction": "SilentlyContinue"
       }
@@ -94,7 +124,7 @@
     "RemoveAppPool": {
       "Type": "ManageCommerceService",
       "Params": {
-        "Name": "[parameter('SitecoreIdentityServerName')]",
+        "Name": "[variable('SitecoreIdentityServiceName')]",
         "Action": "Remove-WebAppPool"
       }
     },
@@ -129,7 +159,7 @@
     "CreateWebAppPool": {
       "Type": "ManageCommerceService",
       "Params": {
-        "Name": "[parameter('SitecoreIdentityServerName')]",
+        "Name": "[variable('SitecoreIdentityServiceName')]",
         "Action": "Create-WebAppPool",
         "UserAccount": "[parameter('UserAccount')]"
       }
@@ -137,9 +167,9 @@
     "CreateWebsite": {
       "Type": "ManageCommerceService",
       "Params": {
-        "Name": "[parameter('SitecoreIdentityServerName')]",
+        "Name": "[variable('SitecoreIdentityServiceName')]",
         "Action": "Create-Website",
-        "AppPoolName": "[parameter('SitecoreIdentityServerName')]",
+        "AppPoolName": "[variable('SitecoreIdentityServiceName')]",
         "PhysicalPath": "[variable('SitecoreIdentityServerPhysicalPath')]",
         "Port": "[parameter('SitecoreIdentityServicePort')]",
         "Signer": "[GetCertificate(variable('Root.Cert.DnsName'), variable('Root.Cert.Store'))]"

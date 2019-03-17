@@ -17,6 +17,14 @@
       "Type": "string",
       "Description": "The name of the site to be deployed."
     },
+	"SiteSuffix": {
+      "Type": "string",
+      "Description": "The name of the site to be deployed."
+    },
+	"XConnectServiceSuffix": {
+      "Type": "string",
+      "Description": "The name of the site to be deployed."
+    },
     "SolrUrl": {
       "Type": "string",
       "DefaultValue": "https://localhost:8983/solr",
@@ -36,12 +44,22 @@
 		"Type": "string",
 		"DefaultValue": "12345",
 		"Description": "The Sql admin SqlAdminPassword to use when installing databases."
+	},	
+	"SystemDrive": {
+		"Type": "string",
+		"Description": "System Drive",
+		"DefaultValue": "C:"
+	},
+	"WebsiteRootFolder": {
+		"Type": "string",
+		"Description": "Website root folder",
+		"DefaultValue": "\\inetpub\\wwwroot\\"
 	}
   },
   "Variables": {
     // Variables are values calculated in a configuration.
     // They can reference Parameters, other Variables, and config functions.
-	"XConnectSiteName":"[concat(parameter('SiteName'), '.xconnect')]",
+	"XConnectSiteName":"[concat(parameter('SiteName'), parameter('XConnectServiceSuffix'))]",
 	"SqlDbPrefix": "[parameter('SiteName')]"
   },
   "Modules": [ "InstallSitecoreConfiguration", "ManageCommerceService", "SitecoreUtilityTasks" ],
@@ -61,7 +79,11 @@
 		"Type": "InstallSitecoreConfiguration",
 		"Params": {
 			"Path": ".\\Cleanup\\2-sitecore-remove-sitecore-websites.json",
-			"SiteName": "[parameter('SiteName')]"
+			"SiteName": "[parameter('SiteName')]",
+			"SiteSuffix": "[parameter('SiteSuffix')]",
+			"XConnectServiceSuffix": "[parameter('XConnectServiceSuffix')]",
+			"SystemDrive": "[parameter('SystemDrive')]",
+			"WebsiteRootFolder": "[parameter('WebsiteRootFolder')]"
 		}
 	},
 	"RemoveDatabases": {

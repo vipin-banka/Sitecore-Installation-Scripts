@@ -13,17 +13,35 @@
         "SiteName": {
             "Type": "string",
             "Description": "The name of the site to be deployed."
-        }
+        },
+		"SiteSuffix": {
+		  "Type": "string",
+		  "Description": "The name of the site to be deployed."
+		},
+		"XConnectServiceSuffix": {
+		  "Type": "string",
+		  "Description": "The name of the site to be deployed."
+		},	
+		"SystemDrive": {
+			"Type": "string",
+			"Description": "System Drive",
+			"DefaultValue": "C:"
+		},
+		"WebsiteRootFolder": {
+			"Type": "string",
+			"Description": "Website root folder",
+			"DefaultValue": "\\inetpub\\wwwroot\\"
+		}
     },
     "Variables": {
         // Variables are values calculated in a configuration.
         // They can reference Parameters, other Variables, and config functions.
         // The prefix for shards created by the tool
-		"Services.Website.Name":        "[concat(parameter('SiteName'), '.local')]",
-		"Services.xconnect.Name":        "[concat(parameter('SiteName'), '.xconnect')]",
+		"Services.Website.Name":        "[concat(parameter('SiteName'), parameter('SiteSuffix'))]",
+		"Services.xconnect.Name":        "[concat(parameter('SiteName'), parameter('XConnectServiceSuffix'))]",
 		
-		"Services.Website.PhysicalPath":         "[concat(environment('SystemDrive'), concat('\\inetpub\\wwwroot\\', variable('Services.Website.Name')))]",
-		"Services.xconnect.PhysicalPath":         "[concat(environment('SystemDrive'), concat('\\inetpub\\wwwroot\\', variable('Services.xconnect.Name')))]"
+		"Services.Website.PhysicalPath":         "[concat(parameter('SystemDrive'), concat(parameter('WebsiteRootFolder'), variable('Services.Website.Name')))]",
+		"Services.xconnect.PhysicalPath":         "[concat(parameter('SystemDrive'), concat(parameter('WebsiteRootFolder'), variable('Services.xconnect.Name')))]"
     },
 	"Modules": [ "ManageCommerceService" ],
     "Tasks": {

@@ -50,7 +50,7 @@
     },
     "CommerceServicesPostfix": {
       "Type": "string",
-      "DefaultValue": "Sc9",
+      "DefaultValue": "_Sc9",
       "Description": "The Commerce Engine postfix for services names"
     },
     "SitecoreDbServer": {
@@ -251,13 +251,78 @@
 	"CommerceServicesPrefix": {
 		"Type": "string",
 		"Description": "Commerce Service Prefix"
+	},
+	"CommerceAuthoringServiceName": {
+		"Type": "string",
+		"Description": "Commerce Authoring Service Name",
+		"DefaultValue": "CommerceAuthoring"
+	},
+	"CommerceShopsServiceName": {
+		"Type": "string",
+		"Description": "Commerce Shops Service Name",
+		"DefaultValue": "CommerceShops"
+	},
+	"CommerceMinionsServiceName": {
+		"Type": "string",
+		"Description": "Commerce Minions Service Name",
+		"DefaultValue": "CommerceMinions"
+	},
+	"CommerceOpsServiceName": {
+		"Type": "string",
+		"Description": "Commerce Ops Service Name",
+		"DefaultValue": "CommerceOps"
+	},	
+	"SystemDrive": {
+		"Type": "string",
+		"Description": "System Drive",
+		"DefaultValue": "C:"
+	},
+	"WebsiteRootFolder": {
+		"Type": "string",
+		"Description": "Website root folder",
+		"DefaultValue": "\\inetpub\\wwwroot\\"
+	},
+	"CommerceEngineHostHeaderName": {
+		"Type": "string",
+		"Description": "",
+		"DefaultValue": "localhost"
+	},
+	"CertPath": {
+		"Type": "string",
+		"Description": "The physical path on disk where certificates will be stored.",
+		"DefaultValue": "c:\\certificates"
+	},
+	"RootCertPrefix": {
+		"Type": "string",
+		"Description": "The file name of the root certificate to be created.",
+		"DefaultValue": "DO_NOT_TRUST_"
+	},
+	"RootCertFileName": {
+		"Type": "string",
+		"Description": "The file name of the root certificate to be created.",
+		"DefaultValue": "SitecoreRootCert"
+	},
+	"RootCertStore": {
+		"Type": "string",
+		"Description": "The file name of the root certificate to be created.",
+		"DefaultValue": "cert:\\LocalMachine\\Root"
+	},
+	"ClientCertStore": {
+		"Type": "string",
+		"Description": "The file name of the root certificate to be created.",
+		"DefaultValue": "cert:\\LocalMachine\\My"
+	},
+	"DataFolderPath": {
+		"Type": "string",
+		"Description": "",
+		"DefaultValue": "\\App_Data"
 	}
   },
   "Variables": {
     // Variables are values calculated in a configuration.
     // They can reference Parameters, other Variables, and config functions.
     "SiteUtilitiesDir": "[concat(parameter('InstallDir'), '\\SiteUtilityPages')]",
-    "ModulesDirDst": "[concat(parameter('InstallDir'), '\\App_Data\\packages')]",
+    "ModulesDirDst": "[concat(parameter('InstallDir'), concat(parameter('DataFolderPath'), '\\packages'))]",
     "UtilitiesBaseUrl": "[concat('http://', concat(parameter('SiteHostHeaderName'), '/SiteUtilityPages'))]",
     "PackagesDirDst": "[concat(parameter('InstallDir'), '\\sitecore\\admin\\Packages')]",
     "CEMergeInputFile": "[concat(parameter('InstallDir'), '\\MergeFiles\\Sitecore.Commerce.Engine.Connectors.Merge.Config')]",
@@ -325,17 +390,81 @@
 		"BraintreeAccount": "[parameter('BraintreeAccount')]",
 		"CommerceServicesPrefix": "[parameter('CommerceServicesPrefix')]",
 		"SitecoreIdentityServicePort": "[parameter('SitecoreIdentityServicePort')]",
-		"SitecoreBizFxServicePort": "[parameter('SitecoreBizFxServicePort')]"
+		"SitecoreBizFxServicePort": "[parameter('SitecoreBizFxServicePort')]",
+		"CommerceAuthoringServiceName": "[parameter('CommerceAuthoringServiceName')]",
+		"CommerceShopsServiceName": "[parameter('CommerceShopsServiceName')]",
+		"CommerceMinionsServiceName": "[parameter('CommerceMinionsServiceName')]",
+		"CommerceOpsServiceName": "[parameter('CommerceOpsServiceName')]",
+		"SystemDrive": "[parameter('SystemDrive')]",
+		"WebsiteRootFolder": "[parameter('WebsiteRootFolder')]",
+		"RootCertPrefix": "[parameter('RootCertPrefix')]",
+		"RootCertStore": "[parameter('RootCertStore')]"
       }
     },
-    "AddCommerceEngineBindings": {
-      "Type": "InstallSitecoreConfiguration",
-      "Params": {
-        "Path": ".\\Configuration\\Commerce\\CommerceEngine\\CommerceEngine.AddBindings.json",
-        "CommerceServicesPostfix": "[parameter('CommerceServicesPostfix')]",
-		"CommerceServicesPrefix": "[parameter('CommerceServicesPrefix')]"
-      }
-    },
+    //"AddCommerceEngineOpsServiceBindings": {
+    //  "Type": "InstallSitecoreConfiguration",
+    //  "Params": {
+    //    "Path": ".\\Configuration\\Commerce\\CommerceEngine\\CommerceEngine.AddBindings.json",
+    //    "CommerceServicesPrefix": "[parameter('CommerceServicesPrefix')]",
+	//	"ServiceName": "[parameter('CommerceOpsServiceName')]"
+	//	"CommerceServicesPostfix": "[parameter('CommerceServicesPostfix')]",
+	//	"CommerceServicePort": "[parameter('CommerceOpsServicesPort')]",
+	//	"CertPath": "[parameter('CertPath')]",
+	//	"CommerceEngineHostHeaderName": "[parameter('CommerceEngineHostHeaderName')]",
+	//	"RootCertPrefix": "[parameter('RootCertPrefix')]",
+	//	"RootCertFileName": "[parameter('RootCertFileName')]",
+	//	"RootCertStore": "[parameter('RootCertStore')]",
+	//	"ClientCertStore": "[parameter('ClientCertStore')]"
+    //  }
+    //},
+    //"AddCommerceEngineAuthoringServiceBindings": {
+    //  "Type": "InstallSitecoreConfiguration",
+    //  "Params": {
+    //    "Path": ".\\Configuration\\Commerce\\CommerceEngine\\CommerceEngine.AddBindings.json",
+    //    "CommerceServicesPrefix": "[parameter('CommerceServicesPrefix')]",
+	//	"ServiceName": "[parameter('CommerceAuthoringServiceName')]"
+	//	"CommerceServicesPostfix": "[parameter('CommerceServicesPostfix')]",
+	//	"CommerceServicePort": "[parameter('CommerceAuthoringServicesPort')]",
+	//	"CertPath": "[parameter('CertPath')]",
+	//	"CommerceEngineHostHeaderName": "[parameter('CommerceEngineHostHeaderName')]",
+	//	"RootCertPrefix": "[parameter('RootCertPrefix')]",
+	//	"RootCertFileName": "[parameter('RootCertFileName')]",
+	//	"RootCertStore": "[parameter('RootCertStore')]",
+	//	"ClientCertStore": "[parameter('ClientCertStore')]"
+    //  }
+    //},
+    //"AddCommerceEngineShopsServiceBindings": {
+    //  "Type": "InstallSitecoreConfiguration",
+    //  "Params": {
+    //    "Path": ".\\Configuration\\Commerce\\CommerceEngine\\CommerceEngine.AddBindings.json",
+    //    "CommerceServicesPrefix": "[parameter('CommerceServicesPrefix')]",
+	//	"ServiceName": "[parameter('CommerceShopsServiceName')]"
+	//	"CommerceServicesPostfix": "[parameter('CommerceServicesPostfix')]",
+	//	"CommerceServicePort": "[parameter('CommerceShopsServicesPort')]",
+	//	"CertPath": "[parameter('CertPath')]",
+	//	"CommerceEngineHostHeaderName": "[parameter('CommerceEngineHostHeaderName')]",
+	//	"RootCertPrefix": "[parameter('RootCertPrefix')]",
+	//	"RootCertFileName": "[parameter('RootCertFileName')]",
+	//	"RootCertStore": "[parameter('RootCertStore')]",
+	//	"ClientCertStore": "[parameter('ClientCertStore')]"
+    //  }
+    //},
+    //"AddCommerceEngineMinionServiceBindings": {
+    //  "Type": "InstallSitecoreConfiguration",
+    //  "Params": {
+    //    "Path": ".\\Configuration\\Commerce\\CommerceEngine\\CommerceEngine.AddBindings.json",
+    //    "CommerceServicesPrefix": "[parameter('CommerceServicesPrefix')]",
+	//	"ServiceName": "[parameter('CommerceMinionsServiceName')]"
+	//	"CommerceServicesPostfix": "[parameter('CommerceServicesPostfix')]",
+	//	"CommerceServicePort": "[parameter('CommerceMinionsServicesPort')]",
+	//	"CertPath": "[parameter('CertPath')]",
+	//	"CommerceEngineHostHeaderName": "[parameter('CommerceEngineHostHeaderName')]",
+	//	"RootCertPrefix": "[parameter('RootCertPrefix')]",
+	//	"RootCertFileName": "[parameter('RootCertFileName')]",
+	//	"RootCertStore": "[parameter('RootCertStore')]",
+	//	"ClientCertStore": "[parameter('ClientCertStore')]"
+    //  }
+    //},
     "DeploySitecoreBizFx": {
       "Type": "InstallSitecoreConfiguration",
       "Params": {
@@ -345,13 +474,34 @@
         "UserAccount": "[parameter('UserAccount')]",
 		"SitecoreBizFxServerName": "[parameter('SitecoreBizFxServerName')]",
 		"SitecoreBizFxServicePort": "[parameter('SitecoreBizFxServicePort')]",
-		"SitecoreIdentityServicePort": "[parameter('SitecoreIdentityServicePort')]"
+		"SitecoreIdentityServicePort": "[parameter('SitecoreIdentityServicePort')]",
+		"SystemDrive": "[parameter('SystemDrive')]",
+		"WebsiteRootFolder": "[parameter('WebsiteRootFolder')]",
+		"RootCertPrefix": "[parameter('RootCertPrefix')]",
+		"RootCertStore": "[parameter('RootCertStore')]"
       }
     },
+    //"AddBizFxAppBindings": {
+    //  "Type": "InstallSitecoreConfiguration",
+    //  "Params": {
+    //    "Path": ".\\Configuration\\Commerce\\CommerceEngine\\CommerceEngine.AddBindings.json",
+    //    "CommerceServicesPrefix": "[parameter('CommerceServicesPrefix')]",
+	//	"ServiceName": "[parameter('SitecoreBizFxServerName')]"
+	//	"CommerceServicesPostfix": "",
+	//	"CommerceServicePort": "[parameter('SitecoreBizFxServicePort')]",
+	//	"CertPath": "[parameter('CertPath')]",
+	//	"CommerceEngineHostHeaderName": "[parameter('CommerceEngineHostHeaderName')]",
+	//	"RootCertPrefix": "[parameter('RootCertPrefix')]",
+	//	"RootCertFileName": "[parameter('RootCertFileName')]",
+	//	"RootCertStore": "[parameter('RootCertStore')]",
+	//	"ClientCertStore": "[parameter('ClientCertStore')]"
+    //  }
+    //},
     "DeploySitecoreIdentityServer": {
       "Type": "InstallSitecoreConfiguration",
       "Params": {
         "Path": ".\\Configuration\\Commerce\\SitecoreIdentityServer\\SitecoreIdentityServer.json",
+		"CommerceServicesPrefix": "[parameter('CommerceServicesPrefix')]",
         "SitecoreIdentityServerZipPath": "[parameter('SitecoreIdentityServerZipPath')]",
         "SitecoreDbServer": "[parameter('SitecoreDbServer')]",
         "SitecoreCoreDbName": "[parameter('SitecoreCoreDbName')]",
@@ -359,9 +509,30 @@
         "SitecoreIdentityServerName": "[parameter('SitecoreIdentityServerName')]",
 		"SitecoreIdentityServicePort": "[parameter('SitecoreIdentityServicePort')]",
 		"SitecoreIdentityServiceCertificateName": "[parameter('SitecoreIdentityServiceCertificateName')]",
-		"SitecoreBizFxServicePort": "[parameter('SitecoreBizFxServicePort')]"
+		"SitecoreBizFxServicePort": "[parameter('SitecoreBizFxServicePort')]",
+		"SystemDrive": "[parameter('SystemDrive')]",
+		"WebsiteRootFolder": "[parameter('WebsiteRootFolder')]",
+		"RootCertPrefix": "[parameter('RootCertPrefix')]",
+		"RootCertStore": "[parameter('RootCertStore')]",
+		"ClientCertStore": "[parameter('ClientCertStore')]"
       }
     },
+    //"AddIdentityServiceBindings": {
+    //  "Type": "InstallSitecoreConfiguration",
+    //  "Params": {
+    //    "Path": ".\\Configuration\\Commerce\\CommerceEngine\\CommerceEngine.AddBindings.json",
+    //    "CommerceServicesPrefix": "[parameter('CommerceServicesPrefix')]",
+	//	"ServiceName": "[parameter('SitecoreIdentityServerName')]"
+	//	"CommerceServicesPostfix": "",
+	//	"CommerceServicePort": "[parameter('SitecoreIdentityServicePort')]",
+	//	"CertPath": "[parameter('CertPath')]",
+	//	"CommerceEngineHostHeaderName": "[parameter('CommerceEngineHostHeaderName')]",
+	//	"RootCertPrefix": "[parameter('RootCertPrefix')]",
+	//	"RootCertFileName": "[parameter('RootCertFileName')]",
+	//	"RootCertStore": "[parameter('RootCertStore')]",
+	//	"ClientCertStore": "[parameter('ClientCertStore')]"
+    //  }
+    //},
     "CopySiteUtilityFolder": {
       "Type": "Copy",
       "Params": {
@@ -521,7 +692,13 @@
         "CertificatePath": "[parameter('CommerceEngineCertificatePath')]",
         "CommerceServicesPostfix": "[parameter('CommerceServicesPostfix')]",
         "CommerceAuthoringServicesPort": "[parameter('CommerceAuthoringServicesPort')]",
-		"CommerceServicesPrefix": "[parameter('CommerceServicesPrefix')]"
+		"CommerceServicesPrefix": "[parameter('CommerceServicesPrefix')]",
+		"SystemDrive": "[parameter('SystemDrive')]",
+		"WebsiteRootFolder": "[parameter('WebsiteRootFolder')]",
+		"CommerceAuthoringServiceName": "[parameter('CommerceAuthoringServiceName')]",
+		"CommerceShopsServiceName": "[parameter('CommerceShopsServiceName')]",
+		"CommerceMinionsServiceName": "[parameter('CommerceMinionsServiceName')]",
+		"CommerceOpsServiceName": "[parameter('CommerceOpsServiceName')]"
       }
     },
     "InitializeCommerceEngine": {
@@ -535,9 +712,16 @@
           "Password": "[parameter('SitecoreUserPassword')]"
         },
 		"CommerceServicesPrefix": "[parameter('CommerceServicesPrefix')]",
-		"SitecoreIdentityServicePort": "[parameter('SitecoreIdentityServicePort')]"
+		"SitecoreIdentityServicePort": "[parameter('SitecoreIdentityServicePort')]",
+		"CommerceAuthoringServiceName": "[parameter('CommerceAuthoringServiceName')]",
+		"CommerceShopsServiceName": "[parameter('CommerceShopsServiceName')]",
+		"CommerceMinionsServiceName": "[parameter('CommerceMinionsServiceName')]",
+		"CommerceOpsServiceName": "[parameter('CommerceOpsServiceName')]",
+		"SystemDrive": "[parameter('SystemDrive')]",
+		"WebsiteRootFolder": "[parameter('WebsiteRootFolder')]",
+		"CommerceEngineHostHeaderName": "[parameter('CommerceEngineHostHeaderName')]"
       }
-      },
+    },
     "EnableCEConnectDataProvider": {
       "Type": "InstallSitecoreConfiguration",
       "Params": {

@@ -12,7 +12,7 @@
     "CommerceServicesDbServer": { "Type": "string", "Description": "Commerce Engine database server name" },		
     "CommerceServicesDbName": { "Type": "string", "Description": "Commerce Services database name" },
     "CommerceServicesGlobalDbName": { "Type": "string", "Description": "Commerce Services Global database name" },
-    "CommerceServicesPostfix": { "Type": "string", "DefaultValue": "Sc9" },
+    "CommerceServicesPostfix": { "Type": "string", "DefaultValue": "_Sc9" },
     "SitecoreDbServer": { "Type": "string", "Description": "Sitecore database server name" },
     "SitecoreCoreDbName": { "Type": "string", "Description": "Sitecore Core database name" },
     "CommerceSearchProvider": { "Type": "string", "Description": "The search provider used for the Commerce Engine - Accepted values are 'SOLR' and 'AZURE'" },
@@ -38,21 +38,61 @@
 	"SitecoreBizFxServicePort": {
 		"Type": "string",
 		"Description": "Sitecore Biz Fx port"
-	}
+	},
+	"CommerceAuthoringServiceName": {
+		"Type": "string",
+		"Description": "Commerce Authoring Service Name",
+		"DefaultValue": "CommerceAuthoring_"
+	},
+	"CommerceShopsServiceName": {
+		"Type": "string",
+		"Description": "Commerce Shops Service Name",
+		"DefaultValue": "CommerceShops_"
+	},
+	"CommerceMinionsServiceName": {
+		"Type": "string",
+		"Description": "Commerce Minions Service Name",
+		"DefaultValue": "CommerceMinions_"
+	},
+	"CommerceOpsServiceName": {
+		"Type": "string",
+		"Description": "Commerce Ops Service Name",
+		"DefaultValue": "CommerceOps_"
+	},	
+	"SystemDrive": {
+		"Type": "string",
+		"Description": "System Drive",
+		"DefaultValue": "C:"
+	},
+	"WebsiteRootFolder": {
+		"Type": "string",
+		"Description": "Website root folder",
+		"DefaultValue": "\\inetpub\\wwwroot\\"
+	},
+    "RootCertPrefix": {
+      "Type": "string",
+      "Description": "The file name of the root certificate to be created.",
+      "DefaultValue": "DO_NOT_TRUST_"
+    },
+    "RootCertStore": {
+      "Type": "string",
+      "Description": "The file name of the root certificate to be created.",
+      "DefaultValue": "cert:\\LocalMachine\\Root"
+    }
   },
   "Variables": {
-    "CommerceOps": "[concat(parameter('CommerceServicesPrefix'), concat('CommerceOps_', parameter('CommerceServicesPostfix')))]",
-    "CommerceShops": "[concat(parameter('CommerceServicesPrefix'), concat('CommerceShops_', parameter('CommerceServicesPostfix')))]",
-    "CommerceAuthoring": "[concat(parameter('CommerceServicesPrefix'), concat('CommerceAuthoring_', parameter('CommerceServicesPostfix')))]",
-    "CommerceMinions": "[concat(parameter('CommerceServicesPrefix'), concat('CommerceMinions_', parameter('CommerceServicesPostfix')))]",
-    "CommerceOpsPhysicalPath": "[concat(environment('SystemDrive'), concat('\\inetpub\\wwwroot\\', variable('CommerceOps')))]",
-    "CommerceShopsPhysicalPath": "[concat(environment('SystemDrive'), concat('\\inetpub\\wwwroot\\', variable('CommerceShops')))]",
-    "CommerceAuthoringPhysicalPath": "[concat(environment('SystemDrive'), concat('\\inetpub\\wwwroot\\', variable('CommerceAuthoring')))]",
-    "CommerceMinionsPhysicalPath": "[concat(environment('SystemDrive'), concat('\\inetpub\\wwwroot\\', variable('CommerceMinions')))]",
+    "CommerceOps": "[concat(parameter('CommerceServicesPrefix'), concat(parameter('CommerceOpsServiceName'), parameter('CommerceServicesPostfix')))]",
+    "CommerceShops": "[concat(parameter('CommerceServicesPrefix'), concat(parameter('CommerceShopsServiceName'), parameter('CommerceServicesPostfix')))]",
+    "CommerceAuthoring": "[concat(parameter('CommerceServicesPrefix'), concat(parameter('CommerceAuthoringServiceName'), parameter('CommerceServicesPostfix')))]",
+    "CommerceMinions": "[concat(parameter('CommerceServicesPrefix'), concat(parameter('CommerceMinionsServiceName'), parameter('CommerceServicesPostfix')))]",
+    "CommerceOpsPhysicalPath": "[concat(parameter('SystemDrive'), concat(parameter('WebsiteRootFolder'), variable('CommerceOps')))]",
+    "CommerceShopsPhysicalPath": "[concat(parameter('SystemDrive'), concat(parameter('WebsiteRootFolder'), variable('CommerceShops')))]",
+    "CommerceAuthoringPhysicalPath": "[concat(parameter('SystemDrive'), concat(parameter('WebsiteRootFolder'), variable('CommerceAuthoring')))]",
+    "CommerceMinionsPhysicalPath": "[concat(parameter('SystemDrive'), concat(parameter('WebsiteRootFolder'), variable('CommerceMinions')))]",
     // The name dns name of the root certificate.
-    "Root.Cert.DnsName": "[concat('DO_NOT_TRUST_', parameter('RootCertFileName'))]",
+    "Root.Cert.DnsName": "[concat(parameter('RootCertPrefix'), parameter('RootCertFileName'))]",
     // The certificate store for the root certificate.
-    "Root.Cert.Store": "cert:\\LocalMachine\\Root"
+    "Root.Cert.Store": "[parameter('RootCertStore')]"
   },
   "Modules": [
     "ManageCommerceService",

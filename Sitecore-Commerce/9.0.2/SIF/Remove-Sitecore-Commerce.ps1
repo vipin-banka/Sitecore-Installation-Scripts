@@ -1,11 +1,22 @@
 #Requires -Version 3
 param(
     [string]$SiteName = "ConnectSite",
-	[string]$SolrUrl = "https://localhost:8983/solr",	
+	[string]$SiteSuffix = ".local",
+	[string]$XConnectServiceSuffix = ".xconnect",
+	[string]$SolrUrl = "https://localhost:8983/solr",
 	[string]$SqlServer = $($Env:COMPUTERNAME),
 	[string]$SqlAdminUser = "AdminUser",
-	[string]$SqlAdminPassword = "AdminPassword"
+	[string]$SqlAdminPassword = "AdminPassword",
+	[string]$SystemDrive = "C:",
+	[string]$WebsiteRootFolder = "\\inetpub\\wwwroot\\",
 	
+	[string]$CommerceServicesPostfix = "_sc9"
+	[string]$CommerceAuthoringServiceName = "CommerceAuthoring",
+	[string]$CommerceShopsServiceName = "CommerceShops",
+	[string]$CommerceOpsServiceName = "CommerceOps",
+	[string]$CommerceMinionsServiceName = "CommerceMinions",
+	[string]$BizFxAppName = "SitecoreBizFx",
+	[string]$IdentityServiceName = "SitecoreIdentityServer"
 )
 
 $global:DEPLOYMENT_DIRECTORY=Split-Path $MyInvocation.MyCommand.Path
@@ -20,10 +31,22 @@ if ($env:PSModulePath -notlike "*$modulesPath*")
 $params = @{
         Path = Resolve-Path '.\Cleanup\Master_SingleServer_clean.json'	
 		SiteName = $SiteName
+		SiteSuffix = $SiteSuffix
+		XConnectServiceSuffix = $XConnectServiceSuffix
 		SolrUrl = $SolrUrl
 		SqlServer = $SqlServer
 		SqlAdminUser = $SqlAdminUser
-		SqlAdminPassword = $SqlAdminPassword
+		SqlAdminPassword = $SqlAdminPassword,
+		SystemDrive = $SystemDrive,
+		WebsiteRootFolder = $WebsiteRootFolder
+		CommerceServicesPrefix = "$($SiteName)."
+		CommerceServicesPostfix = $CommerceServicesPostfix
+		CommerceAuthoringServiceName = $CommerceAuthoringServiceName
+		CommerceShopsServiceName = $CommerceShopsServiceName
+		CommerceOpsServiceName = $CommerceOpsServiceName
+		CommerceMinionsServiceName = $CommerceMinionsServiceName
+		BizFxAppName = $BizFxAppName
+		IdentityServiceName = $IdentityServiceName
     }
 
 Install-SitecoreConfiguration @params

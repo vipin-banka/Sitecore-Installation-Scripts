@@ -8,17 +8,42 @@ param(
 	[string]$SitecoreDbServer = $($Env:COMPUTERNAME),
 	[string]$SitecoreUsername = "sitecore\admin",
 	[string]$SitecoreUserPassword = "b",
+	[string]$DataFolderPath = "\\App_Data",
+	
 	[string]$SolrUrl = "https://localhost:8983/solr",
 	[string]$SolrRoot = "c:\\solr-6.6.2",
 	[string]$SolrService = "Solr-6.6.2",
-	[string]$CommerceAuthoringServicesPort = "5000",
+	
+	[string]$CommerceEngineHostHeaderName = "localhost",
+	[string]$CommerceServicesPostfix = "_SC9",	
+	
+	[string]$CommerceAuthoringServicesPort = "5000",	
 	[string]$CommerceShopsServicesPort = "5005",
 	[string]$CommerceMinionsServicesPort = "5010",
-	[string]$CommerceOpsServicesPort = "5015",
+	[string]$CommerceOpsServicesPort = "5015",	
 	[string]$SitecoreIdentityServicePort = "5050",
 	[string]$SitecoreBizFxServicePort = "4200",
+	
 	[string]$SqlDbPrefix = $SiteName,
-	[string]$CommerceSearchProvider = "SOLR"
+	[string]$CommerceSearchProvider = "SOLR",
+	
+	[string]$SystemDrive = $($Env:SYSTEMDRIVE),
+	[string]$WebsiteRootFolder = "\\inetpub\\wwwroot\\",
+	[string]$CertPath = "c:\\certificates",
+	[string]$RootCertPrefix = "DO_NOT_TRUST_",
+	[string]$RootCertFileName = "SitecoreRootCert",
+	[string]$RootCertStore = "cert:\\LocalMachine\\Root",
+	[string]$ClientCertStore = "cert:\\LocalMachine\\My",
+	
+	[bool]$RunSigleServerScript = $true
+	
+	## do not change below values
+	[string]$CommerceAuthoringServiceName = "CommerceAuthoring",
+	[string]$CommerceShopsServiceName = "CommerceShops",
+	[string]$CommerceMinionsServiceName = "CommerceMinions",
+	[string]$CommerceOpsServiceName = "CommerceOps",
+	[string]$SitecoreBizFxServerName = "SitecoreBizFx"
+	[string]$SitecoreIdentityServerName = "SitecoreIdentityServer"
 )
 
 $global:DEPLOYMENT_DIRECTORY=Split-Path $MyInvocation.MyCommand.Path
@@ -34,8 +59,8 @@ $params = @{
         Path = Resolve-Path '.\Configuration\Commerce\Master_SingleServer.json'	
 		SiteName = "$($SiteName)$($SiteSuffix)"
 		SiteHostHeaderName = $SiteHostHeaderName 
-		InstallDir = "$($Env:SYSTEMDRIVE)\inetpub\wwwroot\$($SiteName)$($SiteSuffix)"
-		XConnectInstallDir = "$($Env:SYSTEMDRIVE)\inetpub\wwwroot\$($SiteName)$($XConnectServiceSuffix)"
+		InstallDir = "$($SystemDrive)$($WebsiteRootFolder)$($SiteName)$($SiteSuffix)"
+		XConnectInstallDir = "$($SystemDrive)$($WebsiteRootFolder)$($SiteName)$($XConnectServiceSuffix)"
 		CertificateName = $SiteHostHeaderName
 		CommerceServicesDbServer = $CommerceServicesDbServer    #OR "SQLServerName\SQLInstanceName"
 		CommerceServicesDbName = "$($SiteName)_SitecoreCommerce9_SharedEnvironments"
@@ -88,19 +113,40 @@ $params = @{
 			PublicKey = ''
 			PrivateKey = ''
 		}
-		SitecoreIdentityServerName = "$($SiteName).SitecoreIdentityServer"
+		
+		CommerceAuthoringServiceName = $CommerceAuthoringServiceName
+		CommerceShopsServiceName = $CommerceShopsServiceName
+		CommerceMinionsServiceName = $CommerceMinionsServiceName
+		CommerceOpsServiceName = $CommerceOpsServiceName
+		
+		SitecoreIdentityServerName = $SitecoreIdentityServerName
 		SitecoreIdentityServicePort = $SitecoreIdentityServicePort
 		SitecoreIdentityServiceCertificateName = "$($SiteName).identity.server"
-		SitecoreBizFxServerName = "$($SiteName).SitecoreBizFx"
+		SitecoreBizFxServerName = $SitecoreBizFxServerName
 		SitecoreBizFxServicePort = $SitecoreBizFxServicePort
-		CommerceServicesPrefix = "$($SiteName)."		
+		CommerceServicesPrefix = "$($SiteName)."
+		CommerceServicesPostfix	= $CommerceServicesPostfix	
+		
+		DataFolderPath = $DataFolderPath
+		CommerceEngineHostHeaderName = $CommerceEngineHostHeaderName
+		SystemDrive = $SystemDrive
+		WebsiteRootFolder = $WebsiteRootFolder
+		CertPath = $CertPath
+		RootCertPrefix = $RootCertPrefix
+		RootCertFileName = $RootCertFileName
+		RootCertStore = $RootCertStore
+		ClientCertStore = $ClientCertStore
     }
 
-if ($CommerceSearchProvider -eq "SOLR") {
-	Install-SitecoreConfiguration @params
-}
-elseif ($CommerceSearchProvider -eq "AZURE"){
-	Install-SitecoreConfiguration @params -Skip InstallSolrCores
+if ($RunSigleServerScript -eq $true) {
+	if ($CommerceSearchProvider -eq "SOLR") {
+		Install-SitecoreConfiguration @params
+	}
+	elseif ($CommerceSearchProvider -eq "AZURE"){
+		Install-SitecoreConfiguration @params -Skip InstallSolrCores
+	}
+} else {
+
 }
 # SIG # Begin signature block
 # MIIXwQYJKoZIhvcNAQcCoIIXsjCCF64CAQExCzAJBgUrDgMCGgUAMGkGCisGAQQB
