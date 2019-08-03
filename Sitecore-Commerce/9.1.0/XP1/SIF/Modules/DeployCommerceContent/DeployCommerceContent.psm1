@@ -43,7 +43,15 @@ Function Invoke-DeployCommerceContentTask {
 		[Parameter(Mandatory=$false)]
 		[string]$AzureSearchAdminKey,		
 		[Parameter(Mandatory=$false)]
-		[string]$AzureSearchQueryKey
+		[string]$AzureSearchQueryKey,
+		[Parameter(Mandatory=$false)]
+		[string]$SitecoreConnectionPolicyHostName,
+		[Parameter(Mandatory=$false)]
+		[string]$SitecoreConnectionPolicyUserName,
+		[Parameter(Mandatory=$false)]
+		[string]$SitecoreConnectionPolicyUserPassword, 
+		[Parameter(Mandatory=$false)]
+		[string[]]$CommerceEngineAllowedOrigins = @()
 	)
 
 	try {       
@@ -90,6 +98,11 @@ Function Invoke-DeployCommerceContentTask {
 				if ($CommerceServicesHostPostfix){
 					$allowedOrigins += "https://bizfx.$CommerceServicesHostPostfix"
 				}
+				
+				foreach ($allowedOrigin in $CommerceEngineAllowedOrigins) {
+					$allowedOrigins += $allowedOrigin
+				}
+				
 				$originalJson.AppSettings.AllowedOrigins = $allowedOrigins 
 				
 				$originalJson | ConvertTo-Json -Depth 100 -Compress | set-content $pathToJson
@@ -105,9 +118,11 @@ Function Invoke-DeployCommerceContentTask {
 						$p.Database = $CommerceServicesGlobalDbName
 						Write-Host "Replacing in EntityStoreSqlPolicy $oldServer with $CommerceServicesDbServer and $oldDatabase with $CommerceServicesGlobalDbName"
 					} elseif ($p.'$type' -eq 'Sitecore.Commerce.Plugin.Management.SitecoreConnectionPolicy, Sitecore.Commerce.Plugin.Management') {
-						if ($SiteHostHeaderName -ne "sxa.storefront.com") {
-							$p.Host = $SiteHostHeaderName	
-							Write-Host "Replacing in SitecoreConnectionPolicy 'sxa.storefront.com' with $SiteHostHeaderName"
+						if ($SitecoreConnectionPolicyHostName -ne "sxa.storefront.com") {
+							$p.Host = $SitecoreConnectionPolicyHostName
+							$p.UserName = $SitecoreConnectionPolicyUserName
+							$p.Password = $SitecoreConnectionPolicyUserPassword
+							Write-Host "Replacing in SitecoreConnectionPolicy 'sxa.storefront.com' with $SitecoreConnectionPolicyHostName"
 						}
 					}
 				}
@@ -144,11 +159,13 @@ Function Invoke-DeployCommerceContentTask {
 							$p.Database =  $CommerceServicesDbName
 							Write-Host "Replacing in EntityStoreSqlPolicy $oldServer with $CommerceServicesDbServer and $oldDatabase with $CommerceServicesDbName"
 						} elseif ($p.'$type' -eq 'Sitecore.Commerce.Plugin.Management.SitecoreConnectionPolicy, Sitecore.Commerce.Plugin.Management') {
-							if ($SiteHostHeaderName -ne "sxa.storefront.com") {
+							if ($SitecoreConnectionPolicyHostName -ne "sxa.storefront.com") {
 								$oldHost = $p.Host;
 								$Writejson = $true
-								$p.Host =  $SiteHostHeaderName
-								Write-Host "Replacing SiteHostHeaderName $oldHost with $SiteHostHeaderName"
+								$p.Host = $SitecoreConnectionPolicyHostName
+								$p.UserName = $SitecoreConnectionPolicyUserName
+								$p.Password = $SitecoreConnectionPolicyUserPassword
+								Write-Host "Replacing SiteHostHeaderName $oldHost with $SitecoreConnectionPolicyHostName"
 							}
 						} elseif ($p.'$type' -eq 'Sitecore.Commerce.Plugin.Search.Solr.SolrSearchPolicy, Sitecore.Commerce.Plugin.Search.Solr') {
 							$p.SolrUrl = $SolrUrl;
@@ -237,18 +254,18 @@ Function Invoke-DeployCommerceContentTask {
 			}
 			{($_ -match "CommerceShops") -or ($_ -match "CommerceAuthoring") -or ($_ -match "CommerceMinions")}  {
 				# Copy the the CommerceServices files to the $Name Services
-				Write-Host "Copying Commerce Services from $global:opsServicePath to $PhysicalPath" -ForegroundColor Yellow ;
-				Copy-Item -Path $global:opsServicePath -Destination $PhysicalPath -Force -Recurse
-				Write-Host "$($_) Services extraction completed" -ForegroundColor Green ;
+				#Write-Host "Copying Commerce Services from $global:opsServicePath to $PhysicalPath" -ForegroundColor Yellow ;
+				#Copy-Item -Path $global:opsServicePath -Destination $PhysicalPath -Force -Recurse
+				#Write-Host "$($_) Services extraction completed" -ForegroundColor Green ;
 
-				$commerceServicesLogDir = $(Join-Path -Path $PhysicalPath -ChildPath "wwwroot\logs")
-				if(-not (Test-Path -Path $commerceServicesLogDir)) {                      
-					Write-Host "Creating Commerce Services logs directory at: $commerceServicesLogDir"
-					New-Item -Path $PhysicalPath -Name "wwwroot\logs" -ItemType "directory"
-				}
+				#$commerceServicesLogDir = $(Join-Path -Path $PhysicalPath -ChildPath "wwwroot\logs")
+				#if(-not (Test-Path -Path $commerceServicesLogDir)) {                      
+				#	Write-Host "Creating Commerce Services logs directory at: $commerceServicesLogDir"
+				#	New-Item -Path $PhysicalPath -Name "wwwroot\logs" -ItemType "directory"
+				#}
 				
-				Write-Host "Granting full access to $UserName to logs directory: $commerceServicesLogDir"
-				GrantFullReadWriteAccessToFile -Path $commerceServicesLogDir  -UserName "$($UserName)"
+				#Write-Host "Granting full access to $UserName to logs directory: $commerceServicesLogDir"
+				#GrantFullReadWriteAccessToFile -Path $commerceServicesLogDir  -UserName "$($UserName)"
 
 				# Set the proper environment name
 				$pathToJson  = $(Join-Path -Path $PhysicalPath -ChildPath "wwwroot\config.json")
