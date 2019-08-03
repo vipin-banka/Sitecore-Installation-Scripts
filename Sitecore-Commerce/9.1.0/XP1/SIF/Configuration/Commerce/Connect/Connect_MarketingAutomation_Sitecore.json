@@ -1,0 +1,40 @@
+{
+  "Parameters": {
+    "ModuleFullPath": {
+      "Type": "string",
+      "Description": "The path to the Commerce Marketing Automation zip."
+    },    
+    "ModulesDirDst": {
+      "Type": "string",
+      "Description": "The path to modules directory."
+    },
+    "BaseUrl": {
+      "Type": "string",
+      "Description": "The utility pages base url."
+    }
+  },
+  "Variables": {
+  },
+  "Modules": [
+    "SitecoreUtilityTasks"
+  ],
+  "Tasks": {
+    "CheckPaths": {
+      "Type": "EnsurePath",
+      "Params": {
+        "Exists": [
+          "[parameter('ModuleFullPath')]",
+          "[parameter('ModulesDirDst')]"
+        ]
+      }
+    },
+    "InstallModule": {
+      "Type": "InstallModule",
+      "Params": {
+        "ModuleFullPath": "[parameter('ModuleFullPath')]",
+        "ModulesDirDst": "[parameter('ModulesDirDst')]",
+        "BaseUrl": "[parameter('BaseUrl')]"
+      }
+    }
+  }
+}

@@ -40,19 +40,19 @@
   },
   "Modules": ["InitializeCommerce"],
   "Tasks": {
-    "ApplyCertificate": {
-      "Type": "ApplyCertificate",
-      "Params": {
-        "EngineConnectIncludeDir": "[parameter('EngineConnectIncludeDir')]",
-        "CertificateThumbprint": "[variable('Security.CertificateThumbprint')]",
-        "CommerceServicesPathCollection": [
-          "[variable('CommerceOpsPhysicalPath')]",
-          "[variable('CommerceShopsPhysicalPath')]",
-          "[variable('CommerceAuthoringPhysicalPath')]",
-          "[variable('CommerceMinionsPhysicalPath')]"
-        ]
-      }
-    },
+    //"ApplyCertificate": {
+    //  "Type": "ApplyCertificate",
+    //  "Params": {
+    //    "EngineConnectIncludeDir": "[parameter('EngineConnectIncludeDir')]",
+    //    "CertificateThumbprint": "[variable('Security.CertificateThumbprint')]",
+    //    "CommerceServicesPathCollection": [
+    //      "[variable('CommerceOpsPhysicalPath')]",
+    //      "[variable('CommerceShopsPhysicalPath')]",
+    //      "[variable('CommerceAuthoringPhysicalPath')]",
+    //      "[variable('CommerceMinionsPhysicalPath')]"
+    //    ]
+    //  }
+    //},
     "UpdateShopsHostname": {
       "Skip": "[not(parameter('CommerceServicesHostPostfix'))]",
       "Type": "UpdateShopsHostname",
