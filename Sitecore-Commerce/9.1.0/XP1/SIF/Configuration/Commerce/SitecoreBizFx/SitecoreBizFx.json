@@ -49,10 +49,15 @@
     "SitecoreIdentityServerUrl": {
       "Type": "string",
       "Description": "Sitecore Identity Server Url."
+    },
+    "CommerceServicesPostfix": {
+      "Type": "string",
+      "Description": "The Commerce Engine postfix for services names"
     }
   },
   "Variables": {
-    "SitecoreBizFxPhysicalPath": "[joinpath(parameter('CommerceInstallRoot'), parameter('SitecoreBizFxServerName'))]",
+	"SitecoreBizFxName": "[joinpath(parameter('SitecoreBizFxServerName'), parameter('CommerceServicesPostfix'))]",
+    "SitecoreBizFxPhysicalPath": "[joinpath(parameter('CommerceInstallRoot'), parameter('SitecoreBizFxName'))]",
     // The name dns name of the root certificate.
     "Root.Cert.DnsName": "[concat('DO_NOT_TRUST_', parameter('RootCertName'))]",
     "Root.Cert.Store": "cert:\\LocalMachine\\Root",
@@ -70,7 +75,7 @@
         "CommerceServicesHostPostfix": "[parameter('CommerceServicesHostPostfix')]",
         "CommerceInstallRoot": "[parameter('CommerceInstallRoot')]",
         "HostPrefix": "bizfx",
-        "WebsiteName": "[parameter('SitecoreBizFxServerName')]",
+        "WebsiteName": "[variable('SitecoreBizFxName')]",
         "WebsitePort": "[parameter('SitecoreBizFxPort')]",
         "UserDomain": "[parameter('UserDomain')]",
         "UserName": "[parameter('UserName')]",
@@ -80,7 +85,7 @@
     "DeployCommerceContent": {
       "Type": "DeployCommerceContent",
       "Params": {
-        "Name": "[parameter('SitecoreBizFxServerName')]",
+        "Name": "BizFx",
         "ServicesContentPath": "[parameter('SitecoreBizFxServicesContentPath')]",
         "SitecoreBizFxPort": "[parameter('SitecoreBizFxPort')]",
         "CommerceAuthoringServicesPort": "[parameter('CommerceAuthoringServicesPort')]",
@@ -94,7 +99,7 @@
       "Description": "Starts the app pool.",
       "Type": "ManageAppPool",
       "Params": {
-        "Name": "[parameter('SitecoreBizFxServerName')]",
+        "Name": "[variable('SitecoreBizFxName')]",
         "Action": "Start"
       }
     },
@@ -102,7 +107,7 @@
       "Description": "Starts the website.",
       "Type": "ManageWebsite",
       "Params": {
-        "Name": "[parameter('SitecoreBizFxServerName')]",
+        "Name": "[variable('SitecoreBizFxName')]",
         "Action": "Start"
       }
     }
