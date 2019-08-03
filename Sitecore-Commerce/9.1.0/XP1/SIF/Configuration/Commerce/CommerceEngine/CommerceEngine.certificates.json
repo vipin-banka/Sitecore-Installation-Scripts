@@ -1,0 +1,73 @@
+﻿{
+  "Parameters": {
+    "CommerceEngineCertificateName": { "Type": "string", "Description": "The Commerce Engine certificate name for communication between Engine and Storefront." },
+    "RootCertFileName": { "Type": "string", "Description": "The file name of the root certificate to be created.", "DefaultValue": "SitecoreRootCert" },
+    "CertPath": { "Type": "string", "Description": "The physical path on disk where certificates will be stored.", "DefaultValue": "c:\\certificates" },
+    "CommerceServicesHostPostfix": { "Type": "string", "DefaultValue": "", "Description": "The postfix for Commerce Engine services host names" },
+    "CreateCommerceEngineClientCertificate": {
+      "Type": "string",
+      "Description": "if not empty commerce engine client certificate will be created."
+    },
+    "CreateCommerceEngineServerCertificate": {
+      "Type": "string",
+      "Description": "if not empty commerce engine service certificate with wildcard will be created."
+    },
+    "CreateCommerceEngineLocalhostServerCertificate": {
+      "Type": "string",
+      "Description": "if not empty commerce engine localhost server certificate will be created."
+    }
+  },
+  "Variables": {
+    // The name dns name of the root certificate.
+    "Root.Cert.DnsName": "[concat('DO_NOT_TRUST_', parameter('RootCertFileName'))]",
+    // The certificate store for the root certificate.
+    "Root.Cert.Store": "cert:\\LocalMachine\\Root",
+    "Client.Cert.Store": "cert:\\LocalMachine\\My"
+  },
+  "Modules": [
+    "ManageCommerceService",
+    "DeployCommerceDatabase",
+    "DeployCommerceContent",
+    "WindowsLocal",
+    "SitecoreUtilityTasks"
+  ],
+  "Tasks": {
+    "CreateSignedEngineCert": {
+	  "Skip": "[not(parameter('CreateCommerceEngineClientCertificate'))]",
+      "Type": "NewSignedCertificate",
+      "Params": {
+        "Signer": "[GetCertificate(variable('Root.Cert.DnsName'), variable('Root.Cert.Store'))]",
+        "Path": "[parameter('CertPath')]",
+        "CertStoreLocation": "[variable('Client.Cert.Store')]",
+        "Name": "[parameter('CommerceEngineCertificateName')]",
+        "DnsName": "[parameter('CommerceEngineCertificateName')]",
+        "IncludePrivateKey": true
+      }
+    },
+    "CreateSignedCert": {
+      "Skip": "[not(parameter('CreateCommerceEngineServerCertificate'))]",
+      "Type": "NewSignedCertificate",
+      "Params": {
+        "Signer": "[GetCertificate(variable('Root.Cert.DnsName'), variable('Root.Cert.Store'))]",
+        "Path": "[parameter('CertPath')]",
+        "FriendlyName": "Commerce Engine SSL Certificate",
+        "CertStoreLocation": "[variable('Client.Cert.Store')]",
+        "Name": "Commerce Engine SSL Certificate",
+        "DnsName": "[concat('*.', parameter('CommerceServicesHostPostfix'))]",
+        "IncludePrivateKey": true
+      }
+    },
+    "CreateLocalhostSignedCert": {
+      "Skip": "[not(parameter('CreateCommerceEngineLocalhostServerCertificate'))]",
+      "Type": "NewCommerceSignedCertificate",
+      "Params": {
+        "Signer": "[GetCertificate(variable('Root.Cert.DnsName'), variable('Root.Cert.Store'))]",
+        "Path": "[parameter('CertPath')]",
+        "FriendlyName": "Commerce Engine SSL Localhost Certificate",
+        "CertStoreLocation": "[variable('Client.Cert.Store')]",
+        "Name": "localhost",
+        "DnsName": "localhost"
+      }
+    }
+  }
+}
