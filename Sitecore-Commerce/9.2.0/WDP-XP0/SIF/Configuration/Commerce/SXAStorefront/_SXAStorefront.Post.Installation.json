@@ -9,6 +9,16 @@
           "Type": "string",
           "Description": "The sitecore site content path.",
           "DefaultValue": ""
+        },
+        "BizFxUrl": {
+          "Type": "string",
+          "Description": "Bizfx app url",
+          "DefaultValue": ""
+        },
+        "BaseUrl": {
+          "Type": "string",
+          "Description": "Base url for sitecore utility pages.",
+          "DefaultValue": ""
         }
     },
     "Variables": {
@@ -16,7 +26,8 @@
       "WebConfig": "[concat(parameter('InstallDir'), '\\Web.Config')]"
     },
     "Modules": [
-        "MergeWebConfig"
+        "MergeWebConfig",
+		"SitecoreUtilityTasks"
     ],
     "Tasks": {
         "MergeWebConfig": {
@@ -25,6 +36,13 @@
                 "MergeTool": "[parameter('MergeToolFullPath')]",
                 "InputFile": "[variable('InputFile')]",
                 "WebConfig": "[variable('WebConfig')]"
+            }
+        },
+        "UpdateBizFxAppUrl": {
+            "Type": "UpdateBusinessToolsAppUrl",
+            "Params": {
+                "BizFxUrl": "[parameter('MergeToolFullPath')]",
+                "BaseUrl": "[variable('InputFile')]"
             }
         }
     }

@@ -929,6 +929,8 @@
     },
     "CEConnect-EnableDataProvider:Config.Dir": "[variable('EngineConnect.IncludeDir')]",
     "CEConnect-GenerateCatalogTemplates:Base.Url": "[concat(variable('Modules.BaseUrl'), '/GenerateCatalogTemplates.aspx')]",
+	"SXAStorefront:BizFxUrl": "[variable('Engine.BizFxUrl')]",
+	"SXAStorefront:BaseUrl": "[variable('Modules.BaseUrl')]",
     "SXAStorefront-CreateDefaultTenantAndSite:Site.RootUrl": "[variable('Site.RootUrl')]",
     "SXAStorefront-CreateDefaultTenantAndSite:Sitecore.Username": "[variable('SitecoreAdminName')]",
     "SXAStorefront-CreateDefaultTenantAndSite:Project.ConfigIncludeDir": "[concat(parameter('InstallDir'), '\\App_Config\\Include\\Z.Foundation.Overrides')]",
