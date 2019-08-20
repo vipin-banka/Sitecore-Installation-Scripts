@@ -5,6 +5,11 @@
       "Description": "The name of the site.",
       "DefaultValue": ""
     },
+    "SiteHostHeaderName": {
+      "Type": "string",
+      "Description": "The host header name of the site to be deployed.",
+      "DefaultValue": ""
+    },
     "SiteRootUrl": {
       "Type": "string",
       "Description": "Site root url.",
@@ -23,6 +28,11 @@
     "ProjectConfigIncludeDir": {
       "Type": "string",
       "Description": "Path of the config directory for project configurations.",
+      "DefaultValue": ""
+    },
+    "ModulesBaseUrl": {
+      "Type": "string",
+      "Description": "The utility pages base url.",
       "DefaultValue": ""
     },
     "SkipInstallDefaultStorefront": {
@@ -66,6 +76,14 @@
         "SiteName": "",
         "SitecoreUsername": "[variable('Sitecore.Username')]",
         "SitecoreUserPassword": "[parameter('SitecoreUserPassword')]"
+      }
+    },
+    "UpdateStorefrontHostname": {
+      "Skip": "[parameter('SkipInstallDefaultStorefront')]",
+      "Type": "UpdateHostname",
+      "Params": {
+        "BaseUrl": "[parameter('ModulesBaseUrl')]",
+        "Hostname": "[parameter('SiteHostHeaderName')]"
       }
     },
     "DisableSPEWebAPI": {

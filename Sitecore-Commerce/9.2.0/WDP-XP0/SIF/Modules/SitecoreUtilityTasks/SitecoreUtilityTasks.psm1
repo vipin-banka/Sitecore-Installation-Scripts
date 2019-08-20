@@ -451,6 +451,53 @@ Function Invoke-ClearRedisTask {
     }
 }
 
+Function Invoke-UpdateHostnameTask {
+    [CmdletBinding()]
+    param(
+        [Parameter(Mandatory=$true)]
+        [string]$Hostname,
+        [Parameter(Mandatory=$true)]
+        [string]$BaseUrl
+    )
+
+    Write-Host "Updating hostname in storefront site definition: " $Hostname -ForegroundColor Green ; 
+    $urlUpdateHostname = $BaseUrl + "/UpdateHostName.aspx?hostname=" + $Hostname
+    Write-Host $urlUpdateHostname
+    Invoke-RestMethod $urlUpdateHostname -TimeoutSec 720
+}
+
+Function Invoke-UpdateBusinessToolsAppUrlTask {
+    [CmdletBinding()]
+    param(
+        [Parameter(Mandatory=$true)]
+        [string]$BizFxUrl,
+        [Parameter(Mandatory=$true)]
+        [string]$BaseUrl
+    )
+
+    Write-Host "Updating business application Url in Sitecore core database to: " $BizFxUrl -ForegroundColor Green ; 
+    $urlUpdateBusinessToolsAppUrl = $BaseUrl + "/UpdateBusinessToolsAppUrl.aspx?url=" + $BizFxUrl
+    Write-Host $urlUpdateBusinessToolsAppUrl
+    Invoke-RestMethod $urlUpdateBusinessToolsAppUrl -TimeoutSec 720
+}
+
+Function Invoke-CreateCommerceUserTask {
+    [CmdletBinding()]
+    param(
+        [Parameter(Mandatory=$true)]
+        [string]$Username,
+        [Parameter(Mandatory=$true)]
+        [string]$Password,
+		[Parameter(Mandatory=$true)]
+        [string]$BaseUrl
+    )
+
+    Write-Host "Create a user to access Sitecore content using Item service from commerce engine: " $Username -ForegroundColor Green ; 
+    $url = $BaseUrl + "/CreateUser.aspx?username=" + $Username + "&password=" + $Password
+    Write-Host $url
+    Invoke-RestMethod $url -TimeoutSec 720
+}
+
 Register-SitecoreInstallExtension -Command Invoke-NewCommerceSignedCertificateTask -As NewCommerceSignedCertificate -Type Task -Force
 Register-SitecoreInstallExtension -Command Invoke-InstallModuleTask -As InstallModule -Type Task -Force
 Register-SitecoreInstallExtension -Command Invoke-EnableConfigFilesTask -As EnableConfigFiles -Type Task -Force
@@ -463,6 +510,10 @@ Register-SitecoreInstallExtension -Command Invoke-CreateRoleTask -As CreateRole 
 Register-SitecoreInstallExtension -Command Invoke-AddRolesToUserTask -As AddRolesToUser -Type Task -Force
 Register-SitecoreInstallExtension -Command Invoke-AddRoleToRoleTask -As AddRoleToRole -Type Task -Force
 Register-SitecoreInstallExtension -Command Invoke-ClearRedisTask -As ClearRedis -Type Task -Force
+Register-SitecoreInstallExtension -Command Invoke-UpdateHostnameTask -As UpdateHostname -Type Task -Force
+Register-SitecoreInstallExtension -Command Invoke-UpdateBusinessToolsAppUrlTask -As UpdateBusinessToolsAppUrl -Type Task -Force
+Register-SitecoreInstallExtension -Command Invoke-CreateCommerceUserTask -As CreateCommerceUser -Type Task -Force
+
 # SIG # Begin signature block
 # MIIXwQYJKoZIhvcNAQcCoIIXsjCCF64CAQExCzAJBgUrDgMCGgUAMGkGCisGAQQB
 # gjcCAQSgWzBZMDQGCisGAQQBgjcCAR4wJgIDAQAABBAfzDtgWUsITrck0sYpfvNR

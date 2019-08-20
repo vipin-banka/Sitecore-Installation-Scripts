@@ -844,6 +844,10 @@
       "Type": "string",
       "Reference": "SiteName"
     },
+    "SXAStorefront-CreateDefaultTenantAndSite:SiteHostHeaderName": {
+      "Type": "string",
+      "Reference": "SiteHostHeaderName"
+    },
     "SXAStorefront-CreateDefaultTenantAndSite:SitecoreUserPassword": {
       "Type": "string",
       "Reference": "SitecoreUserPassword"
@@ -928,7 +932,8 @@
     "SXAStorefront-CreateDefaultTenantAndSite:Site.RootUrl": "[variable('Site.RootUrl')]",
     "SXAStorefront-CreateDefaultTenantAndSite:Sitecore.Username": "[variable('SitecoreAdminName')]",
     "SXAStorefront-CreateDefaultTenantAndSite:Project.ConfigIncludeDir": "[concat(parameter('InstallDir'), '\\App_Config\\Include\\Z.Foundation.Overrides')]",
-    "Publish-Commerce:Base.Url": "[variable('Modules.BaseUrl')]",
+    "SXAStorefront-CreateDefaultTenantAndSite:Modules.BaseUrl": "[variable('Modules.BaseUrl')]",
+	"Publish-Commerce:Base.Url": "[variable('Modules.BaseUrl')]",
     "CEConnect-EnableIndexing:Config.Dir": "[variable('EngineConnect.IncludeDir')]",
     "RebuildIndexes:Base.Url": "[variable('Modules.BaseUrl')]",
     "RebuildDescendants:Base.Url": "[variable('Modules.BaseUrl')]"
