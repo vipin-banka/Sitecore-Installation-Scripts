@@ -1,13 +1,45 @@
 ﻿{
   "Parameters": {
-	"CommerceServicesDbServer": { "Type": "string", "Description": "Commerce Engine database server name" },		
-    "CommerceServicesDbName": { "Type": "string", "Description": "Commerce Services database name" },
-    "CommerceServicesGlobalDbName": { "Type": "string", "Description": "Commerce Services Global database name" },
-    "SitecoreDbServer": { "Type": "string", "Description": "Sitecore database server name" },
-    "SitecoreCoreDbName": { "Type": "string", "Description": "Sitecore Core database name" },
-    "CommerceEngineDacPac": { "Type": "string", "Description": "Commerce Engine DacPac" },
-    "UserDomain": { "Type": "string", "DefaultValue": "$env:COMPUTERNAME" },
-    "UserName": { "Type": "string", "Description": "User Name for Commerce Services App Pool" }
+	"CommerceServicesDbServer": 
+	{ 
+		"Type": "string", 
+		"Description": "Commerce Engine database server name" 
+	},		
+    "CommerceServicesDbName": 
+	{ 
+		"Type": "string", 
+		"Description": "Commerce Services database name" 
+	},
+    "CommerceServicesGlobalDbName": 
+	{ 
+		"Type": "string", 
+		"Description": "Commerce Services Global database name" 
+	},
+    "SitecoreDbServer": 
+	{ 
+		"Type": "string", 
+		"Description": "Sitecore database server name" 
+	},
+    "SitecoreCoreDbName": 
+	{ 
+		"Type": "string", 
+		"Description": "Sitecore Core database name" 
+	},
+    "CommerceEngineDacPac": 
+	{ 
+		"Type": "string", 
+		"Description": "Commerce Engine DacPac" 
+	},
+    "UserDomain": 
+	{ 
+		"Type": "string", 
+		"DefaultValue": "$env:COMPUTERNAME" 
+	},
+    "UserName": 
+	{ 
+		"Type": "string", 
+		"Description": "User Name for Commerce Services App Pool" 
+	}
   },
   "Variables": {
   },

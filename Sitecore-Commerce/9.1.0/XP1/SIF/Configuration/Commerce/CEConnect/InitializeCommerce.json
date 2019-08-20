@@ -24,13 +24,29 @@
       "Type": "string",
       "DefaultValue": "",
       "Description": "The postfix for Commerce Engine services host names"
+    },
+    "CommerceOpsServicesPrefix": {
+      "Type": "string",
+      "Description": "The Commerce Engine prefix for ops service name"
+    },
+    "CommerceShopsServicesPrefix": {
+      "Type": "string",
+      "Description": "The Commerce Engine prefix for shops service name"
+    },
+    "CommerceAuthoringServicesPrefix": {
+      "Type": "string",
+      "Description": "The Commerce Engine prefix for authoring service name"
+    },
+    "CommerceMinionsServicesPrefix": {
+      "Type": "string",
+      "Description": "The Commerce Engine prefix for minions service name"
     }
   },
   "Variables": {
-    "CommerceOps": "[concat('CommerceOps_', parameter('CommerceServicesPostfix'))]",
-    "CommerceShops": "[concat('CommerceShops_', parameter('CommerceServicesPostfix'))]",
-    "CommerceAuthoring": "[concat('CommerceAuthoring_', parameter('CommerceServicesPostfix'))]",
-    "CommerceMinions": "[concat('CommerceMinions_', parameter('CommerceServicesPostfix'))]",
+    "CommerceOps": "[concat(parameter('CommerceOpsServicesPrefix'), parameter('CommerceServicesPostfix'))]",
+    "CommerceShops": "[concat(parameter('CommerceShopsServicesPrefix'), parameter('CommerceServicesPostfix'))]",
+    "CommerceAuthoring": "[concat(parameter('CommerceAuthoringServicesPrefix'), parameter('CommerceServicesPostfix'))]",
+    "CommerceMinions": "[concat(parameter('CommerceMinionsServicesPrefix'), parameter('CommerceServicesPostfix'))]",
     "CommerceOpsPhysicalPath": "[joinpath(parameter('CommerceInstallRoot'),  variable('CommerceOps'))]",
     "CommerceShopsPhysicalPath": "[joinpath(parameter('CommerceInstallRoot'),  variable('CommerceShops'))]",
     "CommerceAuthoringPhysicalPath": "[joinpath(parameter('CommerceInstallRoot'),  variable('CommerceAuthoring'))]",
@@ -40,19 +56,19 @@
   },
   "Modules": ["InitializeCommerce"],
   "Tasks": {
-    //"ApplyCertificate": {
-    //  "Type": "ApplyCertificate",
-    //  "Params": {
-    //    "EngineConnectIncludeDir": "[parameter('EngineConnectIncludeDir')]",
-    //    "CertificateThumbprint": "[variable('Security.CertificateThumbprint')]",
-    //    "CommerceServicesPathCollection": [
-    //      "[variable('CommerceOpsPhysicalPath')]",
-    //      "[variable('CommerceShopsPhysicalPath')]",
-    //      "[variable('CommerceAuthoringPhysicalPath')]",
-    //      "[variable('CommerceMinionsPhysicalPath')]"
-    //    ]
-    //  }
-    //},
+    "ApplyCertificate": {
+      "Type": "ApplyCertificate",
+      "Params": {
+        "EngineConnectIncludeDir": "[parameter('EngineConnectIncludeDir')]",
+        "CertificateThumbprint": "[variable('Security.CertificateThumbprint')]",
+        "CommerceServicesPathCollection": [
+          //"[variable('CommerceOpsPhysicalPath')]",
+          //"[variable('CommerceShopsPhysicalPath')]",
+          //"[variable('CommerceAuthoringPhysicalPath')]",
+          //"[variable('CommerceMinionsPhysicalPath')]"
+        ]
+      }
+    },
     "UpdateShopsHostname": {
       "Skip": "[not(parameter('CommerceServicesHostPostfix'))]",
       "Type": "UpdateShopsHostname",

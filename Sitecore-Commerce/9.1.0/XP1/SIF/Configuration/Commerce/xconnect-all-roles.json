@@ -246,6 +246,10 @@
     "SitecoreIdentityServerHostName": {
       "Type": "string",
       "Description": "Hostname of Sitecore Identity Server."
+    },
+    "XConnectModelsFileFullPath": {
+      "Type": "string",
+      "Description": "XConnectModels file full path."
     }
   },
   "Variables": {
@@ -274,7 +278,7 @@
       "Type": "InstallSitecoreConfiguration",
       "Params": {
         "Path": "[concat(parameter('BaseConfigurationFolder'), '\\Commerce\\Connect\\Connect.Copy.Models_xConnect.json')]",
-        "InstallRootDst": "[parameter('InstallDir')]",
+        "XConnectModelsFileFullPath": "[parameter('XConnectModelsFileFullPath')]",
         "XConnectInstallRootDst": "[parameter('XConnectInstallDir')]"
       }
     }

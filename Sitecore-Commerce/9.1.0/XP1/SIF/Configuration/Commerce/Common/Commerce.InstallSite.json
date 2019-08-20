@@ -1,14 +1,43 @@
 ﻿{
   "Parameters": {
-    "CommerceServicesHostPostfix": { "Type": "string", "DefaultValue": "", "Description": "The postfix for Commerce Engine services host names." },
-    "HostPrefix": { "Type": "string", "Description": "The prefix to the host name." },
-    "CommerceInstallRoot": { "Type": "string", "Description": "The root path of commerce services." },
-    "WebsiteName": { "Type": "string", "Description": "The new website name." },
-    "WebsitePort": { "Type": "string", "Description": "The website port" },
-    "UserDomain": { "Type": "string", "DefaultValue": "$env:COMPUTERNAME" },
-    "UserName": { "Type": "string", "Description": "User Name for website App Pool" },
-    "UserPassword": { "Type": "string", "Description": "User Password for website App Pool" },
-    "MinionInstance": { "Type": "string", "DefaultValue": "false", "Description": "Specifies whether the instance is the minion." }
+    "CommerceServicesHostPostfix": { 
+		"Type": "string", 
+		"DefaultValue": "", 
+		"Description": "The postfix for Commerce Engine services host names." 
+	},
+    "HostPrefix": { 
+		"Type": "string", 
+		"Description": "The prefix to the host name." 
+	},
+    "CommerceInstallRoot": { 
+		"Type": "string", 
+		"Description": "The root path of commerce services." 
+	},
+    "WebsiteName": { 
+		"Type": "string", 
+		"Description": "The new website name." 
+	},
+    "WebsitePort": { 
+		"Type": "string", 
+		"Description": "The website port" 
+	},
+    "UserDomain": { 
+		"Type": "string", 
+		"DefaultValue": "$env:COMPUTERNAME" 
+	},
+    "UserName": { 
+		"Type": "string", 
+		"Description": "User Name for website App Pool" 
+	},
+    "UserPassword": { 
+		"Type": "string", 
+		"Description": "User Password for website App Pool" 
+	},
+    "MinionInstance": { 
+		"Type": "string", 
+		"DefaultValue": "false", 
+		"Description": "Specifies whether the instance is the minion." 
+	}
   },
   "Variables": {
     "CommercePhysicalPath": "[joinpath(parameter('CommerceInstallRoot'), parameter('WebsiteName'))]",

@@ -246,6 +246,22 @@
     "SitecoreIdentityServerHostName": {
       "Type": "string",
       "Description": "Hostname of Sitecore Identity Server."
+    },
+    "CommerceOpsServicesPrefix": {
+      "Type": "string",
+      "Description": "The Commerce Engine prefix for ops service name"
+    },
+    "CommerceShopsServicesPrefix": {
+      "Type": "string",
+      "Description": "The Commerce Engine prefix for shops service name"
+    },
+    "CommerceAuthoringServicesPrefix": {
+      "Type": "string",
+      "Description": "The Commerce Engine prefix for authoring service name"
+    },
+    "CommerceMinionsServicesPrefix": {
+      "Type": "string",
+      "Description": "The Commerce Engine prefix for minions service name"
     }
   },
   "Variables": {
@@ -479,7 +495,11 @@
         "CommerceEngineCertificateName": "[parameter('CommerceEngineCertificateName')]",
         "CommerceServicesPostfix": "[parameter('CommerceServicesPostfix')]",
         "CommerceServicesHostPostfix": "[parameter('CommerceServicesHostPostfix')]",
-        "CommerceAuthoringServicesPort": "[parameter('CommerceAuthoringServicesPort')]"
+        "CommerceAuthoringServicesPort": "[parameter('CommerceAuthoringServicesPort')]",
+		"CommerceOpsServicesPrefix": "[parameter('CommerceOpsServicesPrefix')]",
+		"CommerceShopsServicesPrefix": "[parameter('CommerceShopsServicesPrefix')]",
+		"CommerceAuthoringServicesPrefix": "[parameter('CommerceAuthoringServicesPrefix')]",
+		"CommerceMinionsServicesPrefix": "[parameter('CommerceMinionsServicesPrefix')]"
       }
     },
     "InitializeCommerceEngine": {

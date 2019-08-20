@@ -1,8 +1,8 @@
 ﻿{
   "Parameters": {
-    "InstallRootDst": {
+    "XConnectModelsFileFullPath": {
       "Type": "string",
-      "Description": "Destination of the web site's root folder."
+      "Description": "xConnect Models File Full Path."
     },
     "XConnectInstallRootDst": {
       "Type": "string",
@@ -10,14 +10,13 @@
     }
   },
   "Variables": {
-    "XConnectModelSrc": "[joinpath(parameter('InstallRootDst'), '\\XConnectModels\\Sitecore.Commerce.Connect.XConnect.Models.json')]",
     "XConnectDst": "[joinpath(parameter('XConnectInstallRootDst'), '\\App_data\\Models')]"
   },
   "Tasks": {
     "CopyModelsToXConnect": {
       "Type": "Copy",
       "Params": {
-        "Source": "[variable('XConnectModelSrc')]",
+        "Source": "[parameter('XConnectModelsFileFullPath')]",
         "Destination": "[variable('XConnectDst')]"
       }
     }

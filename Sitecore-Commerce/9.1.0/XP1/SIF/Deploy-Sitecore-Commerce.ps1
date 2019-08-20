@@ -99,6 +99,7 @@ $params = @{
 		SitecoreConnectionPolicyUserName					= "commerceengine"
 		SitecoreConnectionPolicyUserPassword				= "P@ssw0rd"
 		CommerceEngineAllowedOrigins						= @("cd.$CommerceServicesHostPostfix")
+		XConnectModelsFileFullPath			          		= Resolve-Path -Path "..\XConnectModels\Sitecore.Commerce.Connect.XConnect.Models.json"
 	}
 
 if ($CommerceSearchProvider -eq "SOLR") {

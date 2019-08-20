@@ -1,34 +1,134 @@
 ﻿{
   "Parameters": {
-    "CommerceEngineCertificateName": { "Type": "string", "Description": "The Commerce Engine certificate name for communication between Engine and Storefront." },
-    "CommerceInstallRoot": { "Type": "string", "Description": "The root path of commerce services." },
-    "CommerceServicesDbServer": { "Type": "string", "Description": "Commerce Engine database server name" },		
-    "CommerceServicesDbName": { "Type": "string", "Description": "Commerce Services database name" },
-    "CommerceServicesGlobalDbName": { "Type": "string", "Description": "Commerce Services Global database name" },
-    "CommerceServicesPostfix": { "Type": "string", "Description": "The Commerce Engine postfix for services names"},
-    "CommerceServicesHostPostfix": { "Type": "string", "DefaultValue": "", "Description": "The postfix for Commerce Engine services host names" },
-    "CommerceSearchProvider": { "Type": "string", "Description": "The search provider used for the Commerce Engine - Accepted values are 'SOLR' and 'AZURE'" },
-    "SolrUrl": { "Type": "string", "DefaultValue": "https://localhost:8992/solr", "Description": "The Solr instance url." },
-    "SearchIndexPrefix": { "Type": "string", "DefaultValue": "", "Description": "The search index prefix." },
-    "EnvironmentsPrefix": { "Type": "string", "Description":  "The environments name prefix."  },
-    "AzureSearchServiceName": { "Type": "string", "DefaultValue": "", "Description": "The Azure search service name." },
-    "AzureSearchAdminKey": { "Type": "string", "DefaultValue": "", "Description": "The Azure search service admin key." },
-    "AzureSearchQueryKey": { "Type": "string", "DefaultValue": "", "Description": "The Azure search service query key." },
-    "SiteHostHeaderName": { "Type": "string", "Description": "The host header name of the Sitecore site." },
-    "CommerceAuthoringServicesPort": { "Type": "string", "Description": "CommerceAuthoring Services Port" },
-    "SitecoreBizFxPort": { "Type": "string", "Description": "Sitecore BizFx Server port" },
-    "SitecoreCommerceEnginePath": { "Type": "string", "Description": "Sitecore Commerce Engine Path" },
-    "UserDomain": { "Type": "string", "DefaultValue": "$env:COMPUTERNAME" },
-    "UserName": { "Type": "string", "Description": "User Name for Commerce Services App Pool" },
-    "UserPassword": { "Type": "string", "Description": "User Password for Commerce Services App Pool" },
-    "BraintreeAccount": { "Type": "psobject", "DefaultValue": {"MerchantId": "", "PublicKey": "", "PrivateKey": ""}, "Description": "Braintree account for Payment plugin." },
-    "BaseConfigurationFolder": { "Type": "string", "Description": "The base folder for SIF configuration." },
-    "SitecoreIdentityServerUrl": { "Type": "string", "Description": "Sitecore Identity Server Url." },
-	"CommerceEngineRoleName": { "Type": "string", "Description": "commerce engine role name." },
-	"HostPrefix": { "Type": "string", "Description": "commerce engine host prefix." },
-	"WebsiteNamePrefix": { "Type": "string", "Description": "commerce engine website name prefix." },
-	"WebsitePort": { "Type": "string", "Description": "commerce engine website port." },
-	"MinionInstance": { "Type": "string", "Description": "setup is for minion role.", "DefaultValue": "false" },
+    "CommerceEngineCertificateName": 
+	{ 
+		"Type": "string", 
+		"Description": "The Commerce Engine certificate name for communication between Engine and Storefront." 
+	},
+    "CommerceInstallRoot": { 
+		"Type": "string", 
+		"Description": "The root path of commerce services." 
+	},
+    "CommerceServicesDbServer": { 
+		"Type": "string", 
+		"Description": "Commerce Engine database server name" 
+	},		
+    "CommerceServicesDbName": { 
+		"Type": "string", 
+		"Description": "Commerce Services database name" 
+	},
+    "CommerceServicesGlobalDbName": { 
+		"Type": "string", 
+		"Description": "Commerce Services Global database name" 
+	},
+    "CommerceServicesPostfix": { 
+		"Type": "string", 
+		"Description": "The Commerce Engine postfix for services names"
+	},
+    "CommerceServicesHostPostfix": { 
+		"Type": "string", 
+		"DefaultValue": "", 
+		"Description": "The postfix for Commerce Engine services host names" 
+	},
+    "CommerceSearchProvider": { 
+		"Type": "string", 
+		"Description": "The search provider used for the Commerce Engine - Accepted values are 'SOLR' and 'AZURE'" 
+	},
+    "SolrUrl": { 
+		"Type": "string", 
+		"DefaultValue": "https://localhost:8992/solr", 
+		"Description": "The Solr instance url." 
+	},
+    "SearchIndexPrefix": { 
+		"Type": "string", 
+		"DefaultValue": "", 
+		"Description": "The search index prefix." 
+	},
+    "EnvironmentsPrefix": { 
+		"Type": "string", 
+		"Description":  "The environments name prefix."  
+	},
+    "AzureSearchServiceName": { 
+		"Type": "string", 
+		"DefaultValue": "", 
+		"Description": "The Azure search service name." 
+	},
+    "AzureSearchAdminKey": { 
+		"Type": "string", 
+		"DefaultValue": "", 
+		"Description": "The Azure search service admin key." 
+	},
+    "AzureSearchQueryKey": { 
+		"Type": "string", 
+		"DefaultValue": "", 
+		"Description": "The Azure search service query key." 
+	},
+    "SiteHostHeaderName": { 
+		"Type": "string", 
+		"Description": "The host header name of the Sitecore site." 
+	},
+    "CommerceAuthoringServicesPort": { 
+		"Type": "string", 
+		"Description": "CommerceAuthoring Services Port" 
+	},
+    "SitecoreBizFxPort": { 
+		"Type": "string", 
+		"Description": "Sitecore BizFx Server port" 
+	},
+    "SitecoreCommerceEnginePath": { 
+		"Type": "string", 
+		"Description": "Sitecore Commerce Engine Path" 
+	},
+    "UserDomain": { 
+		"Type": "string", 
+		"DefaultValue": "$env:COMPUTERNAME" 
+	},
+    "UserName": { 
+		"Type": "string", 
+		"Description": "User Name for Commerce Services App Pool" 
+	},
+    "UserPassword": { 
+		"Type": "string", 
+		"Description": "User Password for Commerce Services App Pool" 
+	},
+    "BraintreeAccount": { 
+		"Type": "psobject", 
+		"DefaultValue": {
+			"MerchantId": "", 
+			"PublicKey": "", 
+			"PrivateKey": ""
+		}, 
+		"Description": "Braintree account for Payment plugin." 
+	},
+    "BaseConfigurationFolder": { 
+		"Type": "string", 
+		"Description": "The base folder for SIF configuration." 
+	},
+    "SitecoreIdentityServerUrl": { 
+		"Type": "string", 
+		"Description": "Sitecore Identity Server Url." 
+	},
+	"CommerceEngineRoleName": { 
+		"Type": "string", 
+		"Description": "commerce engine role name." 
+	},
+	"HostPrefix": { 
+		"Type": "string", 
+		"Description": "commerce engine host prefix." 
+	},
+	"WebsiteNamePrefix": { 
+		"Type": "string", 
+		"Description": "commerce engine website name prefix." 
+	},
+	"WebsitePort": { 
+		"Type": "string", 
+		"Description": "commerce engine website port." 
+	},
+	"MinionInstance": { 
+		"Type": "string", 
+		"Description": "setup is for minion role.", 
+		"DefaultValue": "false" 
+	},
     "SitecoreConnectionPolicyHostName": {
       "Type": "string",
       "Description": "Hostname of Sitecore that will be used by commerce engine in SitecoreConnectionPolicy."
