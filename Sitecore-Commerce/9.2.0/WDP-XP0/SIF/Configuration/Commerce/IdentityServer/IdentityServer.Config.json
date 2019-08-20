@@ -1,0 +1,64 @@
+{
+  "Parameters": {
+    "CommerceInstallRoot": {
+      "Type": "string",
+      "Description": "The root path of commerce services.",
+      "DefaultValue": ""
+    },
+    "SitecoreIdentityServerApplicationName": {
+      "Type": "string",
+      "Description": "Application name of Sitecore Identity Server in the IIS",
+      "DefaultValue": ""
+    },
+    "CommerceServicesHostPostfix": {
+      "Type": "string",
+      "Description": "The postfix for Commerce Engine services host names",
+      "DefaultValue": ""
+    },
+    "CommerceAuthoringServicesPort": {
+      "Type": "string",
+      "Description": "The postfix for Commerce Engine services host names",
+      "DefaultValue": "5000"
+    },
+    "BizFxPort": {
+      "Type": "string",
+      "Description": "The postfix for Commerce Engine services host names",
+      "DefaultValue": "4200"
+    }
+  },
+  "Variables": {
+    "AuthoringLocalhost": "[concat('https://localhost:', parameter('CommerceAuthoringServicesPort'))]",
+    "BizfxLocalhost": "[concat('https://localhost:', parameter('BizFxPort'))]",
+    "Group1": "[concat(variable('BizfxLocalhost'), '|', variable('AuthoringLocalhost')))]",
+    "AuthoringUrl": "[concat('https://commerceauthoring.', parameter('CommerceServicesHostPostfix'))]",
+    "BizfxUrl": "[concat('https://bizfx.', parameter('CommerceServicesHostPostfix'))]",
+    "Group2": "[concat(variable('BizfxUrl'), '|', variable('AuthoringUrl'))]"
+  },
+  "Tasks": {
+    "UpdateAllowedCorsOriginsGroup1": {
+      "Type": "SetXml",
+      "Params": {
+        "FilePath": ".\\IdentityServer\\Sitecore.Commerce.IdentityServer.Host.xml",
+        "XPath": "//Settings/Sitecore/IdentityServer/Clients/CommerceClient/AllowedCorsOrigins/AllowedCorsOriginsGroup1",
+        "Value": "[variable('Group1')]"
+      }
+    },
+    "AddAllowedCorsOriginsGroup2": {
+      "Skip": "[not(parameter('CommerceServicesHostPostfix'))]",
+      "Type": "SetXml",
+      "Params": {
+        "FilePath": ".\\IdentityServer\\Sitecore.Commerce.IdentityServer.Host.xml",
+        "XPath": "//Settings/Sitecore/IdentityServer/Clients/CommerceClient/AllowedCorsOrigins",
+        "Element": "AllowedCorsOriginsGroup2",
+        "Value": "[variable('Group2')]"
+      }
+    },
+    "CopyIdentityServerCommerceConfiguration": {
+      "Type": "Copy",
+      "Params": {
+        "Source": ".\\IdentityServer\\Sitecore.Commerce.IdentityServer.Host.xml",
+        "Destination": "[joinpath(parameter('CommerceInstallRoot'),  concat(parameter('SitecoreIdentityServerApplicationName'), '\\Config\\production\\Sitecore.Commerce.IdentityServer.Host.xml'))]"
+      }
+    }
+  }
+}

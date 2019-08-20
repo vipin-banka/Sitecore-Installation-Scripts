@@ -1,0 +1,60 @@
+{
+  "Parameters": {
+    "ModuleFullPath": {
+      "Type": "string",
+      "Description": "The path to the zip module.",
+      "DefaultValue": ""
+    },
+    "ModulesDirDst": {
+      "Type": "string",
+      "Description": "The path to the module destination.",
+      "DefaultValue": ""
+    },
+    "BaseUrl": {
+      "Type": "string",
+      "Description": "The utility pages base url.",
+      "DefaultValue": ""
+    }
+  },
+  "Register":{
+    "Tasks": {
+        //"RemoveItem": "Remove-Item",
+        "WriteInformation": "Write-Information"
+    }
+  },  
+  "Modules": [
+    "SitecoreUtilityTasks"
+  ],
+  "Variables": {
+    "Module.FullPath": "[parameter('ModuleFullPath')]",
+    "Modules.DirDst": "[parameter('ModulesDirDst')]",
+    "Base.Url": "[parameter('BaseUrl')]"
+  },
+  "Tasks": {
+    "ECHO": {
+      "Type": "WriteInformation",
+      "Params": {
+          "MessageData": "[concat('VALUE: ', variable('Module.FullPath'))]",
+          "InformationAction": "Continue"
+      }
+    },
+
+    "CheckPaths": {
+      "Type": "EnsurePath",
+      "Params": {
+        "Exists": [
+          "[variable('Module.FullPath')]",
+          "[variable('Modules.DirDst')]"
+        ]
+      }
+    },
+    "InstallModule": {
+      "Type": "InstallModule",
+      "Params": {
+        "ModuleFullPath": "[variable('Module.FullPath')]",
+        "ModulesDirDst": "[variable('Modules.DirDst')]",
+        "BaseUrl": "[variable('Base.Url')]"
+      }
+    }
+  }
+}
