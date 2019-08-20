@@ -30,6 +30,11 @@
       "Description": "List of minion environments to initialize.",
       "DefaultValue": ""
     },
+    "CommerceServicesPrefix": {
+      "Type": "string",
+      "Description": "The Commerce Engine prefix for services names",
+      "DefaultValue": ""
+    },
     "CommerceServicesPostfix": {
       "Type": "string",
       "Description": "The Commerce Engine postfix for services names",
@@ -55,10 +60,10 @@
     "Sitecore.AdminAccount": "[parameter('SitecoreAdminAccount')]",
     "SitecoreIdentityServerGetTokenUrl": "[concat(parameter('SitecoreIdentityServerUrl'), '/connect/token')]",
 
-    "CommerceOps": "[concat('CommerceOps_', parameter('CommerceServicesPostfix'))]",
-    "CommerceShops": "[concat('CommerceShops_', parameter('CommerceServicesPostfix'))]",
-    "CommerceAuthoring": "[concat('CommerceAuthoring_', parameter('CommerceServicesPostfix'))]",
-    "CommerceMinions": "[concat('CommerceMinions_', parameter('CommerceServicesPostfix'))]",
+    "CommerceOps": "[concat(parameter('CommerceServicesPrefix'), concat('CommerceOps', parameter('CommerceServicesPostfix')))]",
+    "CommerceShops": "[concat(parameter('CommerceServicesPrefix'), concat('CommerceShops', parameter('CommerceServicesPostfix')))]",
+    "CommerceAuthoring": "[concat(parameter('CommerceServicesPrefix'), concat('CommerceAuthoring', parameter('CommerceServicesPostfix')))]",
+    "CommerceMinions": "[concat(parameter('CommerceServicesPrefix'), concat('CommerceMinions', parameter('CommerceServicesPostfix')))]",
     "CommerceOpsPhysicalPath": "[joinpath(parameter('CommerceInstallRoot'),  variable('CommerceOps'))]",
     "CommerceShopsPhysicalPath": "[joinpath(parameter('CommerceInstallRoot'),  variable('CommerceShops'))]",
     "CommerceAuthoringPhysicalPath": "[joinpath(parameter('CommerceInstallRoot'),  variable('CommerceAuthoring'))]",

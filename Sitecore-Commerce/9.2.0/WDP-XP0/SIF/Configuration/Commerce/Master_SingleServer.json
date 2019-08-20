@@ -110,6 +110,11 @@
       "Description": "The Commerce Engine global database name",
       "DefaultValue": ""
     },
+    "CommerceServicesPrefix": {
+      "Type": "string",
+      "Description": "The Commerce Engine prefix for services names",
+      "DefaultValue": ""
+    },
     "CommerceServicesPostfix": {
       "Type": "string",
       "Description": "The Commerce Engine postfix for services names",
@@ -442,6 +447,10 @@
     "CommerceEngine:CommerceServicesGlobalDbName": {
       "Type": "string",
       "Reference": "CommerceServicesGlobalDbName"
+    },
+    "CommerceEngine:CommerceServicesPrefix": {
+      "Type": "string",
+      "Reference": "CommerceServicesPrefix"
     },
     "CommerceEngine:CommerceServicesPostfix": {
       "Type": "string",
@@ -779,6 +788,10 @@
       "Type": "string",
       "Reference": "CommerceEngineCertificateName"
     },
+    "CEConnect-InitializeCommerce:CommerceServicesPrefix": {
+      "Type": "string",
+      "Reference": "CommerceServicesPrefix"
+    },
     "CEConnect-InitializeCommerce:CommerceServicesPostfix": {
       "Type": "string",
       "Reference": "CommerceServicesPostfix"
@@ -810,6 +823,10 @@
     "CommerceEngine-Initialize:MinionEnvironments": {
       "Type": "string[]",
       "Reference": "MinionEnvironments"
+    },
+    "CommerceEngine-Initialize:CommerceServicesPrefix": {
+      "Type": "string",
+      "Reference": "CommerceServicesPrefix"
     },
     "CommerceEngine-Initialize:CommerceServicesPostfix": {
       "Type": "string",

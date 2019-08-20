@@ -753,7 +753,7 @@
     "Engine.AuthoringUrl": "[parameter('EngineAuthoringUrl')]",
     "Engine.MinionsUrl": "[parameter('EngineMinionsUrl')]",
 
-    "CommerceEngine-Ops:Site.Name": "[concat('CommerceOps_', parameter('CommerceServicesPostfix'))]",
+    "CommerceEngine-Ops:Site.Name": "[concat(parameter('CommerceServicesPrefix'), concat('CommerceOps', parameter('CommerceServicesPostfix')))]",
     "CommerceEngine-Ops:Host.Prefix": "commerceops",
     "CommerceEngine-Ops:Environment.Name": "[concat(parameter('EnvironmentsPrefix'), 'Authoring')]",
     "CommerceEngine-Ops:Minion.Instance": "false",
@@ -761,7 +761,7 @@
     "CommerceEngine-Ops:Engine.AuthoringUrl": "[variable('Engine.AuthoringUrl')]",
     "CommerceEngine-Ops:Engine.MinionsUrl": "[variable('Engine.MinionsUrl')]",
 
-    "CommerceEngine-Shops:Site.Name": "[concat('CommerceShops_', parameter('CommerceServicesPostfix'))]",
+    "CommerceEngine-Shops:Site.Name": "[concat(parameter('CommerceServicesPrefix'), concat('CommerceShops', parameter('CommerceServicesPostfix')))]",
     "CommerceEngine-Shops:Host.Prefix": "commerceshops",
     "CommerceEngine-Shops:Environment.Name": "[concat(parameter('EnvironmentsPrefix'), 'Shops')]",
     "CommerceEngine-Shops:Minion.Instance": "false",
@@ -769,7 +769,7 @@
     "CommerceEngine-Shops:Engine.AuthoringUrl": "[variable('Engine.AuthoringUrl')]",
     "CommerceEngine-Shops:Engine.MinionsUrl": "[variable('Engine.MinionsUrl')]",
 
-    "CommerceEngine-Authoring:Site.Name": "[concat('CommerceAuthoring_', parameter('CommerceServicesPostfix'))]",
+    "CommerceEngine-Authoring:Site.Name": "[concat(parameter('CommerceServicesPrefix'), concat('CommerceAuthoring', parameter('CommerceServicesPostfix')))]",
     "CommerceEngine-Authoring:Host.Prefix": "commerceauthoring",
     "CommerceEngine-Authoring:Environment.Name": "[concat(parameter('EnvironmentsPrefix'), 'Authoring')]",
     "CommerceEngine-Authoring:Minion.Instance": "false",
@@ -777,7 +777,7 @@
     "CommerceEngine-Authoring:Engine.AuthoringUrl": "[variable('Engine.AuthoringUrl')]",
     "CommerceEngine-Authoring:Engine.MinionsUrl": "[variable('Engine.MinionsUrl')]",
 
-    "CommerceEngine-Minions:Site.Name": "[concat('CommerceMinions_', parameter('CommerceServicesPostfix'))]",
+    "CommerceEngine-Minions:Site.Name": "[concat(parameter('CommerceServicesPrefix'), concat('CommerceMinions', parameter('CommerceServicesPostfix')))]",
     "CommerceEngine-Minions:Host.Prefix": "commerceminions",
     "CommerceEngine-Minions:Environment.Name": "[concat(parameter('EnvironmentsPrefix'), 'Minions')]",
     "CommerceEngine-Minions:Minion.Instance": "true",
