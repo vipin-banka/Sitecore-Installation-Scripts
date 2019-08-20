@@ -871,7 +871,7 @@
     "Engine.AuthoringUrl": "[if(variable('CommerceServicesHostPostfix.Not.Empty'), concat('https://commerceauthoring.', parameter('CommerceServicesHostPostfix')), concat('https://localhost:', parameter('CommerceAuthoringServicesPort')))]",
     "Engine.MinionsUrl": "[if(variable('CommerceServicesHostPostfix.Not.Empty'), concat('https://commerceminions.', parameter('CommerceServicesHostPostfix')), concat('https://localhost:', parameter('CommerceMinionsServicesPort')))]",
     "SitecoreAdminName": "[concat(parameter('SitecoreDomain'), concat('\\', parameter('SitecoreUsername')))]",
-    "BizFx:Site.Name": "[parameter('BizFxSiteName')]",
+    "BizFx:Site.Name": "[concat(parameter('CommerceServicesPrefix'), parameter('BizFxSiteName'))]",
     "BizFx:Host.Prefix": "bizfx",
     "BizFx:Engine.BizFxUrl": "[variable('Engine.BizFxUrl')]",
     "BizFx:Engine.AuthoringUrl": "[variable('Engine.AuthoringUrl')]",
