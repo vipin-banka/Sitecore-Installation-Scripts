@@ -64,6 +64,7 @@
             "Params": {
                 "Path": "[parameter('CertPath')]",
                 "Name": "[parameter('RootCertFileName')]",
+				"FriendlyName": "[parameter('RootCertFileName')]",
                 "DnsName": [
                     "[variable('Root.Cert.DnsName')]",
                     "127.0.0.1"
@@ -79,9 +80,11 @@
                 "Signer": "[GetCertificate(variable('Root.Cert.DnsName'), variable('Root.Cert.Store'))]",
                 "Path": "[parameter('CertPath')]",
                 "CertStoreLocation": "[variable('Client.Cert.Store')]",
+				"FriendlyName": "[parameter('CertificateName')]",
                 "Name": "[parameter('CertificateName')]",
                 "DnsName": [
                     "[parameter('CertificateName')]",
+					"[concat('*.', parameter('CertificateName'))]",
                     "127.0.0.1"
                 ],
                 "IncludePrivateKey": true,

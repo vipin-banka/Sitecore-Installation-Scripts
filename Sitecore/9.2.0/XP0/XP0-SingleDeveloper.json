@@ -22,8 +22,13 @@
         },
         "Prefix": {
             "Type": "String",
-            "DefaultValue": "SC910",
+            "DefaultValue": "",
             "Description": "The prefix for uniquely identifying instances."
+        },
+        "HostPostfix": {
+            "Type": "String",
+            "DefaultValue": "SC910.com",
+            "Description": "The postfix for uniquely identifying instances."
         },
         "SitecoreAdminPassword": {
             "Type": "string",
@@ -350,10 +355,15 @@
             "Reference": "Prefix",
             "Description": "Override to pass Prefix value to SitecoreXP0 config."
         },
-        "XConnectCertificates:CertificateName": {
+        //"XConnectCertificates:CertificateName": {
+        //    "Type": "String",
+        //    "Reference": "XConnectCertificateName",
+        //    "Description": "Override to pass XConnectCertificateName value to XConnectCertificates config."
+        //},
+        "SSLCertificates:CertificateName": {
             "Type": "String",
-            "Reference": "XConnectCertificateName",
-            "Description": "Override to pass XConnectCertificateName value to XConnectCertificates config."
+            "Reference": "HostPostfix",
+            "Description": "Override to pass SSLServerCertificateName value to SSLCertificates config."
         },
         "IdentityServerCertificates:CertificateName": {
             "Type": "String",
@@ -370,16 +380,16 @@
             "Reference": "IdentityServerCertificateName",
             "Description": "Override to pass IdentityServerCertificateName value to IdentityServer config."
         },
-        "XConnectXP0:XConnectCert": {
-            "Type": "String",
-            "Reference": "XConnectCertificateName",
-            "Description": "Override to pass CertificateName value to XConnectXP0 config."
-        },
-        "SitecoreXP0:XConnectCert": {
-            "Type": "String",
-            "Reference": "XConnectCertificateName",
-            "Description": "Override to pass CertificateName value to SitecoreXP0 config."
-        },
+        //"XConnectXP0:XConnectCert": {
+        //    "Type": "String",
+        //    "Reference": "XConnectCertificateName",
+        //    "Description": "Override to pass CertificateName value to XConnectXP0 config."
+        //},
+        //"SitecoreXP0:XConnectCert": {
+        //    "Type": "String",
+        //    "Reference": "XConnectCertificateName",
+        //    "Description": "Override to pass CertificateName value to SitecoreXP0 config."
+        //},
         "XConnectXP0:LicenseFile": {
             "Type": "String",
             "Reference": "LicenseFile",
@@ -449,6 +459,16 @@
             "Type": "String",
             "Reference": "MachineLearningServerEndpointCertificationAuthorityCertificatePath",
             "Description": "Override to pass MachineLearningServerEndpointCertificationAuthorityCertificatePath value to XConnectXP0 config."
+        },
+		"XConnectXP0:SSLCert": {
+            "Type": "String",
+            "Reference": "HostPostfix",
+            "Description": "Override to pass SSLCert value to XConnectXP0 config."
+        },
+		"SitecoreXP0:SSLCert": {
+            "Type": "String",
+            "Reference": "HostPostfix",
+            "Description": "Override to pass SSLCert value to XConnectXP0 config."
         }
     },
     "Variables": {
@@ -537,13 +557,20 @@
         "IdentityServer:Client.Secret": "[variable('Client.Secret')]",
         "SitecoreXP0:Sitecore.IdentitySecret": "[variable('Client.Secret')]",
         "Test.Client.Secret": "[equal(parameter('ClientSecret'),'SIF-Default')]",
-        "Generate.Client.Secret": "[randomstring(Length:100,DisAllowSpecial:True)]"
-
+        "Generate.Client.Secret": "[randomstring(Length:100,DisAllowSpecial:True)]",
+		
+		"XConnectClientCertificateName": "[concat('xconnect_client', parameter('HostPostfix'))]",
+		"XConnectCertificates:CertificateName": "[variable('XConnectClientCertificateName')]",
+		"XConnectXP0:XConnectCert": "[variable('XConnectClientCertificateName')]",
+		"SitecoreXP0:XConnectCert": "[variable('XConnectClientCertificateName')]",
     },
     "Includes": {
-        "IdentityServerCertificates":{
+        "SSLCertificates":{
             "Source": ".\\createcert.json"
         },
+        //"IdentityServerCertificates":{
+        //    "Source": ".\\createcert.json"
+        //},
         "IdentityServer": {
             "Source": ".\\identityServer.json"
         },

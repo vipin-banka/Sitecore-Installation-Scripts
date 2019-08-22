@@ -239,6 +239,10 @@
             "Type": "string",
             "Reference": "SiteName",
             "Description": "The dns name of the site."
+        },
+        "SSLCert" :{
+            "Type": "string",
+            "Description": "The dns name of the site."
         }
     },
     "Variables": {
@@ -256,6 +260,7 @@
         "Sql.Database.Messaging":           "[concat(parameter('SqlDbPrefix'), '_Messaging')]",
 
         "Security.CertificateStore":                "Cert:\\Localmachine\\My",
+		"Security.SSL.CertificateThumbprint":       "[GetCertificateThumbprint(parameter('SSLCert'), variable('Security.CertificateStore'))]"
         "Security.XConnect.CertificateThumbprint":  "[GetCertificateThumbprint(parameter('XConnectCert'), variable('Security.CertificateStore'))]",
         "Security.XConnect.CertificatePath":        "[joinpath(variable('Security.CertificateStore'), variable('Security.XConnect.CertificateThumbprint'))]",
 
@@ -368,6 +373,22 @@
                 "Add": [ { "HostHeader": "[parameter('DnsName')]" } ],
                 "Remove": [ { "Port": "80", "IPAddress": "*" } ]
             }
+        },
+        "CreateBindingsWithThumbprint": {
+            "Description": "Configures the site bindings for the website.",
+            "Type": "WebBinding",
+            "Params": {
+                "SiteName": "[parameter('SiteName')]",
+                "Add": [
+                    {
+                        "HostHeader": "[parameter('DnsName')]",
+                        "Protocol": "https",
+                        "SSLFlags": 1,
+                        "Thumbprint": "[variable('Security.SSL.CertificateThumbprint')]"
+                    }
+                ]
+            },
+            "Skip": "[not(parameter('SSLCert'))]"
         },
         "CreateHostHeader": {
             "Description": "Sets a hostheader for the website.",

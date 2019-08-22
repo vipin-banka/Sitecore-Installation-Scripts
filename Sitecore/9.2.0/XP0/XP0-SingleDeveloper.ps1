@@ -1,29 +1,31 @@
 # The Prefix that will be used on SOLR, Website and Database instances.
-$Prefix = "XP0"
+$Prefix = "mysitesc921"
+# The Suffix that will be used on SOLR, Website and Database instances.
+$HostPostfix = "dev.mysitesc921.com"
 # The Password for the Sitecore Admin User. This will be regenerated if left on the default.
-$SitecoreAdminPassword = "SIF-Default"
+$SitecoreAdminPassword = "admin"
 # The root folder with the license file and WDP files.
-$SCInstallRoot = "C:\ResourceFiles"
+$SCInstallRoot = "D:\Repos\Sitecore-Installation-Scripts\Sitecore\9.2.0\XP0"
 # The name for the XConnect service.
-$XConnectSiteName = "$prefix.xconnect"
+$XConnectSiteName = "xconnect.$HostPostfix"
 # The Sitecore site instance name.
-$SitecoreSiteName = "$prefix.sc"
+$SitecoreSiteName = "$HostPostfix"
 # Identity Server site name
-$IdentityServerSiteName = "$prefix.identityserver"
+$IdentityServerSiteName = "identityserver.$HostPostfix"
 # The Path to the license file
 $LicenseFile = "$SCInstallRoot\license.xml"
 # The URL of the Solr Server
-$SolrUrl = "https://localhost:8983/solr"
+$SolrUrl = "https://solr.$HostPostfix:8983/solr"
 # The Folder that Solr has been installed to.
-$SolrRoot = "C:\Solr-7.5.0"
+$SolrRoot = "C:\solr\solr-7.5.0"
 # The Name of the Solr Service.
-$SolrService = "Solr-7.5.0"
+$SolrService = "solr75"
 # The DNS name or IP of the SQL Instance.
-$SqlServer = "localhost"
+$SqlServer = "VIPINB-LAPTOP\SQLDEV2016"
 # A SQL user with sysadmin privileges.
 $SqlAdminUser = "sa"
 # The password for $SQLAdminUser.
-$SqlAdminPassword = "12345"
+$SqlAdminPassword = "simple"
 # The path to the XConnect Package to Deploy.
 $XConnectPackage = (Get-ChildItem "$SCInstallRoot\Sitecore 9* rev. * (OnPrem)_xp0xconnect.scwdp.zip").FullName
 # The path to the Sitecore Package to Deploy.
@@ -39,7 +41,7 @@ $XConnectCollectionService = "https://$XConnectSiteName"
 # The random string key used for establishing connection with IdentityService. This will be regenerated if left on the default.
 $ClientSecret = "SIF-Default"
 # Pipe-separated list of instances (URIs) that are allowed to login via Sitecore Identity.
-$AllowedCorsOrigins = "http://$SitecoreSiteName"
+$AllowedCorsOrigins = "http://$SitecoreSiteName|https://$SitecoreSiteName"
 
 
 # Install XP0 via combined partials file.
@@ -67,6 +69,7 @@ $singleDeveloperParams = @{
     XConnectCollectionService = $XConnectCollectionService
     ClientSecret = $ClientSecret
     AllowedCorsOrigins = $AllowedCorsOrigins
+	HostPostfix = $HostPostfix
 }
 
 Push-Location $SCInstallRoot
