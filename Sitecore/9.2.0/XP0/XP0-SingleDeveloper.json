@@ -355,11 +355,6 @@
             "Reference": "Prefix",
             "Description": "Override to pass Prefix value to SitecoreXP0 config."
         },
-        //"XConnectCertificates:CertificateName": {
-        //    "Type": "String",
-        //    "Reference": "XConnectCertificateName",
-        //    "Description": "Override to pass XConnectCertificateName value to XConnectCertificates config."
-        //},
         "SSLCertificates:CertificateName": {
             "Type": "String",
             "Reference": "HostPostfix",
@@ -380,16 +375,6 @@
             "Reference": "IdentityServerCertificateName",
             "Description": "Override to pass IdentityServerCertificateName value to IdentityServer config."
         },
-        //"XConnectXP0:XConnectCert": {
-        //    "Type": "String",
-        //    "Reference": "XConnectCertificateName",
-        //    "Description": "Override to pass CertificateName value to XConnectXP0 config."
-        //},
-        //"SitecoreXP0:XConnectCert": {
-        //    "Type": "String",
-        //    "Reference": "XConnectCertificateName",
-        //    "Description": "Override to pass CertificateName value to SitecoreXP0 config."
-        //},
         "XConnectXP0:LicenseFile": {
             "Type": "String",
             "Reference": "LicenseFile",
@@ -568,9 +553,6 @@
         "SSLCertificates":{
             "Source": ".\\createcert.json"
         },
-        //"IdentityServerCertificates":{
-        //    "Source": ".\\createcert.json"
-        //},
         "IdentityServer": {
             "Source": ".\\identityServer.json"
         },

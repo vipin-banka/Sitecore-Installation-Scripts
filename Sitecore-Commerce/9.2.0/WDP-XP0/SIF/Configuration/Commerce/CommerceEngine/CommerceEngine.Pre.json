@@ -120,9 +120,9 @@
       "Params": {
         "Signer": "[GetCertificate(variable('Root.Cert.DnsName'), variable('Root.Cert.Store'))]",
         "Path": "[parameter('CertPath')]",
-        "FriendlyName": "Commerce Engine SSL Certificate",
+        "FriendlyName": "[concat('Commerce Engine SSL Certificate - ', parameter('CommerceServicesHostPostfix'))]",
         "CertStoreLocation": "[variable('Client.Cert.Store')]",
-        "Name": "Commerce Engine SSL Certificate",
+        "Name": "[concat('Commerce Engine SSL Certificate - ', parameter('CommerceServicesHostPostfix'))]",
         "DnsName": "[concat('*.', parameter('CommerceServicesHostPostfix'))]",
         "IncludePrivateKey": true
       }
