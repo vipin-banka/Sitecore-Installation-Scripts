@@ -5,7 +5,12 @@
             "Description": "The path to the Web Deploy package to deploy.",
             "DefaultValue": ""
         },
-        "SitecoreIdentityCert": {
+        "SSLCertName": {
+            "Type": "string",
+            "Description": "The certificate to use for encryption. Provide the name or the thumbprint.",
+            "DefaultValue": ""
+        },
+        "SitecoreIdentityClientCert": {
             "Type": "string",
             "Description": "The certificate to use for encryption. Provide the name or the thumbprint.",
             "DefaultValue": ""
@@ -70,9 +75,8 @@
             "Reference": "SiteName",
             "Description": "The host name of the site."
         },
-        "DnsName" :{
+        "IdentityServerDnsName" :{
             "Type": "string",
-            "Reference": "SiteName",
             "Description": "The dns name of the site."
         }
     },
@@ -82,7 +86,8 @@
         "Sql.Database.Password": "[parameter('SqlSecurityPassword')]",
         "Sql.Connection.String": "[concat('Data Source=', parameter('SqlServer'), ';Initial Catalog=', variable('Sql.Database.Name'), ';User ID=', variable('Sql.Database.User'), ';Password=', variable('Sql.Database.Password'))]",
         "Security.CertificateStore":                "Cert:\\Localmachine\\My",
-        "Security.IdentityServer.CertificateThumbprint":  "[GetCertificateThumbprint(parameter('SitecoreIdentityCert'), variable('Security.CertificateStore'))]",
+        "Security.IdentityServer.SSLCertificateThumbprint":  "[GetCertificateThumbprint(parameter('SSLCertName'), variable('Security.CertificateStore'))]",
+		"Security.IdentityServer.CertificateThumbprint":  "[GetCertificateThumbprint(parameter('SitecoreIdentityClientCert'), variable('Security.CertificateStore'))]",
         "Security.IdentityServer.CertificatePath":        "[joinpath(variable('Security.CertificateStore'), variable('Security.IdentityServer.CertificateThumbprint'))]",
 
         "Site.PhysicalPath": "[joinpath(environment('SystemDrive'), 'inetpub', 'wwwroot', parameter('SiteName'))]",
@@ -181,14 +186,14 @@
                 "SiteName" : "[parameter('SiteName')]",
                 "Add": [
                     {
-                        "HostHeader": "[parameter('DNSName')]",
+                        "HostHeader": "[parameter('IdentityServerDnsName')]",
                         "Protocol": "https",
                         "SSLFlags": 1,
-                        "Thumbprint": "[variable('Security.IdentityServer.CertificateThumbprint')]"
+                        "Thumbprint": "[variable('Security.IdentityServer.SSLCertificateThumbprint')]"
                     }
                 ]
             },
-            "Skip": "[not(parameter('SitecoreIdentityCert'))]"
+            "Skip": "[not(parameter('SSLCertName'))]"
         },
         "CreateHostHeader": {
             "Description": "Sets a hostheader for the website.",

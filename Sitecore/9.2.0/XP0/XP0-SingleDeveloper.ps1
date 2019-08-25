@@ -1,21 +1,25 @@
 # The Prefix that will be used on SOLR, Website and Database instances.
-$Prefix = "mysitesc921"
+$Prefix = "scxc920"
 # The Suffix that will be used on SOLR, Website and Database instances.
-$HostPostfix = "dev.mysitesc921.com"
+$HostPostfix = "dev.$Prefix.com"
 # The Password for the Sitecore Admin User. This will be regenerated if left on the default.
 $SitecoreAdminPassword = "admin"
 # The root folder with the license file and WDP files.
 $SCInstallRoot = "D:\Repos\Sitecore-Installation-Scripts\Sitecore\9.2.0\XP0"
 # The name for the XConnect service.
-$XConnectSiteName = "xconnect.$HostPostfix"
+$XConnectSiteName = "$Prefix.xconnect"
+# The name for the XConnect client certificate.
+$XConnectCertificateName = "xconnect_client_$HostPostfix"
 # The Sitecore site instance name.
-$SitecoreSiteName = "$HostPostfix"
+$SitecoreSiteName = "$Prefix.sc"
 # Identity Server site name
-$IdentityServerSiteName = "identityserver.$HostPostfix"
+$IdentityServerSiteName = "$Prefix.identityserver"
+# Identity Server client certificate name
+$IdentityServerCertificateName = "identityserver_client_$HostPostfix"
 # The Path to the license file
 $LicenseFile = "$SCInstallRoot\license.xml"
 # The URL of the Solr Server
-$SolrUrl = "https://solr.$HostPostfix:8983/solr"
+$SolrUrl = "https://solr75:8983/solr"
 # The Folder that Solr has been installed to.
 $SolrRoot = "C:\solr\solr-7.5.0"
 # The Name of the Solr Service.
@@ -33,16 +37,15 @@ $SitecorePackage = (Get-ChildItem "$SCInstallRoot\Sitecore 9* rev. * (OnPrem)_si
 # The path to the Identity Server Package to Deploy.
 $IdentityServerPackage = (Get-ChildItem "$SCInstallRoot\Sitecore.IdentityServer * rev. * (OnPrem)_identityserver.scwdp.zip").FullName
 # The Identity Server password recovery URL, this should be the URL of the CM Instance
-$PasswordRecoveryUrl = "http://$SitecoreSiteName"
+$PasswordRecoveryUrl = "https://dev.$Prefix.local"
 # The URL of the Identity Server
-$SitecoreIdentityAuthority = "https://$IdentityServerSiteName"
+$SitecoreIdentityAuthority = "https://identityserver.$HostPostfix"
 # The URL of the XconnectService
-$XConnectCollectionService = "https://$XConnectSiteName"
+$XConnectCollectionService = "https://xconnect.$HostPostfix"
 # The random string key used for establishing connection with IdentityService. This will be regenerated if left on the default.
 $ClientSecret = "SIF-Default"
 # Pipe-separated list of instances (URIs) that are allowed to login via Sitecore Identity.
-$AllowedCorsOrigins = "http://$SitecoreSiteName|https://$SitecoreSiteName"
-
+$AllowedCorsOrigins = "http://$HostPostfix|https://$HostPostfix"
 
 # Install XP0 via combined partials file.
 $singleDeveloperParams = @{
@@ -55,8 +58,8 @@ $singleDeveloperParams = @{
     SolrRoot = $SolrRoot
     SolrService = $SolrService
     Prefix = $Prefix
-    XConnectCertificateName = $XConnectSiteName
-    IdentityServerCertificateName = $IdentityServerSiteName
+    XConnectCertificateName = $XConnectCertificateName
+    IdentityServerCertificateName = $IdentityServerCertificateName
     IdentityServerSiteName = $IdentityServerSiteName
     LicenseFile = $LicenseFile
     XConnectPackage = $XConnectPackage
@@ -69,7 +72,6 @@ $singleDeveloperParams = @{
     XConnectCollectionService = $XConnectCollectionService
     ClientSecret = $ClientSecret
     AllowedCorsOrigins = $AllowedCorsOrigins
-	HostPostfix = $HostPostfix
 }
 
 Push-Location $SCInstallRoot

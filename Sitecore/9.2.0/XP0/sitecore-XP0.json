@@ -20,7 +20,7 @@
             "Description": "The prefix used for all Solr cores.",
             "DefaultValue" : ""
         },
-        "XConnectCert": {
+        "XConnectClientCert": {
             "Type": "string",
             "Description": "The certificate to use for encryption. Provide the name or the thumbprint.",
             "DefaultValue" : ""
@@ -240,7 +240,7 @@
             "Reference": "SiteName",
             "Description": "The dns name of the site."
         },
-        "SSLCert" :{
+        "SSLCertName" :{
             "Type": "string",
             "Description": "The dns name of the site."
         }
@@ -260,8 +260,8 @@
         "Sql.Database.Messaging":           "[concat(parameter('SqlDbPrefix'), '_Messaging')]",
 
         "Security.CertificateStore":                "Cert:\\Localmachine\\My",
-		"Security.SSL.CertificateThumbprint":       "[GetCertificateThumbprint(parameter('SSLCert'), variable('Security.CertificateStore'))]"
-        "Security.XConnect.CertificateThumbprint":  "[GetCertificateThumbprint(parameter('XConnectCert'), variable('Security.CertificateStore'))]",
+		"Security.SSL.CertificateThumbprint":       "[GetCertificateThumbprint(parameter('SSLCertName'), variable('Security.CertificateStore'))]",
+        "Security.XConnect.CertificateThumbprint":  "[GetCertificateThumbprint(parameter('XConnectClientCert'), variable('Security.CertificateStore'))]",
         "Security.XConnect.CertificatePath":        "[joinpath(variable('Security.CertificateStore'), variable('Security.XConnect.CertificateThumbprint'))]",
 
         "Solr.Core.Name":       "[concat(parameter('SolrCorePrefix'), '_core_index')]",
@@ -388,7 +388,7 @@
                     }
                 ]
             },
-            "Skip": "[not(parameter('SSLCert'))]"
+            "Skip": "[not(parameter('SSLCertName'))]"
         },
         "CreateHostHeader": {
             "Description": "Sets a hostheader for the website.",

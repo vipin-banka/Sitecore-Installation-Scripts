@@ -1,8 +1,8 @@
 {
     "Parameters": {
-        "CertificateName": {
+        "SSLCertificateName": {
             "Type": "String",
-            "Description": "The name of the certificate to be created.",
+            "Description": "The name of the SSL certificate to be created.",
             "DefaultValue": ""
         },
         "CertPath": {
@@ -19,6 +19,16 @@
             "Type": "String",
             "Description": "Password to export certificates with.",
             "DefaultValue": "SIF-Default"
+        },
+        "SitecoreIdentityClientCertificateName": {
+            "Type": "string",
+            "Description": "The name of the identity server client certificate.",
+            "DefaultValue": ""
+        },
+        "XConnectClientCertificateName": {
+            "Type": "String",
+            "Description": "The name of the xconnect client certificate.",
+            "DefaultValue": ""
         }
     },
     "Variables": {
@@ -64,6 +74,7 @@
             "Params": {
                 "Path": "[parameter('CertPath')]",
                 "Name": "[parameter('RootCertFileName')]",
+				"FriendlyName": "[parameter('RootCertFileName')]",
                 "DnsName": [
                     "[variable('Root.Cert.DnsName')]",
                     "127.0.0.1"
@@ -72,21 +83,49 @@
                 "Password": "[variable('Export.Password')]"
             }
         },
-        "CreateSignedCert": {
-            "Description": "Create a certificate signed by the root authority.",
+        "CreateSignedSSLCert": {
+			"Description": "Create a certificate signed by the root authority.",
             "Type": "NewSignedCertificate",
             "Params": {
                 "Signer": "[GetCertificate(variable('Root.Cert.DnsName'), variable('Root.Cert.Store'))]",
                 "Path": "[parameter('CertPath')]",
                 "CertStoreLocation": "[variable('Client.Cert.Store')]",
-                "Name": "[parameter('CertificateName')]",
+				"FriendlyName": "[parameter('SSLCertificateName')]",
+                "Name": "[parameter('SSLCertificateName')]",
                 "DnsName": [
-                    "[parameter('CertificateName')]",
+                    "[parameter('SSLCertificateName')]",
+					"[concat('*.', parameter('SSLCertificateName'))]",
                     "127.0.0.1"
                 ],
                 "IncludePrivateKey": true,
                 "Password": "[variable('Export.Password')]"
             }
-        }
+        },
+		"CreateSignedIdentityServerClientCert": {
+		  "Type": "NewSignedCertificate",
+		  "Params": {
+			"Signer": "[GetCertificate(variable('Root.Cert.DnsName'), variable('Root.Cert.Store'))]",
+			"Path": "[parameter('CertPath')]",
+			"CertStoreLocation": "[variable('Client.Cert.Store')]",
+			"FriendlyName": "[parameter('SitecoreIdentityClientCertificateName')]",
+			"Name": "[parameter('SitecoreIdentityClientCertificateName')]",
+			"DnsName": "[parameter('SitecoreIdentityClientCertificateName')]",
+			"IncludePrivateKey": true,
+			"Password": "[variable('Export.Password')]"
+		  }
+		},
+		"CreateSignedXConnectClientCert": {
+		  "Type": "NewSignedCertificate",
+		  "Params": {
+			"Signer": "[GetCertificate(variable('Root.Cert.DnsName'), variable('Root.Cert.Store'))]",
+			"Path": "[parameter('CertPath')]",
+			"CertStoreLocation": "[variable('Client.Cert.Store')]",
+			"FriendlyName": "[parameter('XConnectClientCertificateName')]",
+			"Name": "[parameter('XConnectClientCertificateName')]",
+			"DnsName": "[parameter('XConnectClientCertificateName')]",
+			"IncludePrivateKey": true,
+			"Password": "[variable('Export.Password')]"
+		  }
+		}
     }
 }
