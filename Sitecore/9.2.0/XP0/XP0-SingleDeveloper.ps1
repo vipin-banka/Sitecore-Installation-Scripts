@@ -1,9 +1,9 @@
 # The Prefix that will be used on SOLR, Website and Database instances.
-$Prefix = "scxc920"
+$Prefix = "scxc920-3"
 # The Suffix that will be used on SOLR, Website and Database instances.
 $HostPostfix = "dev.$Prefix.com"
 # The Password for the Sitecore Admin User. This will be regenerated if left on the default.
-$SitecoreAdminPassword = "admin"
+$SitecoreAdminPassword = "b"
 # The root folder with the license file and WDP files.
 $SCInstallRoot = "D:\Repos\Sitecore-Installation-Scripts\Sitecore\9.2.0\XP0"
 # The name for the XConnect service.
@@ -37,7 +37,7 @@ $SitecorePackage = (Get-ChildItem "$SCInstallRoot\Sitecore 9* rev. * (OnPrem)_si
 # The path to the Identity Server Package to Deploy.
 $IdentityServerPackage = (Get-ChildItem "$SCInstallRoot\Sitecore.IdentityServer * rev. * (OnPrem)_identityserver.scwdp.zip").FullName
 # The Identity Server password recovery URL, this should be the URL of the CM Instance
-$PasswordRecoveryUrl = "https://dev.$Prefix.local"
+$PasswordRecoveryUrl = "https://$HostPostfix"
 # The URL of the Identity Server
 $SitecoreIdentityAuthority = "https://identityserver.$HostPostfix"
 # The URL of the XconnectService

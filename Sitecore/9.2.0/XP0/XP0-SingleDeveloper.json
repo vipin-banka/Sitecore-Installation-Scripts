@@ -355,11 +355,21 @@
             "Reference": "Prefix",
             "Description": "Override to pass Prefix value to SitecoreXP0 config."
         },
+        "AllCertificates:Prefix": {
+            "Type": "String",
+            "Reference": "Prefix",
+            "Description": "The prefix."
+        },        
         "AllCertificates:ExportPassword": {
             "Type": "String",
             "Reference": "ExportPassword",
             "Description": "The password for certificate."
         },        
+        "AllCertificates:PasswordRecoveryUrl": {
+            "Type": "String",
+            "Reference": "PasswordRecoveryUrl",
+            "Description": "Override to pass PasswordRecoveryUrl value to IdentityServer config."
+        },
         "AllCertificates:SitecoreIdentityClientCertificateName": {
             "Type": "String",
             "Reference": "IdentityServerCertificateName",
@@ -501,10 +511,7 @@
             "Description": "The xConnect client certificate name."
         }
     },
-    "Variables": {
-		"Sitecore.HostName":"[concat('dev.', concat(parameter('Prefix'), '.local'))]",
-		"IdentityServer.DnsName": "[concat('identityserver.', variable('Sitecore.HostName'))]",
-		"XConnect.DnsName": "[concat('xconnect.', variable('Sitecore.HostName'))]",
+    "Variables": {				
         "SqlProcessingPools.Password": "[if(variable('Test.SqlProcessingPools.Password'),variable('Generate.SqlProcessingPools.Password'),parameter('SqlProcessingPoolsPassword'))]",
         "XConnectXP0:SqlProcessingPools.Password": "[variable('SqlProcessingPools.Password')]",
         "SitecoreXP0:SqlProcessingPools.Password": "[variable('SqlProcessingPools.Password')]",
@@ -596,15 +603,9 @@
         "AllCertificates":{
             "Source": ".\\createcerts.json"
         },
-		//"IdentityServerCertificates": {
-        //    "Source": ".\\createcert.json"
-        //},
-        "IdentityServer": {
+		"IdentityServer": {
             "Source": ".\\identityServer.json"
         },
-        //"XConnectCertificates": {
-        //    "Source": ".\\createcert.json"
-        //},
         "XConnectSolr": {
             "Source": ".\\xconnect-solr.json"
         },
@@ -646,10 +647,7 @@
                     {"SqlFormsPassword":               			"[variable('SqlForms.Password')]"},
                     {"SqlExmMasterPassword":           			"[variable('SqlExmMaster.Password')]"},
                     {"SitecoreAdminPassword":          			"[variable('Sitecore.Admin.Password')]"},
-                    {"ClientSecret":                   			"[variable('Client.Secret')]"},
-                    {"SSLCertName":		               			"[variable('Sitecore.HostName')]"},
-                    {"IdentityServerDnsName":		            "[variable('IdentityServer.DnsName')]"},
-                    {"XConnectDnsName":		               		"[variable('XConnect.DnsName')]"}
+                    {"ClientSecret":                   			"[variable('Client.Secret')]"}
                 ]
             }
         }

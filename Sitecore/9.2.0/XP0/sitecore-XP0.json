@@ -234,18 +234,13 @@
             "Type": "string",
             "Reference": "SiteName",
             "Description": "The host mapping name of the site."
-        },
-        "DnsName" :{
-            "Type": "string",
-            "Reference": "SiteName",
-            "Description": "The dns name of the site."
-        },
-        "SSLCertName" :{
-            "Type": "string",
-            "Description": "The dns name of the site."
         }
     },
     "Variables": {
+		"HostName": "[concat('dev.', concat(parameter('SqlDbPrefix'), '.com'))]",
+		"SSLCertName": "[variable('HostName')]",
+		"DnsName": "[variable('HostName')]",
+		
         "Sql.Database.Core":                "[concat(parameter('SqlDbPrefix'), '_Core')]",
         "Sql.Database.Security":            "[concat(parameter('SqlDbPrefix'), '_Core')]",
         "Sql.Database.Master":              "[concat(parameter('SqlDbPrefix'), '_Master')]",
@@ -260,7 +255,7 @@
         "Sql.Database.Messaging":           "[concat(parameter('SqlDbPrefix'), '_Messaging')]",
 
         "Security.CertificateStore":                "Cert:\\Localmachine\\My",
-		"Security.SSL.CertificateThumbprint":       "[GetCertificateThumbprint(parameter('SSLCertName'), variable('Security.CertificateStore'))]",
+		"Security.SSL.CertificateThumbprint":       "[GetCertificateThumbprint(variable('SSLCertName'), variable('Security.CertificateStore'))]",
         "Security.XConnect.CertificateThumbprint":  "[GetCertificateThumbprint(parameter('XConnectClientCert'), variable('Security.CertificateStore'))]",
         "Security.XConnect.CertificatePath":        "[joinpath(variable('Security.CertificateStore'), variable('Security.XConnect.CertificateThumbprint'))]",
 
@@ -370,7 +365,7 @@
             "Type": "WebBinding",
             "Params": {
                 "SiteName": "[parameter('SiteName')]",
-                "Add": [ { "HostHeader": "[parameter('DnsName')]" } ],
+                "Add": [ { "HostHeader": "[variable('DnsName')]" } ],
                 "Remove": [ { "Port": "80", "IPAddress": "*" } ]
             }
         },
@@ -381,22 +376,22 @@
                 "SiteName": "[parameter('SiteName')]",
                 "Add": [
                     {
-                        "HostHeader": "[parameter('DnsName')]",
+                        "HostHeader": "[variable('DnsName')]",
                         "Protocol": "https",
                         "SSLFlags": 1,
                         "Thumbprint": "[variable('Security.SSL.CertificateThumbprint')]"
                     }
                 ]
             },
-            "Skip": "[not(parameter('SSLCertName'))]"
+            "Skip": "[not(variable('SSLCertName'))]"
         },
         "CreateHostHeader": {
             "Description": "Sets a hostheader for the website.",
             "Type": "HostHeader",
             "Params": {
-                "HostName": "[parameter('HostMappingName')]"
+                "HostName": "[variable('DnsName')]"
             },
-            "Skip": "[not(parameter('HostMappingName'))]"
+            "Skip": "[not(variable('DnsName'))]"
         },
         "SetPermissions": {
             "Description": "Sets permissions for the app pool user.",
@@ -534,7 +529,7 @@
             "Description": "Update the solr schemas.",
             "Type": "SitecoreUrl",
             "Params": {
-                "SitecoreInstanceRoot": "[concat('http://', parameter('DnsName'))]",
+                "SitecoreInstanceRoot": "[concat('http://', variable('DnsName'))]",
                 "SitecoreActionPath": "sitecore/admin/PopulateManagedSchema.aspx?indexes=all",
                 "UserName": "admin",
                 "Password": "[variable('Sitecore.Admin.Password')]"
@@ -595,7 +590,7 @@
             "Description": "Removes the hostheader for the website.",
             "Type": "HostHeader",
             "Params": {
-                "HostName": "[parameter('SiteName')]",
+                "HostName": "[variable('DnsName')]",
                 "Action": "Remove"
             }
         },

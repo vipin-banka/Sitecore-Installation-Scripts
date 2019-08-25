@@ -5,11 +5,6 @@
             "Description": "The path to the Web Deploy package to deploy.",
             "DefaultValue": ""
         },
-        "SSLCertName": {
-            "Type": "string",
-            "Description": "The certificate to use for encryption. Provide the name or the thumbprint.",
-            "DefaultValue": ""
-        },
         "SitecoreIdentityClientCert": {
             "Type": "string",
             "Description": "The certificate to use for encryption. Provide the name or the thumbprint.",
@@ -74,19 +69,19 @@
             "Type": "string",
             "Reference": "SiteName",
             "Description": "The host name of the site."
-        },
-        "IdentityServerDnsName" :{
-            "Type": "string",
-            "Description": "The dns name of the site."
         }
     },
     "Variables": {
+		"HostName": "[concat('dev.', concat(parameter('SqlDbPrefix'), '.com'))]",
+		"SSLCertName": "[variable('HostName')]",
+		"IdentityServerDnsName": "[concat('identityserver.', variable('HostName'))]",
+		
         "Sql.Database.Name":                "[concat(parameter('SqlDbPrefix'), parameter('SqlSecurityDbName'))]",
         "Sql.Database.User": "[parameter('SqlSecurityUser')]",
         "Sql.Database.Password": "[parameter('SqlSecurityPassword')]",
         "Sql.Connection.String": "[concat('Data Source=', parameter('SqlServer'), ';Initial Catalog=', variable('Sql.Database.Name'), ';User ID=', variable('Sql.Database.User'), ';Password=', variable('Sql.Database.Password'))]",
         "Security.CertificateStore":                "Cert:\\Localmachine\\My",
-        "Security.IdentityServer.SSLCertificateThumbprint":  "[GetCertificateThumbprint(parameter('SSLCertName'), variable('Security.CertificateStore'))]",
+        "Security.IdentityServer.SSLCertificateThumbprint":  "[GetCertificateThumbprint(variable('SSLCertName'), variable('Security.CertificateStore'))]",
 		"Security.IdentityServer.CertificateThumbprint":  "[GetCertificateThumbprint(parameter('SitecoreIdentityClientCert'), variable('Security.CertificateStore'))]",
         "Security.IdentityServer.CertificatePath":        "[joinpath(variable('Security.CertificateStore'), variable('Security.IdentityServer.CertificateThumbprint'))]",
 
@@ -186,22 +181,22 @@
                 "SiteName" : "[parameter('SiteName')]",
                 "Add": [
                     {
-                        "HostHeader": "[parameter('IdentityServerDnsName')]",
+                        "HostHeader": "[variable('IdentityServerDnsName')]",
                         "Protocol": "https",
                         "SSLFlags": 1,
                         "Thumbprint": "[variable('Security.IdentityServer.SSLCertificateThumbprint')]"
                     }
                 ]
             },
-            "Skip": "[not(parameter('SSLCertName'))]"
+            "Skip": "[not(variable('SSLCertName'))]"
         },
         "CreateHostHeader": {
             "Description": "Sets a hostheader for the website.",
             "Type": "HostHeader",
             "Params": {
-                "HostName": "[parameter('HostMappingName')]"
+                "HostName": "[variable('IdentityServerDnsName')]"
             },
-            "Skip": "[not(parameter('HostMappingName'))]"
+            "Skip": "[not(variable('IdentityServerDnsName'))]"
         },
         "SetPermissions": {
             "Description": "Sets permissions for the app pool user.",
@@ -334,7 +329,7 @@
             "Description": "Removes the hostheader for the website.",
             "Type": "HostHeader",
             "Params": {
-                "HostName": "[parameter('SiteName')]",
+                "HostName": "[variable('IdentityServerDnsName')]",
                 "Action": "Remove"
             }
         }
