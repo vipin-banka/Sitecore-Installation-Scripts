@@ -1,7 +1,11 @@
 # The Prefix that will be used on SOLR, Website and Database instances.
-$Prefix = "scxc920-3"
+$Prefix = "vipin_sxc92"
+# Environment name e.g. dev, qa or you can leave it blank for prod. place a dot at end if not empty.
+$Environment = "dev."
+# Postfix for your DNS name e.g. .local, .com. place a dot at start if not empty.
+$Postfix = ".local"
 # The Suffix that will be used on SOLR, Website and Database instances.
-$HostPostfix = "dev.$Prefix.com"
+$HostPostfix = "$($Environment)$($Prefix)$($Postfix)"
 # The Password for the Sitecore Admin User. This will be regenerated if left on the default.
 $SitecoreAdminPassword = "b"
 # The root folder with the license file and WDP files.
@@ -9,13 +13,13 @@ $SCInstallRoot = "D:\Repos\Sitecore-Installation-Scripts\Sitecore\9.2.0\XP0"
 # The name for the XConnect service.
 $XConnectSiteName = "$Prefix.xconnect"
 # The name for the XConnect client certificate.
-$XConnectCertificateName = "xconnect_client_$HostPostfix"
+$XConnectCertificateName = "$HostPostfix.client.xconnect"
 # The Sitecore site instance name.
 $SitecoreSiteName = "$Prefix.sc"
 # Identity Server site name
 $IdentityServerSiteName = "$Prefix.identityserver"
 # Identity Server client certificate name
-$IdentityServerCertificateName = "identityserver_client_$HostPostfix"
+$IdentityServerCertificateName = "$HostPostfix.client.identityserver"
 # The Path to the license file
 $LicenseFile = "$SCInstallRoot\license.xml"
 # The URL of the Solr Server
@@ -25,11 +29,11 @@ $SolrRoot = "C:\solr\solr-7.5.0"
 # The Name of the Solr Service.
 $SolrService = "solr75"
 # The DNS name or IP of the SQL Instance.
-$SqlServer = "VIPINB-LAPTOP\SQLDEV2016"
+$SqlServer = "(local)"
 # A SQL user with sysadmin privileges.
 $SqlAdminUser = "sa"
 # The password for $SQLAdminUser.
-$SqlAdminPassword = "simple"
+$SqlAdminPassword = "sql"
 # The path to the XConnect Package to Deploy.
 $XConnectPackage = (Get-ChildItem "$SCInstallRoot\Sitecore 9* rev. * (OnPrem)_xp0xconnect.scwdp.zip").FullName
 # The path to the Sitecore Package to Deploy.
@@ -72,6 +76,9 @@ $singleDeveloperParams = @{
     XConnectCollectionService = $XConnectCollectionService
     ClientSecret = $ClientSecret
     AllowedCorsOrigins = $AllowedCorsOrigins
+	HostPostfix = $HostPostfix
+	Environment = $Environment
+	Postfix = $Postfix
 }
 
 Push-Location $SCInstallRoot

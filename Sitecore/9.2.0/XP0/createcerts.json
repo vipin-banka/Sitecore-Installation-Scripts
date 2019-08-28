@@ -1,8 +1,8 @@
 {
-    "Parameters": {
-        "Prefix": {
+    "Parameters": {        
+		"SSLCertificateName": {
             "Type": "String",
-            "Description": "The site prefix.",
+            "Description": "The SSL certificate name.",
 			"DefaultValue": ""
         },
         "CertPath": {
@@ -31,8 +31,8 @@
             "DefaultValue": ""
         }
     },
-    "Variables": {
-		"SSLCertificateName": "[concat('dev.', concat(parameter('Prefix'), '.com'))]",
+    "Variables": {		
+		"SSL.Certificate.Name": "[parameter('SSLCertificateName')]",
         "Root.Cert.DnsName": "[concat('DO_NOT_TRUST_', parameter('RootCertFileName'))]",
         "Root.Cert.Store": "Cert:\\LocalMachine\\Root",
         "Client.Cert.Store": "Cert:\\LocalMachine\\My",
@@ -91,11 +91,11 @@
                 "Signer": "[GetCertificate(variable('Root.Cert.DnsName'), variable('Root.Cert.Store'))]",
                 "Path": "[parameter('CertPath')]",
                 "CertStoreLocation": "[variable('Client.Cert.Store')]",
-				"FriendlyName": "[variable('SSLCertificateName')]",
-                "Name": "[variable('SSLCertificateName')]",
+				"FriendlyName": "[concat('*.', variable('SSL.Certificate.Name'))]",
+                "Name": "[variable('SSL.Certificate.Name')]",
                 "DnsName": [
-                    "[variable('SSLCertificateName')]",
-					"[concat('*.', variable('SSLCertificateName'))]",
+                    "[variable('SSL.Certificate.Name')]",
+					"[concat('*.', variable('SSL.Certificate.Name'))]",
                     "127.0.0.1"
                 ],
                 "IncludePrivateKey": true,

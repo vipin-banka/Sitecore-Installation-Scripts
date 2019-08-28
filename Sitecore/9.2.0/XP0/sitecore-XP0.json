@@ -234,12 +234,21 @@
             "Type": "string",
             "Reference": "SiteName",
             "Description": "The host mapping name of the site."
+        },
+        "SSLCertificateName": {
+            "Type": "string",
+            "Description": "The SSL certificate name.",
+			"DefaultValue": ""
+        },
+        "SiteDnsName": {
+            "Type": "string",
+            "Description": "The host name of the site.",
+			"DefaultValue": ""
         }
     },
     "Variables": {
-		"HostName": "[concat('dev.', concat(parameter('SqlDbPrefix'), '.com'))]",
-		"SSLCertName": "[variable('HostName')]",
-		"DnsName": "[variable('HostName')]",
+		"SSL.Certificate.Name": "[parameter('SSLCertificateName')]",
+		"Site.DnsName": "[parameter('SiteDnsName')]",
 		
         "Sql.Database.Core":                "[concat(parameter('SqlDbPrefix'), '_Core')]",
         "Sql.Database.Security":            "[concat(parameter('SqlDbPrefix'), '_Core')]",
@@ -255,7 +264,7 @@
         "Sql.Database.Messaging":           "[concat(parameter('SqlDbPrefix'), '_Messaging')]",
 
         "Security.CertificateStore":                "Cert:\\Localmachine\\My",
-		"Security.SSL.CertificateThumbprint":       "[GetCertificateThumbprint(variable('SSLCertName'), variable('Security.CertificateStore'))]",
+		"Security.SSL.CertificateThumbprint":       "[GetCertificateThumbprint(variable('SSL.Certificate.Name'), variable('Security.CertificateStore'))]",
         "Security.XConnect.CertificateThumbprint":  "[GetCertificateThumbprint(parameter('XConnectClientCert'), variable('Security.CertificateStore'))]",
         "Security.XConnect.CertificatePath":        "[joinpath(variable('Security.CertificateStore'), variable('Security.XConnect.CertificateThumbprint'))]",
 
@@ -365,7 +374,7 @@
             "Type": "WebBinding",
             "Params": {
                 "SiteName": "[parameter('SiteName')]",
-                "Add": [ { "HostHeader": "[variable('DnsName')]" } ],
+                "Add": [ { "HostHeader": "[variable('Site.DnsName')]" } ],
                 "Remove": [ { "Port": "80", "IPAddress": "*" } ]
             }
         },
@@ -376,22 +385,22 @@
                 "SiteName": "[parameter('SiteName')]",
                 "Add": [
                     {
-                        "HostHeader": "[variable('DnsName')]",
+                        "HostHeader": "[variable('Site.DnsName')]",
                         "Protocol": "https",
                         "SSLFlags": 1,
                         "Thumbprint": "[variable('Security.SSL.CertificateThumbprint')]"
                     }
                 ]
             },
-            "Skip": "[not(variable('SSLCertName'))]"
+            "Skip": "[not(variable('SSL.Certificate.Name'))]"
         },
         "CreateHostHeader": {
             "Description": "Sets a hostheader for the website.",
             "Type": "HostHeader",
             "Params": {
-                "HostName": "[variable('DnsName')]"
+                "HostName": "[variable('Site.DnsName')]"
             },
-            "Skip": "[not(variable('DnsName'))]"
+            "Skip": "[not(variable('Site.DnsName'))]"
         },
         "SetPermissions": {
             "Description": "Sets permissions for the app pool user.",
@@ -529,7 +538,7 @@
             "Description": "Update the solr schemas.",
             "Type": "SitecoreUrl",
             "Params": {
-                "SitecoreInstanceRoot": "[concat('http://', variable('DnsName'))]",
+                "SitecoreInstanceRoot": "[concat('http://', variable('Site.DnsName'))]",
                 "SitecoreActionPath": "sitecore/admin/PopulateManagedSchema.aspx?indexes=all",
                 "UserName": "admin",
                 "Password": "[variable('Sitecore.Admin.Password')]"
@@ -590,7 +599,7 @@
             "Description": "Removes the hostheader for the website.",
             "Type": "HostHeader",
             "Params": {
-                "HostName": "[variable('DnsName')]",
+                "HostName": "[variable('Site.DnsName')]",
                 "Action": "Remove"
             }
         },

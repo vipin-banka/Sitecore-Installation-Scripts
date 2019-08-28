@@ -164,12 +164,21 @@
             "Type": "string",
             "Reference": "SiteName",
             "Description": "The host mapping name of the site."
+        },
+        "SSLCertificateName": {
+            "Type": "string",
+            "Description": "The SSL certificate name.",
+			"DefaultValue": ""
+        },
+        "SiteDnsName": {
+            "Type": "string",
+            "Description": "The host name of the site.",
+			"DefaultValue": ""
         }
     },
     "Variables": {
-		"HostName": "[concat('dev.', concat(parameter('SqlDbPrefix'), '.com'))]",
-		"SSLCertName": "[variable('HostName')]",
-		"XConnectDnsName": "[concat('xconnect.', variable('HostName'))]",
+		"SSL.Certificate.Name": "[parameter('SSLCertificateName')]",
+		"Site.DnsName": "[parameter('SiteDnsName')]",
         
 		"Sharding.Database.Prefix": "[concat(parameter('SqlDbPrefix'), '_Xdb.Collection.Shard')]",
 
@@ -185,7 +194,7 @@
         "Sql.Database.ProcessingEngineStorage": "[concat(parameter('SqlDbPrefix'), '_ProcessingEngineStorage')]",
 
         "Security.CertificateStore":                "Cert:\\Localmachine\\My",
-        "Security.SSL.CertificateThumbprint":       "[GetCertificateThumbprint(variable('SSLCertName'), variable('Security.CertificateStore'))]",
+        "Security.SSL.CertificateThumbprint":       "[GetCertificateThumbprint(variable('SSL.Certificate.Name'), variable('Security.CertificateStore'))]",
         "Security.XConnect.CertificateThumbprint":  "[GetCertificateThumbprint(parameter('XConnectClientCert'), variable('Security.CertificateStore'))]",
         "Security.XConnect.CertificatePath":        "[joinpath(variable('Security.CertificateStore'), variable('Security.XConnect.CertificateThumbprint'))]",
 
@@ -201,14 +210,14 @@
         "Services.ProcessingEngine.InstallPath":   "[joinpath(variable('Site.DataFolder'), 'jobs','continuous','ProcessingEngine')]",
         "Services.ProcessingEngine.Name":          "[concat(parameter('SiteName'), '-ProcessingEngineService')]",
 
-        "Endpoint.MarketingAutomation": "[concat('https://', variable('XConnectDnsName'))]",
+        "Endpoint.MarketingAutomation": "[concat('https://', variable('Site.DnsName'))]",
 
         "Endpoint.ReferenceData": "[concat(variable('Endpoint.MarketingAutomation'), '/refdata')]",
 
-        "Endpoint.Collection": "[concat('https://', variable('XConnectDnsName'))]",
+        "Endpoint.Collection": "[concat('https://', variable('Site.DnsName'))]",
 
-        "Endpoint.Processing.BlobStorage": "[concat('https://', variable('XConnectDnsName'))]",
-        "Endpoint.Processing.TableStorage": "[concat('https://', variable('XConnectDnsName'))]",
+        "Endpoint.Processing.BlobStorage": "[concat('https://', variable('Site.DnsName'))]",
+        "Endpoint.Processing.TableStorage": "[concat('https://', variable('Site.DnsName'))]",
 
         "Sharding.Root.Path":   "[joinpath(variable('Site.DataFolder'), 'collectiondeployment')]",
         "Sharding.Tool.Path":   "[joinpath(variable('Sharding.Root.Path'), 'Sitecore.Xdb.Collection.Database.SqlShardingDeploymentTool.exe')]",
@@ -361,14 +370,14 @@
                 "SiteName": "[parameter('SiteName')]",
                 "Add": [
                     {
-                        "HostHeader": "[variable('XConnectDnsName')]",
+                        "HostHeader": "[variable('Site.DnsName')]",
                         "Protocol": "https",
                         "SSLFlags": 1,
                         "Thumbprint": "[variable('Security.SSL.CertificateThumbprint')]"
                     }
                 ]
             },
-            "Skip": "[not(variable('SSLCertName'))]"
+            "Skip": "[not(variable('SSL.Certificate.Name'))]"
         },
         "SetClientCertificatePermissions": {
             "Type": "WebsiteClientCert",
@@ -390,9 +399,9 @@
             "Description": "Sets a hostheader for the website.",
             "Type": "HostHeader",
             "Params": {
-                "HostName": "[variable('XConnectDnsName')]"
+                "HostName": "[variable('Site.DnsName')]"
             },
-            "Skip": "[not(variable('XConnectDnsName'))]"
+            "Skip": "[not(variable('Site.DnsName'))]"
         },
         "SetPermissions": {
             "Description": "Sets permissions for the app pool user.",
@@ -485,10 +494,10 @@
             "Type": "AddWebFeatureSSL",
             "Params": {
                 "SiteName": "[parameter('SiteName')]",
-                "HostName": "[variable('XConnectDnsName')]",
+                "HostName": "[variable('Site.DnsName')]",
                 "OutputDirectory": "[variable('Site.DataFolder')]"
             },
-            "Skip": "[variable('SSLCertName')]"
+            "Skip": "[variable('SSL.Certificate.Name')]"
         },
         "SetServicesCertStorePermissions": {
             "Description": "Set permissions for the services to access the client certificate.",
@@ -844,7 +853,7 @@
             "Description": "Removes the hostheader for the website.",
             "Type": "HostHeader",
             "Params": {
-                "HostName": "[variable('XConnectDnsName')]",
+                "HostName": "[variable('Site.DnsName')]",
                 "Action": "Remove"
             }
         },

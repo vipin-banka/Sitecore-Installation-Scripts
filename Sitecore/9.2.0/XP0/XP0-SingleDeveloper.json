@@ -25,6 +25,21 @@
             "DefaultValue": "",
             "Description": "The prefix for uniquely identifying instances."
         },
+		"Environment": {
+            "Type": "String",
+            "DefaultValue": "",
+            "Description": "The environment name e.g. dev, qa."
+        },
+		"Postfix": {
+            "Type": "String",
+            "DefaultValue": "",
+            "Description": "The postfix for DNS name."
+        },
+		"HostPostfix": {
+            "Type": "String",
+            "DefaultValue": "",
+            "Description": "The DNS name postfix."
+        },
 		"ExportPassword": {
             "Type": "String",
             "DefaultValue": "SIF-Default",
@@ -511,7 +526,22 @@
             "Description": "The xConnect client certificate name."
         }
     },
-    "Variables": {				
+    "Variables": {
+		"Fallback.Environment": "dev.",
+		"Fallback.Postfix": ".local",
+		"CurrentEnvironment": "[if(parameter('Environment'),parameter('Environment'),variable('Fallback.Environment'))]",
+		"CurrentPostfix": "[if(parameter('Postfix'),parameter('Postfix'),variable('Fallback.Postfix'))]",		
+		"CurrentHostPostfix": "[concat(variable('CurrentEnvironment'), concat(parameter('Prefix'), variable('CurrentPostfix')))]",
+		"HostName": "[if(parameter('HostPostfix'),parameter('HostPostfix'),variable('CurrentHostPostfix'))]",
+		
+		"AllCertificates:SSL.Certificate.Name": "[variable('HostName')]",
+		"IdentityServer:SSL.Certificate.Name": "[variable('HostName')]",
+		"IdentityServer:Site.DnsName": "[concat('identityserver.', variable('HostName'))]",
+		"XConnectXP0:SSL.Certificate.Name": "[variable('HostName')]",
+		"XConnectXP0:Site.DnsName": "[concat('xconnect.', variable('HostName'))]",
+		"SitecoreXP0:SSL.Certificate.Name": "[variable('HostName')]",
+		"SitecoreXP0:Site.DnsName": "[variable('HostName')]",
+		
         "SqlProcessingPools.Password": "[if(variable('Test.SqlProcessingPools.Password'),variable('Generate.SqlProcessingPools.Password'),parameter('SqlProcessingPoolsPassword'))]",
         "XConnectXP0:SqlProcessingPools.Password": "[variable('SqlProcessingPools.Password')]",
         "SitecoreXP0:SqlProcessingPools.Password": "[variable('SqlProcessingPools.Password')]",
