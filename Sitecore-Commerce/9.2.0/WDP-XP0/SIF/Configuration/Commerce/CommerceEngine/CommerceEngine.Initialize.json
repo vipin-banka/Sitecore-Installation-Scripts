@@ -1,0 +1,157 @@
+﻿{
+  "Parameters": {
+    "SitecoreIdentityServerUrl": {
+      "Type": "string",
+      "Description": "The Sitecore Identity Server Url.",
+      "DefaultValue": ""
+    },
+    "CommerceInstallRoot": {
+      "Type": "string",
+      "Description": "The root path of commerce services.",
+      "DefaultValue": ""
+    },
+    "CommerceShopsServicesPort": {
+      "Type": "string",
+      "Description": "Commerce Shops Services port",
+      "DefaultValue": ""
+    },
+    "SitecoreAdminAccount": {
+      "Type": "psobject",
+      "Description": "Sitecore Admin account.",
+      "DefaultValue": ""
+    },
+    "Environments": {
+      "Type": "string[]",
+      "Description": "List of environments to initialize.",
+      "DefaultValue": ""
+    },
+    "MinionEnvironments": {
+      "Type": "string[]",
+      "Description": "List of minion environments to initialize.",
+      "DefaultValue": ""
+    },
+    "CommerceServicesPrefix": {
+      "Type": "string",
+      "Description": "The Commerce Engine prefix for services names",
+      "DefaultValue": ""
+    },
+    "CommerceServicesPostfix": {
+      "Type": "string",
+      "Description": "The Commerce Engine postfix for services names",
+      "DefaultValue": ""
+    },
+    "CommerceServicesHostPostfix": {
+      "Type": "string",
+      "Description": "The postfix for Commerce Engine services host names",
+      "DefaultValue": ""
+    },
+    "EngineShopsUrl": {
+      "Type": "string",
+      "Description": "The url for Shops",
+      "DefaultValue": ""
+    },
+    "EngineMinionsUrl": {
+      "Type": "string",
+      "Description": "The url for Minions",
+      "DefaultValue": ""
+    }
+  },
+  "Variables": {
+    "Sitecore.AdminAccount": "[parameter('SitecoreAdminAccount')]",
+    "SitecoreIdentityServerGetTokenUrl": "[concat(parameter('SitecoreIdentityServerUrl'), '/connect/token')]",
+
+    "CommerceOps": "[concat(parameter('CommerceServicesPrefix'), concat('CommerceOps', parameter('CommerceServicesPostfix')))]",
+    "CommerceShops": "[concat(parameter('CommerceServicesPrefix'), concat('CommerceShops', parameter('CommerceServicesPostfix')))]",
+    "CommerceAuthoring": "[concat(parameter('CommerceServicesPrefix'), concat('CommerceAuthoring', parameter('CommerceServicesPostfix')))]",
+    "CommerceMinions": "[concat(parameter('CommerceServicesPrefix'), concat('CommerceMinions', parameter('CommerceServicesPostfix')))]",
+    "CommerceOpsPhysicalPath": "[joinpath(parameter('CommerceInstallRoot'),  variable('CommerceOps'))]",
+    "CommerceShopsPhysicalPath": "[joinpath(parameter('CommerceInstallRoot'),  variable('CommerceShops'))]",
+    "CommerceAuthoringPhysicalPath": "[joinpath(parameter('CommerceInstallRoot'),  variable('CommerceAuthoring'))]",
+    "CommerceMinionsPhysicalPath": "[joinpath(parameter('CommerceInstallRoot'),  variable('CommerceMinions'))]",
+
+    "Engine.ShopsUrl": "[parameter('EngineShopsUrl')]",
+    "Engine.MinionsUrl": "[parameter('EngineMinionsUrl')]",
+
+    "UrlCommerceShopsServicesBootstrap": "[concat(variable('Engine.ShopsUrl'), '/commerceops/Bootstrap()'))]",
+
+    "InitializeParam": "/commerceops/InitializeEnvironment()",
+    "UrlInitializeEnvironment": "[concat(variable('Engine.ShopsUrl'), variable('InitializeParam')))]",
+
+    "EnsureSyncDefaultContentPathsParam": "/commerceops/EnsureSyncDefaultContentPaths(environment='envNameValue',shopName='CommerceEngineDefaultStorefront')",
+    "UrlEnsureSyncDefaultContentPaths": "[concat(variable('Engine.ShopsUrl'), variable('EnsureSyncDefaultContentPathsParam')))]",
+
+    "UrlCheckCommandStatus": "[concat(variable('Engine.ShopsUrl'), '/commerceops/CheckCommandStatus(taskId=taskIdValue)'))]",
+
+    "UrlRunMinion": "[concat(variable('Engine.MinionsUrl'), '/commerceops/RunMinion()')]"
+  },
+  "Modules": [
+    "InitializeCommerce"
+  ],
+  "Tasks": {
+    "DisableCsrfValidation": {
+      "Type": "DisableCsrfValidation",
+      "Params": {
+        "CommerceServicesPathCollection": [
+          "[variable('CommerceOpsPhysicalPath')]",
+          "[variable('CommerceShopsPhysicalPath')]",
+          "[variable('CommerceAuthoringPhysicalPath')]",
+          "[variable('CommerceMinionsPhysicalPath')]"
+        ]
+      }
+    },
+    "RestartWebAppPoolOps": {
+      "Type": "ManageAppPool",
+      "Params": {
+        "Name": "[variable('CommerceMinions')]",
+        "Action": "restart"
+      }
+    },
+    "GetIdServerToken": {
+      "Type": "GetIdServerToken",
+      "Params": {
+        "SitecoreAdminAccount": "[variable('Sitecore.AdminAccount')]",
+        "UrlIdentityServerGetToken": "[variable('SitecoreIdentityServerGetTokenUrl')]"
+      }
+    },
+    "BootStrapCommerceServices": {
+      "Type": "BootStrapCommerceServices",
+      "Params": {
+        "UrlCommerceShopsServicesBootstrap": "[variable('UrlCommerceShopsServicesBootstrap')]"
+      }
+    },
+    "EnsureSyncDefaultContentPaths": {
+      "Type": "EnsureSyncDefaultContentPaths",
+      "Params": {
+        "UrlEnsureSyncDefaultContentPaths": "[variable('UrlEnsureSyncDefaultContentPaths')]",
+        "UrlCheckCommandStatus": "[variable('UrlCheckCommandStatus')]",
+        "Environments": "[parameter('Environments')]"
+      }
+    },
+    "InitializeCommerceServices": {
+      "Type": "InitializeCommerceServices",
+      "Params": {
+        "UrlInitializeEnvironment": "[variable('UrlInitializeEnvironment')]",
+        "UrlCheckCommandStatus": "[variable('UrlCheckCommandStatus')]",
+        "Environments": "[parameter('Environments')]"
+      }
+    },
+    "IndexCatalogItems": {
+      "Type": "IndexCatalogItems",
+      "Params": {
+        "UrlRunMinion": "[variable('UrlRunMinion')]",
+        "MinionEnvironments": "[parameter('MinionEnvironments')]"
+      }
+    },
+    "EnableCsrfValidation": {
+      "Type": "EnableCsrfValidation",
+      "Params": {
+        "CommerceServicesPathCollection": [
+          "[variable('CommerceOpsPhysicalPath')]",
+          "[variable('CommerceShopsPhysicalPath')]",
+          "[variable('CommerceAuthoringPhysicalPath')]",
+          "[variable('CommerceMinionsPhysicalPath')]"
+        ]
+      }
+    }
+  }
+}

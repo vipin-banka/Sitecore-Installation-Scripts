@@ -1,0 +1,49 @@
+{
+    "Parameters": {
+        "MergeToolFullPath": {
+            "Type": "string",
+            "Description": "The path to the Merge Tool.",
+            "DefaultValue":""
+        },
+        "InstallDir": {
+          "Type": "string",
+          "Description": "The sitecore site content path.",
+          "DefaultValue": ""
+        },
+        "BizFxUrl": {
+          "Type": "string",
+          "Description": "Bizfx app url",
+          "DefaultValue": ""
+        },
+        "BaseUrl": {
+          "Type": "string",
+          "Description": "Base url for sitecore utility pages.",
+          "DefaultValue": ""
+        }
+    },
+    "Variables": {
+      "InputFile": "[concat(parameter('InstallDir'), '\\MergeFiles\\Merge.SXA.Storefront.config')]",
+      "WebConfig": "[concat(parameter('InstallDir'), '\\Web.Config')]"
+    },
+    "Modules": [
+        "MergeWebConfig",
+		"SitecoreUtilityTasks"
+    ],
+    "Tasks": {
+        "MergeWebConfig": {
+            "Type": "MergeWebConfig",
+            "Params": {
+                "MergeTool": "[parameter('MergeToolFullPath')]",
+                "InputFile": "[variable('InputFile')]",
+                "WebConfig": "[variable('WebConfig')]"
+            }
+        },
+        "UpdateBizFxAppUrl": {
+            "Type": "UpdateBusinessToolsAppUrl",
+            "Params": {
+                "BizFxUrl": "[parameter('MergeToolFullPath')]",
+                "BaseUrl": "[variable('InputFile')]"
+            }
+        }
+    }
+}

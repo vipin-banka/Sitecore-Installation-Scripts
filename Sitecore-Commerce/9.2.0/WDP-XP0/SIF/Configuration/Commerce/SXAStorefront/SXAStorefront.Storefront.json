@@ -1,0 +1,118 @@
+﻿{
+  "Parameters": {
+    "SXACommerceWdpFullPath": {
+      "Type": "string",
+      "Description": "The path to the SXA Commerce module zip.",
+      "DefaultValue": ""
+    },
+    "SXAStorefrontWdpFullPath": {
+      "Type": "string",
+      "Description": "The path to the SXA Commerce Storefront module zip.",
+      "DefaultValue": ""
+    },
+    "SXAStorefrontThemeWdpFullPath": {
+      "Type": "string",
+      "Description": "The path to the SXA Commerce Storefront Theme module zip.",
+      "DefaultValue": ""
+    },
+    "SXAStorefrontCatalogWdpFullPath": {
+      "Type": "string",
+      "Description": "The path to the SXA Commerce Storefront Catalog module zip.",
+      "DefaultValue": ""
+    },
+    "SqlAdminUser": {
+      "Type": "string",
+      "DefaultValue": "sa",
+      "Description": "The Sql admin user account to use when installing databases."
+    },
+    "SqlAdminPassword": {
+      "Type": "string",
+      "DefaultValue": "12345",
+      "Description": "The Sql admin password to use when installing databases."
+    },
+    "SitecoreDbServer": {
+      "Type": "string",
+      "DefaultValue": ".\\SQLSERVER",
+      "Description": "The Sql Server where databases will be installed."
+    },
+    "SqlDbPrefix": {
+      "Type": "string",
+      "Description": "The Sql Server where databases will be installed.",
+      "DefaultValue": ""
+    },
+    "SiteName": {
+      "Type": "string",
+      "Description": "The name of the site to be deployed.",
+      "DefaultValue": ""
+    },
+    "MergeToolFullPath": {
+      "Type": "string",
+      "DefaultValue": ""
+    },
+    "InstallDir": {
+      "Type": "string",
+      "Description": "The sitecore site content path.",
+      "DefaultValue": ""
+    },
+    "SXAStorefrontWdpsInstall:SqlAdminUser": {
+      "Type": "string",
+      "Description": "The Sql admin user account to use when installing databases.",
+      "Reference": "SqlAdminUser"
+    },
+    "SXAStorefrontWdpsInstall:SqlAdminPassword": {
+      "Type": "string",
+      "Description": "The Sql admin password to use when installing databases.",
+      "Reference": "SqlAdminPassword"
+    },
+    "SXAStorefrontWdpsInstall:SitecoreDbServer": {
+      "Type": "string",
+      "Description": "The Sql Server where databases will be installed.",
+      "Reference": "SitecoreDbServer"
+    },
+    "SXAStorefrontWdpsInstall:SqlDbPrefix": {
+      "Type": "string",
+      "Description": "The Sql Server where databases will be installed.",
+      "Reference": "SqlDbPrefix"
+    },
+    "SXAStorefrontWdpsInstall:SiteName": {
+      "Type": "string",
+      "Description": "The name of the site to be deployed.",
+      "Reference": "SiteName"
+    },
+    "SXAStorefrontWdpsInstall:SXACommerceWdpFullPath": {
+      "Type": "string",
+      "Reference": "SXACommerceWdpFullPath"
+    },
+    "SXAStorefrontWdpsInstall:SXAStorefrontWdpFullPath": {
+      "Type": "string",
+      "Description": "The path to the SXA Commerce Storefront module zip.",
+      "Reference": "SXAStorefrontWdpFullPath"
+    },
+    "SXAStorefrontWdpsInstall:SXAStorefrontThemeWdpFullPath": {
+      "Type": "string",
+      "Description": "The path to the SXA Commerce Storefront Theme module zip.",
+      "Reference": "SXAStorefrontThemeWdpFullPath"
+    },
+    "SXAStorefrontWdpsInstall:SXAStorefrontCatalogWdpFullPath": {
+      "Type": "string",
+      "Description": "The path to the SXA Commerce Storefront Catalog module zip.",
+      "Reference": "SXAStorefrontCatalogWdpFullPath"
+    },
+    "SXAStorefrontPostInstallationSteps:MergeToolFullPath": {
+      "Type": "string",
+      "Reference": "MergeToolFullPath"
+    },
+    "SXAStorefrontPostInstallationSteps:InstallDir": {
+      "Type": "string",
+      "Reference": "InstallDir"
+    }
+  },
+  "Includes": {
+    "SXAStorefrontWdpsInstall": {
+      "Source": ".\\Configuration\\Commerce\\SXAStorefront\\_SXAStorefront.Install.Wdps.json"
+    },
+    "SXAStorefrontPostInstallationSteps": {
+      "Source": ".\\Configuration\\Commerce\\SXAStorefront\\_SXAStorefront.Post.Installation.json"
+    }
+  }
+}
